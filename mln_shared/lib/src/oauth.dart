@@ -14,6 +14,9 @@ class OAuth {
   static const oauthUrl = "$mlnBaseUrl/oauth";
   static const tokenUrl = "$mlnBaseUrl/oauth/token";
 
+  final sessionToTokens = <SessionID, AccessToken>{};
+  final accessTokenToUsername = <AccessToken, String>{};
+
   final String apiToken;
   final String clientID;
   final String loginUrl;
@@ -48,8 +51,6 @@ class OAuth {
     return builder.buildDocument().toXmlString();
   }
 
-  Map<SessionID, AccessToken> sessionToTokens = {};
-
   Future<AccessToken?> login(SessionID sessionID, String authCode) async {
     final body = {
       "api_token": apiToken,
@@ -66,7 +67,9 @@ class OAuth {
       return null;
     }
     final data = jsonDecode(response.body);
-    final accessToken = data["access_token"];
+    final accessToken = AccessToken(data["access_token"] as String);
+    final username = data["username"];
+    accessTokenToUsername[accessToken] = username;
     sessionToTokens[sessionID] = accessToken;
     return accessToken;
   }
