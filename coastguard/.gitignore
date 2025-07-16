@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+
+static/*
+!static/.gitkeep
+
+mln_secret.py
