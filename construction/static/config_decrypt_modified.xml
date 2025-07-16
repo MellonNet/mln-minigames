@@ -4,7 +4,7 @@
 <productlink>http://city.lego.com/en-us/products</productlink>
 <enable>true</enable>
 <carrierService>
-  <serviceUrl>http://localhost:7000</serviceUrl>
+  <serviceUrl>http://localhost:7001</serviceUrl>
   <localeId>1033</localeId>
   <awardCategory>CITYCCAT09</awardCategory>
   <awardCodes>
