@@ -1,3 +1,4 @@
+export "src/handlers.dart";
 export "src/mln.dart";
 export "src/oauth.dart";
 export "src/shelf.dart";

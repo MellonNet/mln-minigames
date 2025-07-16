@@ -7,4 +7,4 @@
 actionscript/scripts
 
 # Contains OAuth secrets
-lib/src/secrets.dart
+lib/secrets.dart

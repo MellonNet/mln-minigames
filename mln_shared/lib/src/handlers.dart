@@ -1,12 +1,11 @@
-import "package:mln_shared/mln_shared.dart";
 import "package:shelf/shelf.dart";
 
-import "award.dart";
 import "mln.dart";
+import "oauth.dart";
+import "shelf.dart";
+import "utils.dart";
 
-final Map<SessionID, int> pendingRankAwards = {};
-
-Future<Response> loginHandler(Request request) async {
+Handler loginHandler(Mln mln) => (Request request) async {
   final query = request.url.queryParameters;
   final sessionID = query["session_id"] as SessionID?;
   final authCode = query["auth_code"];
@@ -18,36 +17,42 @@ Future<Response> loginHandler(Request request) async {
   if (accessToken == null) {
     return Response.internalServerError(body: "Could not sign in");
   }
-  final pendingReward = pendingRankAwards[sessionID];
+  final pendingReward = mln.pendingAwards[sessionID];
   print("Found pending reward: $pendingReward");
   if (pendingReward != null) {
     final success = await mln.grantReward(
       accessToken: accessToken,
       level: pendingReward,
     );
-    if (success) pendingRankAwards.remove(sessionID);
+    if (success) mln.pendingAwards.remove(sessionID);
   }
 
   return Response.found("/");
-}
+};
 
-Future<Response> handleAwards(Request request) async {
+Handler awardHandler(Mln mln) => (Request request) async {
   final sessionID = request.sessionID;
   if (sessionID == null) return Response.badRequest(body: "Missing session ID");
   final accessToken = mln.oauth.sessionToTokens[sessionID];
   final int awardID;
   try {
-    awardID = await parseAwardID(request);
+    awardID = await request.parseAwardID(
+      key: mln.encryptionKey,
+      validAwards: mln.validAwards,
+    );
   } on FormatException catch (error) {
     return Response.badRequest(body: error.message);
   }
   if (accessToken == null) {
-    pendingRankAwards[sessionID] = awardID;
+    mln.pendingAwards[sessionID] = awardID;
     final loginXml = mln.oauth.getLoginXml(sessionID);
-    final encrypted = encrypt(key: key, source: loginXml);
+    final encrypted = encrypt(
+      key: mln.encryptionKey,
+      source: loginXml,
+    );
     return Response.ok(encrypted);
   } else {
     await safelyAsync(() => mln.grantReward(accessToken: accessToken, level: awardID));
     return Response.ok(null);
   }
-}
+};

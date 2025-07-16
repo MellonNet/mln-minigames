@@ -4,6 +4,7 @@ import "package:collection/collection.dart";
 import "package:shelf/shelf.dart";
 
 import "oauth.dart";
+import "utils.dart";
 
 extension RequestUtils on Request {
   List<Cookie> get cookies {
@@ -22,6 +23,24 @@ extension RequestUtils on Request {
     final result = cookies.firstWhereOrNull((cookie) => cookie.name == "sessionid")?.value;
     if (result == null) return null;
     return SessionID(result);
+  }
+
+  Future<int> parseAwardID({
+    required Set<int> validAwards,
+    required String key,
+  }) async {
+    final body = await readAsString();
+    final queryString = Uri.decodeFull(body);
+    final query = Uri.splitQueryString(queryString);
+    final encryptedCode = query["awardCode"];
+    if (encryptedCode == null) throw const FormatException("Missing awardCode");
+    final awardCode = decrypt(key: key, source: encryptedCode);
+    if (awardCode.isEmpty) throw const FormatException("Missing awardCode");
+    final awardID = int.tryParse(awardCode.split("").last);
+    if (awardID == null || !validAwards.contains(awardID)) {
+      throw FormatException("Invalid awardCode: $awardID");
+    }
+    return awardID;
   }
 }
 

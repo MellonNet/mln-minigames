@@ -9,8 +9,15 @@ class Mln {
   static const baseUrl = "http://localhost:8000";
   static const rewardUrl = "$baseUrl/api/reward";
 
+  final String encryptionKey;
+  final Set<int> validAwards;
+  final pendingAwards = <SessionID, int>{};
   final OAuth oauth;
-  Mln(this.oauth);
+  Mln({
+    required this.oauth,
+    required this.encryptionKey,
+    required this.validAwards,
+  });
 
   Future<bool> grantReward({
     required AccessToken accessToken,
