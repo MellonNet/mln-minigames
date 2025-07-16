@@ -19,8 +19,8 @@ Future<int> parseAwardID(Request request) async {
   return awardID;
 }
 
-final constructionBase = "http://localhost:7001";
-final constructionLoginUrl = "$constructionBase/api/login";
+const constructionBase = "http://localhost:7001";
+const constructionLoginUrl = "$constructionBase/api/login";
 final oauth = OAuth(apiToken: "123", clientID: "123", loginUrl: constructionLoginUrl);
 final mln = Mln(oauth);
 

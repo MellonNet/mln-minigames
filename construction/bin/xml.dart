@@ -11,6 +11,8 @@ const before = """
 <config encrypted="true">
 <![CDATA[""";
 
+// A newline would break the encryption process
+// ignore: leading_newlines_in_multiline_strings
 const after = """]]>
 </config>
 """;
