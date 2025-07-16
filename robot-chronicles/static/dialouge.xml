@@ -1,0 +1,558 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<INTERFACE_NODES eg="titles, button names" />
+	<INT_selectTheme>SELECT THEME TO START GAME:</INT_selectTheme>
+	<INT_gameTitle>THE ROBOT CHRONICLES</INT_gameTitle>
+			<!--Translation advice: (Title screen) Swap CHRONICLES for STORY if needed to keep short-->
+	<INT_buttonNext>NEXT</INT_buttonNext>
+	<INT_buttonPrevious>BACK</INT_buttonPrevious>
+	<INT_buttonContinue>CONTINUE GAME</INT_buttonContinue>
+	<INT_buttonStart>START NEW GAME</INT_buttonStart>
+			<!--Translation advice: (Title screen after clicking on 'NEXT') Try START GAME if 'NEW' is too long-->
+	<INT_buttonYes>YES</INT_buttonYes>
+	<INT_buttonNo>Cancel</INT_buttonNo>
+	<INT_buttonMLNNo>CONTINUE PLAY</INT_buttonMLNNo>
+	<INT_buttonMLN>Collect Your MLN Reward</INT_buttonMLN>
+	<INT_slotName>Enter your name</INT_slotName>
+	<INT_buildingProgress>BUILDING LEGO CITY</INT_buildingProgress>
+	<INT_sideOfRoad>RIGHT</INT_sideOfRoad>
+	<INT_freeRoam>FREE ROAM!</INT_freeRoam>
+	<INT_missionTimer>TIME LEFT</INT_missionTimer>
+	<INT_status>HERO STATUS</INT_status>
+	<INT_score>STUDS</INT_score>
+	<INT_capacity>SHIELDS</INT_capacity>
+	<INT_hero1>ROOKIE</INT_hero1>
+	<INT_hero2>HERO</INT_hero2>
+	<INT_hero3>ACE</INT_hero3>
+	<INT_prox1>CENTRAL</INT_prox1>
+	<INT_prox2>DOCKSIDE</INT_prox2>
+	<INT_prox3>DOWNTOWN</INT_prox3>
+	<INT_prox4>NORTHWOOD</INT_prox4>
+	<INT_prox5>SOUTHPARK</INT_prox5>
+	<INT_prox6>EAST POINT</INT_prox6>
+	<INT_prox7>WESTBOURNE</INT_prox7>
+	<INT_prox8>LEGO CITY AIRPORT (LCA)</INT_prox8>
+	<INT_prox9>CONSTRUCTION ZONE</INT_prox9>
+	<INT_prox10>FAIRWINDS ESTATES</INT_prox10>
+	<INT_prox11>INDUSTRIAL COMPLEX</INT_prox11>
+	<INT_locked>Locked</INT_locked>
+	<INT_unlocked>Unlocked!</INT_unlocked>
+	<INT_performanceHandling>Handling</INT_performanceHandling>
+	<INT_performancePower>Speed</INT_performancePower>
+	<INT_agent>Agent Chase</INT_agent>
+	<INT_doctor>Dr Stich</INT_doctor>
+	<INT_fire>Chief Bern</INT_fire>
+	<INT_foreman>Frank</INT_foreman>
+	<INT_inferno>Dr Inferno</INT_inferno>
+	<INT_journalist>Brickstein</INT_journalist>
+	<INT_police>Chief Warner</INT_police>
+	<INT_mln>Echo</INT_mln>
+	<INT_spanner>Stefanos</INT_spanner>
+	<INT_stig>Wheelie</INT_stig>
+	<INT_m1>Speed Inferno Challenge</INT_m1>
+	<INT_m2>Infestation</INT_m2>
+	<INT_m3>Towing The Line</INT_m3>
+	<INT_m4>Battle For The Skies</INT_m4>
+	<INT_m5>Outriders Challenge</INT_m5>
+	<INT_m6>Crane Quest</INT_m6>
+	<INT_m7>The Fall Of The Robot</INT_m7>
+
+	<INSTRUCTION_NODES eg="how tos, hints" />
+	<INS_fireBonus>fire~Emergency!  Fire reported in </INS_fireBonus>
+	<INS_fireUpgrade>fire~Fire truck upgraded!</INS_fireUpgrade>
+	<INS_policeBonus>police~Illegal street racer reported in </INS_policeBonus>
+	<INS_policeBonusComplete>police~Good pursuit!  Street racer arrested!</INS_policeBonusComplete>
+	<INS_doctorBonus>doctor~Emergency!  Traffic accident reported in </INS_doctorBonus>
+	<INS_doctorBonusCollected>doctor~Drive the patient to the hospital</INS_doctorBonusCollected>
+	<INS_doctorBonusComplete>doctor~Great driving!  Patient saved.</INS_doctorBonusComplete>
+	<INS_rewardJump>stig~Great jump! You jumped *****</INS_rewardJump>
+			<!--Translation advice: (In game side panel) Edit the part between stig~ and *****.  No space after '~'-->
+	<INS_rewardSkid>stig~Great drift! You skidded for *****</INS_rewardSkid>
+	<INS_abort>journalist~Mission aborted!</INS_abort>
+			<!--Translation advice: (In game side panel) Edit the part between journalist~ and *****.  No space after '~'.  And so on-->
+	<INS_freeRoam>journalist~Drive around LEGO City using CURSOR KEYS (or WASD) &amp; SPACE</INS_freeRoam>
+			<!--Translation advice: (In game side panel) Do not translate (Or WASD).  &amp is the '&' symbol if you are short on space-->
+	<INS_selector>journalist~Select vehicle with UP, DOWN &amp; SPACE</INS_selector>
+	<INS_m1>stig~Complete the Speed Inferno Challenge</INS_m1>
+	<INS_winM1>stig~Congratulations, you completed the race in position</INS_winM1>
+			<!--Translation advice: (In game side panel)Congratualtions is the longest size word that fits in the side panel.  If longer, shorten to Awesome etc.-->
+	<INS_loseM1>stig~You have lost the race!</INS_loseM1>
+	<INS_hintM1>stig~HINT: Use turbo boost on straights using SPACE</INS_hintM1>
+	<INS_m2>agent~Defeat Dr Inferno's High Speed Jeeps</INS_m2>
+	<INS_winM2>agent~Well done Agent! Dr Inferno is on the retreat!</INS_winM2>
+	<INS_loseM2>agent~The High Speed Jeeps have evaded us for now!</INS_loseM2>
+	<INS_hintM2>agent~HINT: Use the radar to locate Dr Inferno's forces</INS_hintM2>
+	<INS_m3_1>spanner~Find the damaged ***** and connect tow hook with SPACE</INS_m3_1>
+	<INS_m3_2>spanner~Tow the ***** back to the garage for repair</INS_m3_2>
+	<INS_m3_3>spanner~REPAIRED: Return the ***** back to its depot</INS_m3_3>
+	<INS_winM3_UCAM>doctor~Thanks, feel free to take the Ambulance for a spin!</INS_winM3_UCAM>
+	<INS_winM3_UCFT>fire~Great, test drive the Firetruck any time!</INS_winM3_UCFT>
+	<INS_winM3_UCPV>police~Nice one, pop by the Police Station any time!</INS_winM3_UCPV>
+	<INS_winM3_UCDG>foreman~Good job, feel free to repair LEGO City any time!</INS_winM3_UCDG>
+	<INS_winM3>spanner~Repairing LEGO City!</INS_winM3>
+	<INS_loseM3>spanner~You did not repair the vehicle in time!</INS_loseM3>
+	<INS_hintM3>spanner~HINT: Get close and connect or release the tow line with SPACE</INS_hintM3>
+	<INS_m4>agent~Defeat Dr Inferno's Ace Slime Choppers</INS_m4>
+	<INS_winM4>agent~The skies are ours!</INS_winM4>
+	<INS_loseM4>agent~Dr Inferno's forces have evaded us!</INS_loseM4>
+	<INS_hintM4>agent~HINT: Use the radar to locate Dr Inferno's Aces</INS_hintM4>
+	<INS_m5>stig~Complete the Outriders Challenge</INS_m5>
+	<INS_winM5>stig~Congratulations, you completed the race in position</INS_winM5>
+	<INS_loseM5>stig~You have lost the race!</INS_loseM5>
+	<INS_hintM5>stig~HINT: Try a few shortcuts and boosting with SPACE</INS_hintM5>
+	<INS_m6_1>foreman~Tow the remaining ***** crane pieces to repair the crane</INS_m6_1>
+	<INS_m6_2>foreman~Tow the crane piece back to the crane</INS_m6_2>
+	<INS_winM6>foreman~The crane is repaired!</INS_winM6>
+	<INS_loseM6>foreman~Out of time - the crane is broken!</INS_loseM6>
+	<INS_hintM6>foreman~HINT: Help the Agents clear the skies first</INS_hintM6>
+	<INS_m7>agent~Follow the Chopper and lead the Robot in to the trap!</INS_m7>
+	<INS_winM7>agent~Dr Inferno is defeated! LEGO City returns to normal ..?</INS_winM7>
+	<INS_loseM7>agent~The Robot escaped our trap!</INS_loseM7>
+	<INS_hintM7>agent~HINT: Drive skillfully and practise your routes</INS_hintM7>
+
+	<CONFIRM_NODES eg="test that appears in modal confirmation boxes - message can contain html including links" />
+	<CON_exitTitle>Exit game</CON_exitTitle>
+	<CON_exitMessage>Are you sure you wish to exit the game?  Any progress in an active mission will be lost.</CON_exitMessage>
+	<CON_exitYes>EXIT</CON_exitYes>
+	<CON_exitNo>CANCEL</CON_exitNo>
+	<CON_deleteTitle>Delete saved game</CON_deleteTitle>
+	<CON_deleteMessage>Are you sure you want to delete this saved game.  All progress will be lost and deleting is not undoable.</CON_deleteMessage>
+	<CON_deleteYes>DELETE</CON_deleteYes>
+	<CON_deleteNo>CANCEL</CON_deleteNo>
+	<CON_sandboxTitle>Content advisory</CON_sandboxTitle>
+	<CON_sandboxMessage>The next mission features maturer content than you might expect in LEGO CITY.  It might feature shooting (LEGO AGENTS) or high adrenaline racing (LEGO RACERS).  Do you wish to proceed?</CON_sandboxMessage>
+	<CON_sandboxYes>YES</CON_sandboxYes>
+	<CON_sandboxNo>NO</CON_sandboxNo>
+
+	<STATE_NODES eg="stats on the pause page" />
+	<STA_overall>Overall progress</STA_overall>
+	<STA_tbcMission>?</STA_tbcMission>
+	<STA_wins>Wins</STA_wins>
+	<STA_losses>Losses</STA_losses>
+	<STA_duration>Best time</STA_duration>
+	<STA_unlocked>Vehicles unlocked</STA_unlocked>
+	<STA_vehiclesDriven>Vehicles used</STA_vehiclesDriven>
+	<STA_kills>Vehicles defeated</STA_kills>
+	<STA_killsEvil>Dr Inferno's forces</STA_killsEvil>
+	<STA_killsGood>Agents</STA_killsGood>
+	<STA_distanceTotal>Distance travelled</STA_distanceTotal>
+	<STA_distanceDriving>Driving</STA_distanceDriving>
+	<STA_distanceFlying>Flying</STA_distanceFlying>
+	<STA_durationTotal>Total time spent</STA_durationTotal>
+	<STA_durationDriving>Driving</STA_durationDriving>
+	<STA_durationFlying>Flying</STA_durationFlying>
+	<STA_durationThemeAgents>as Agents</STA_durationThemeAgents>
+	<STA_durationThemeCity>as City</STA_durationThemeCity>
+	<STA_durationThemeRacers>as Racers</STA_durationThemeRacers>
+	<STA_accuracy>Shooting accuracy</STA_accuracy>
+	<STA_distanceJumped>Furthest jump</STA_distanceJumped>
+	<STA_durationSkid>Longest drift</STA_durationSkid>
+	<STA_countRepairs>Road cracks repaired</STA_countRepairs>
+	<STA_countFireBonus>Fires extinguished</STA_countFireBonus>
+	<STA_countPoliceBonus>Criminals arrested</STA_countPoliceBonus>
+	<STA_countDoctorBonus>Patients hospitalised</STA_countDoctorBonus>
+	<STA_score>Studs collected</STA_score>
+	<STA_countCracks>Cost of damage to LEGO City</STA_countCracks>
+	<STA_tide>Robot rage</STA_tide>
+	<STA_robotRage1>COMPLACENT</STA_robotRage1>
+	<STA_robotRage2>ROUTINE</STA_robotRage2>
+	<STA_robotRage3>ALERT</STA_robotRage3>
+	<STA_robotRage4>HOSTILE</STA_robotRage4>
+	<STA_robotRage5>FURIOUS</STA_robotRage5>
+
+	<CHEAT_NODES eg="messenger responses to input cheats" />
+	<CHT_allowMLN>TRUE</CHT_allowMLN>
+	<CHT_allowTM>TRUE</CHT_allowTM>
+	<CHT_invalid>agent~Access denied.  Enter valid password!</CHT_invalid>
+	<CHT_on>On</CHT_on>
+	<CHT_off>Off</CHT_off>
+	<CHT_impede>spanner~All opponents slowed to 75%</CHT_impede>
+	<CHT_collision>agent~Drive through walls</CHT_collision>
+	<CHT_shields>agent~Shields X3</CHT_shields>
+	<CHT_shoot>inferno~Ha ha ha! Target practise!</CHT_shoot>
+	<CHT_tide>inferno~Darkness falls across LEGO City!!!</CHT_tide>
+	<CHT_spawn>inferno~Spawn any vehicle</CHT_spawn>
+	<CHT_size>spanner~Shrink ray</CHT_size>
+	<CHT_turn>spanner~Turn on the spot</CHT_turn>
+	<CHT_bright>spanner~Toy land</CHT_bright>
+	<CHT_unlocked>stig~All vehicles unlocked</CHT_unlocked>
+	<CHT_reset>inferno~Cheats reset</CHT_reset>
+	<CHT_elite>agent~Powered up!</CHT_elite>
+	<CHT_testmode>police~Authorised Personnel only! Test mode toggled</CHT_testmode>
+
+	<UNIT_NODES eg="titles of units" />
+	<UAAD>Aerial Defence Unit</UAAD>
+	<UAHJ>High Speed Jeep</UAHJ>
+	<UAIB>Inferno Bike</UAIB>
+	<UAQB>Quad Bike</UAQB>
+	<UARA>Robot</UARA>
+	<UARC>Rocket Cycle</UARC>
+	<UASC>Slime Chopper</UASC>
+	<UASJ>Supersonic Jet</UASJ>
+	<UAWP>4 Wheelin Pursuit</UAWP>
+	<UCAM>Ambulance</UCAM>
+	<UCCH>Coastguard Helicopter</UCCH>
+	<UCDG>Front-End Loader</UCDG>
+	<UCFT>Fire Truck</UCFT>
+	<UCHD>Heavy Duty Tow Truck</UCHD>
+	<UCHT>Helicopter Transport</UCHT>
+	<UCPV>Police Van</UCPV>
+	<UCRT>Recycle Truck</UCRT>
+	<UCTT>Tow Truck</UCTT>
+	<URBB>Dune Buggy</URBB>
+	<URBK>Desert Buggy</URBK>
+	<URMP>Police Monster Truck</URMP>
+	<URMR>Monster Crusher</URMR>
+	<URPC>Patrol Copter</URPC>
+	<URRR>Rally Racer</URRR>
+	<URRY>Ice Rally</URRY>
+	<URSO>Thunder Racer</URSO>
+	<URSW>Lightning Racer</URSW>
+	<URXW>Extreme Wheelie</URXW>
+
+	<UNIT_HOW_TO_UNLOCK_NODES eg="info on how to unlock" />
+	<UAAD_hint>Complete *M4* with this vehicle</UAAD_hint>
+	<UAHJ_hint>Win the *M1*</UAHJ_hint>
+	<UAIB_hint>Win the *M5*</UAIB_hint>
+	<UAQB_hint>Complete *M2* with this vehicle</UAQB_hint>
+	<UARA_hint>Achieve 100% ... Pause game for details</UARA_hint>
+	<UARC_hint>Complete *M2* with this vehicle</UARC_hint>
+	<UASC_hint>Shoot 100 Agents ... Pause game for details</UASC_hint>
+	<UASJ_hint>Complete *M4* with this vehicle</UASJ_hint>
+	<UAWP_hint>Complete *M2* with this vehicle</UAWP_hint>
+	<UCAM_hint>Repair and return this vehicle in *M3*</UCAM_hint>
+	<UCCH_hint>Complete *M6* with this vehicle</UCCH_hint>
+	<UCDG_hint>Repair and return this vehicle in *M3*</UCDG_hint>
+	<UCFT_hint>Repair and return this vehicle in *M3*</UCFT_hint>
+	<UCHD_hint>Deliver a vehicle to the garage in *M3* using this vehicle</UCHD_hint>
+	<UCHT_hint>Complete *M6* with this vehicle</UCHT_hint>
+	<UCPV_hint>Repair and return this vehicle in *M3*</UCPV_hint>
+	<UCRT_hint>Repair 5000 cracks in the road ... Pause game for details</UCRT_hint>
+	<UCTT_hint>Deliver a vehicle to the garage in *M3* using this vehicle</UCTT_hint>
+	<URBB_hint>Complete *M1* with this vehicle</URBB_hint>
+	<URBK_hint>Complete *M1* or *M5* with this vehicle</URBK_hint>
+	<URMP_hint>Complete *M5* with this vehicle</URMP_hint>
+	<URMR_hint>Complete *M5* with this vehicle</URMR_hint>
+	<URPC_hint>Fly for an hour ... Pause game for details</URPC_hint>
+	<URRR_hint>Complete *M1* or *M5* with this vehicle</URRR_hint>
+	<URRY_hint>Complete *M1* with this vehicle</URRY_hint>
+	<URSO_hint>Complete *M1* or *M5* with this vehicle</URSO_hint>
+	<URSW_hint>Complete *M1* or *M5* with this vehicle</URSW_hint>
+	<URXW_hint>Complete *M7*</URXW_hint>
+
+	<movieEvents>
+		<m1>
+			<event frame="2" type="sound" soundID="MUS_newsSting" loops="1" volume="mid" />
+					<!--Translation advice: Do not alter anything with a type="sound"-->
+					<!--Translation advice: type="news" has a headline (h1) and a subheadline (h2).  Keep headlines very short-->
+			<event frame="91" type="news" h1="Speed Inferno" h2="Crowds look to the skies" />
+			<event frame="92" type="sound" soundID="MUS_movie_news" loops="-1" volume="min" />
+			<event frame="93" type="sound" soundID="GAM_ambUrban" loops="-1" volume="min" />
+			<event frame="126" type="speech" tone="friendly" x="230" y="190">Welcome viewers! Seymour Brickstein here, reporting live for LEGO City news!</event>
+			<event frame="127" type="speech" tone="friendly" x="230" y="190">Crowds are looking to the skies tonight... Lets go to Copter Cam!</event>
+			<event frame="148" type="news" h1="Street Race On!" h2="Notorious Dr Inferno offers prize for fastest racer" />
+			<event frame="149" type="sound" soundID="jetMax" loops="-1" volume="mid" />
+			<event frame="195" type="sound" soundID="GAM_speechSinister" loops="1" volume="mid" />
+			<event frame="244" type="sound" soundID="stop" loops="-1" volume="mid" />
+			<event frame="245" type="news" h1="Police Say No!" h2="City official up in arms over lawless racing" />
+			<event frame="256" type="speech" tone="friendly" x="200" y="200">Here with me on the spot is LEGO City Police Chief Warner!</event>
+			<event frame="257" type="sound" soundID="GAM_hornSiren" loops="1" volume="mid" />
+			<event frame="274" type="speech" tone="angry" x="400" y="220">Do not panic citizens! LEGO City Police have everything under control.</event>
+			<event frame="275" type="speech" tone="angry" x="400" y="220">No Racers will be tearing up our streets...</event>
+			<event frame="276" type="sound" soundID="sports11Down" loops="1" volume="min" />
+			<event frame="287" type="sound" soundID="sportsMin" loops="-1" volume="mid" />
+			<event frame="307" type="sound" soundID="stop" loops="-1" volume="mid" />
+			<event frame="308" type="sound" soundID="sports12Up" loops="1" volume="mid" />
+			<event frame="319" type="news" h1="Race On!!!" h2="Yikes, look out!" />
+			<event frame="323" type="sound" soundID="jetMin" loops="1" volume="max" />
+			<event frame="330" type="sound" soundID="GAM_hornSports1" loops="1" volume="mid" />
+			<event frame="364" type="sound" soundID="stop" loops="-1" volume="max" />
+			<event frame="368" type="sound" soundID="GAM_robotDestroy" loops="1" volume="max" />
+			<event frame="378" type="sound" soundID="GAM_robotFire2" loops="1" volume="mid" />
+			<event frame="385" type="sound" soundID="stop" loops="-1" volume="mid" />
+			<event frame="388" type="sound" soundID="GAM_robotFire2" loops="1" volume="mid" />
+			<event frame="396" type="sound" soundID="stop" loops="-1" volume="mid" />
+			<event frame="398" type="sound" soundID="GAM_shoot1" loops="1" volume="max" />			
+		</m1>
+		<m2>
+			<event frame="2" type="sound" soundID="MUS_newsSting" loops="1" volume="mid" />
+			<event frame="91" type="news" h1="Racer Wins Big" h2="Speed Inferno winner scoops grand prize" />
+			<event frame="92" type="sound" soundID="MUS_movie_news" loops="-1" volume="min" />
+			<event frame="93" type="sound" soundID="GAM_ambUrban" loops="-1" volume="min" />
+			<event frame="94" type="sound" soundID="sportsMin" loops="-1" volume="max" />
+			<event frame="100" type="speech" tone="friendly" x="430" y="200">Welcome back! Seymour Brickstein here, reporting live for LEGO City news!</event>
+			<event frame="102" type="speech" tone="friendly" x="430" y="200">Another racer wins big on Dr Inferno's Speed Challenge!</event>
+			<event frame="103" type="speech" tone="serious" x="430" y="200">I wonder what LEGO Agents make of all this?</event>
+			<event frame="109" type="sound" soundID="stop" loops="-1" volume="max" />
+			<event frame="110" type="sound" soundID="stop" loops="-1" volume="min" />
+			<event frame="111" type="sound" soundID="MUS_movie_agents" loops="-1" volume="max" />
+			<event frame="263" type="sound" soundID="GAM_token3" loops="3" volume="mid" />
+			<event frame="271" type="sound" soundID="INT_scrollUp" loops="1" volume="max" />
+			<event frame="272" type="sound" soundID="GAM_shoot5" loops="1" volume="max" />
+			<event frame="292" type="sound" soundID="GAM_token2" loops="1" volume="max" />
+			<event frame="307" type="sound" soundID="GAM_shoot1" loops="1" volume="max" />
+			<event frame="319" type="sound" soundID="INT_buttonOver" loops="1" volume="max" />
+			<event frame="321" type="sound" soundID="GAM_token1" loops="1" volume="max" />
+			<event frame="328" type="sound" soundID="GAM_token2" loops="1" volume="max" />
+			<event frame="343" type="sound" soundID="INT_scrollUp" loops="1" volume="max" />
+			<event frame="344" type="sound" soundID="GAM_siren" loops="-1" volume="max" />
+			<event frame="356" type="speech" tone="serious" x="245" y="230">High Speed Jeeps! So, Dr Inferno is up to his old tricks again!</event>
+			<event frame="357" type="speech" tone="serious" x="245" y="230">Blast those Jeeps out of LEGO City! Are you ready, Agent?</event>
+		</m2>
+		<m3>
+			<event frame="2" type="sound" soundID="MUS_newsSting" loops="1" volume="mid" />
+			<event frame="91" type="news" h1="Clearing the Streets" h2="Tow trucks to clear wrecked vehicles from City" />
+			<event frame="92" type="sound" soundID="MUS_movie_news" loops="-1" volume="min" />
+			<event frame="93" type="sound" soundID="GAM_ambUrban" loops="-1" volume="min" />
+			<event frame="106" type="speech" tone="friendly" x="160" y="210">Seymour Brickstein here, reporting live for LEGO City news!</event>
+			<event frame="121" type="sound" soundID="truck21Up" loops="1" volume="mid" />
+			<event frame="122" type="speech" tone="friendly" x="500" y="190">Looks like a busy day for the Tow Trucks!</event>
+			<event frame="142" type="speech" tone="serious" x="160" y="210">I wonder what is wrecking all these vehicles?</event>
+			<event frame="141" type="sound" soundID="GAM_towConnect3" loops="1" volume="max" />
+			<event frame="151" type="sound" soundID="GAM_hornTruck1" loops="1" volume="mid" />
+			<event frame="157" type="speech" tone="angry" x="160" y="210">Hey, wait a minute...!</event>
+			<event frame="160" type="news" h1="TV Van Mix Up" h2="Brickstein in hot water over loss of TV Van" />
+			<event frame="191" type="sound" soundID="truck21Up" loops="1" volume="mid" />
+			<event frame="194" type="sound" soundID="INT_locked" loops="1" volume="mid" />
+			<event frame="193" type="speech" tone="angry" x="240" y="210">*Huff, huff* - Come back with our van!</event>
+			<event frame="194" type="sound" soundID="INT_locked" loops="1" volume="min" />
+			<event frame="204" type="sound" soundID="INT_locked" loops="1" volume="min" />
+			<event frame="214" type="sound" soundID="INT_locked" loops="1" volume="mid" />
+			<event frame="224" type="sound" soundID="INT_locked" loops="1" volume="mid" />
+			<event frame="234" type="sound" soundID="INT_locked" loops="1" volume="max" />
+			<event frame="244" type="sound" soundID="INT_locked" loops="1" volume="max" />			
+		</m3>
+		<m4>
+			<event frame="2" type="sound" soundID="MUS_movie_agents" loops="-1" volume="min" />
+			<event frame="122" type="sound" soundID="GAM_siren" loops="-1" volume="mid" />
+			<event frame="125" type="speech" tone="serious" x="320" y="120">Red Alert! What is this on the radar?</event>
+			<event frame="132" type="sound" soundID="GAM_shoot4" loops="1" volume="mid" />
+			<event frame="157" type="sound" soundID="INT_scrollUp" loops="1" volume="mid" />
+			<event frame="161" type="sound" soundID="INT_scrollUp" loops="1" volume="mid" />
+			<event frame="165" type="sound" soundID="INT_scrollUp" loops="1" volume="mid" />
+			<event frame="170" type="sound" soundID="INT_scrollUp" loops="1" volume="mid" />
+			<event frame="173" type="sound" soundID="INT_scrollUp" loops="1" volume="mid" />
+			<event frame="183" type="sound" soundID="GAM_shoot3" loops="1" volume="mid" />
+			<event frame="204" type="sound" soundID="GAM_token2" loops="1" volume="mid" />
+			<event frame="254" type="speech" tone="serious" x="220" y="190">Slime Choppers!  Time to call for air support.</event>
+			<event frame="256" type="sound" soundID="INT_delete" loops="1" volume="mid" />
+			<event frame="265" type="sound" soundID="GAM_shoot3" loops="1" volume="mid" />
+			<event frame="290" type="speech" tone="female" x="300" y="200">Hello Agent Chase. Hang tight. Backup on the way!</event>
+			<event frame="292" type="sound" soundID="GAM_shoot3" loops="1" volume="mid" />
+		</m4>
+		<m5>
+			<event frame="2" type="sound" soundID="MUS_newsSting" loops="1" volume="mid" />
+			<event frame="91" type="news" h1="Race On!!!" h2="Second underground race starting on City Outskirts" />
+			<event frame="92" type="sound" soundID="MUS_movie_news" loops="-1" volume="min" />
+			<event frame="93" type="sound" soundID="GAM_ambUrban" loops="-1" volume="mid" />
+			<event frame="94" type="sound" soundID="sportsMin" loops="-1" volume="max" />
+			<event frame="100" type="speech" tone="friendly" x="310" y="230">Seymour Brickstein here, live on the scene of another race!</event>
+			<event frame="115" type="sound" soundID="sports11Down" loops="3" volume="mid" />
+			<event frame="123" type="speech" tone="friendly" x="200" y="190">Listen to those engines revving...</event>
+			<event frame="125" type="sound" soundID="GAM_start" loops="1" volume="mid" />
+			<event frame="141" type="sound" soundID="stop" loops="-1" volume="max" />
+			<event frame="142" type="sound" soundID="sports12Up" loops="1" volume="max" />
+			<event frame="161" type="sound" soundID="GAM_deflect5" loops="1" volume="max" />
+			<event frame="162" type="sound" soundID="sports21Down" loops="1" volume="max" />
+			<event frame="163" type="sound" soundID="GAM_hornSports1" loops="1" volume="max" />
+			<event frame="165" type="sound" soundID="GAM_destroy3" loops="1" volume="mid" />
+			<event frame="168" type="sound" soundID="GAM_hornSports1" loops="1" volume="max" />
+			<event frame="166" type="news" h1="Clouds of Smoke" h2="Exhaust fumes not good for your health, say Experts" />
+			<event frame="209" type="sound" soundID="GAM_speechCough" loops="1" volume="max" />
+			<event frame="223" type="sound" soundID="GAM_speechCough" loops="1" volume="mid" />
+			<event frame="231" type="sound" soundID="GAM_speechCough" loops="1" volume="mid" />
+			<event frame="249" type="speech" tone="serious" x="210" y="190">Bah... *cough*...</event>
+			<event frame="250" type="speech" tone="serious" x="210" y="190">This has been Seymour Brickstein... *cough*... going for a bath...</event>
+			<event frame="251" type="sound" soundID="GAM_speechLaugh" loops="1" volume="max" />
+			<event frame="252" type="speech" x="560" y="190">Ha ha!</event>
+		</m5>
+		<m6>
+			<event frame="2" type="sound" soundID="MUS_movie_city" loops="-1" volume="min" />
+			<event frame="10" type="sound" soundID="truckMin" loops="1" volume="mid" />
+			<event frame="65" type="sound" soundID="jetUp" loops="1" volume="mid" />
+			<event frame="73" type="sound" soundID="GAM_droneDie1" loops="1" volume="max" />
+			<event frame="79" type="sound" soundID="GAM_robotDestroy" loops="1" volume="max" />
+			<event frame="80" type="sound" soundID="truck11Down" loops="1" volume="mid" />
+			<event frame="92" type="sound" soundID="GAM_robotWalk3" loops="1" volume="mid" />
+			<event frame="104" type="sound" soundID="GAM_robotWalk3" loops="1" volume="mid" />
+			<event frame="115" type="sound" soundID="GAM_robotWalk3" loops="1" volume="mid" />
+			<event frame="181" type="sound" soundID="GAM_siren" loops="-1" volume="mid" />
+			<event frame="185" type="speech" tone="serious" x="480" y="170">Agent Chase, we need that crane up and running!</event>
+			<event frame="186" type="speech" tone="angry" x="480" y="170">Now listen up - I want your Agents to distract those Slime Choppers!</event>
+			<event frame="187" type="speech" tone="serious" x="480" y="170">We will use our Helicopters to collect the replacement crane parts.</event>
+			<event frame="191" type="speech" tone="friendly" x="120" y="170">Ok Foreman Frank - our radar will show you where the parts are.</event>
+			<event frame="192" type="speech" tone="serious" x="120" y="170">Good luck everyone...</event>
+			<event frame="201" type="sound" soundID="GAM_shoot3" loops="1" volume="max" />
+			<event frame="219" type="sound" soundID="INT_buttonOver" loops="1" volume="max" />
+			<event frame="225" type="sound" soundID="GAM_token2" loops="1" volume="max" />
+			<event frame="232" type="sound" soundID="GAM_token3" loops="1" volume="max" />
+			<event frame="244" type="sound" soundID="INT_delete" loops="1" volume="mid" />
+		</m6>
+		<m7>
+			<event frame="2" type="sound" soundID="MUS_movie_racers" loops="-1" volume="max" />
+			<event frame="65" type="sound" soundID="GAM_siren" loops="-1" volume="mid" />
+			<event frame="79" type="speech" tone="serious" x="220" y="180">Time to take this Robot down for good!</event>
+			<event frame="87" type="speech" tone="serious" x="310" y="120">Agent Chase, there is still a racer down there!</event>
+			<event frame="101" type="sound" soundID="stop" loops="-1" volume="mid" />
+			<event frame="102" type="sound" soundID="sports21Up" loops="1" volume="mid" />
+			<event frame="144" type="sound" soundID="sports11Down" loops="1" volume="max" />
+			<event frame="177" type="sound" soundID="GAM_robotWalk3" loops="1" volume="mid" />
+			<event frame="194" type="sound" soundID="GAM_robotDestroy" loops="1" volume="max" />
+			<event frame="222" type="sound" soundID="GAM_destroy1" loops="1" volume="min" />
+			<event frame="242" type="sound" soundID="GAM_destroy1" loops="1" volume="mid" />
+			<event frame="262" type="sound" soundID="GAM_destroy1" loops="1" volume="max" />
+			<event frame="281" type="sound" soundID="GAM_destroy1" loops="1" volume="max" />
+			<event frame="284" type="sound" soundID="GAM_droneDie1" loops="1" volume="max" />
+			<event frame="290" type="sound" soundID="GAM_destroy2" loops="1" volume="max" />
+			<event frame="304" type="sound" soundID="GAM_lose" loops="1" volume="max" />
+			<event frame="332" type="sound" soundID="GAM_speechSinister" loops="1" volume="max" />
+			<event frame="361" type="speech" x="315" y="120">Intruder!!! This is MY City now, Racer! Prepare to be crushed!</event>
+			<event frame="362" type="sound" soundID="sports21Up" loops="1" volume="max" />
+			<event frame="363" type="sound" soundID="jetUp" loops="1" volume="max" />
+			<event frame="379" type="sound" soundID="GAM_robotDestroy" loops="1" volume="max" />
+			<event frame="393" type="sound" soundID="GAM_skid" loops="2" volume="min" />
+			<event frame="418" type="sound" soundID="GAM_destroy1" loops="1" volume="mid" />
+			<event frame="438" type="sound" soundID="GAM_destroy1" loops="1" volume="mid" />
+			<event frame="458" type="sound" soundID="GAM_destroy1" loops="1" volume="mid" />
+			<event frame="478" type="sound" soundID="GAM_destroy1" loops="1" volume="mid" />
+			<event frame="482" type="sound" soundID="chopperMin" loops="2" volume="mid" />
+			<event frame="498" type="sound" soundID="GAM_destroy1" loops="1" volume="mid" />
+			<event frame="519" type="sound" soundID="GAM_destroy1" loops="-1" volume="min" />
+			<event frame="528" type="speech" tone="serious" x="370" y="190">Hey Racer! Follow us, quick!</event>
+			<event frame="538" type="sound" soundID="sports21Down" loops="1" volume="mid" />
+			<event frame="556" type="sound" soundID="GAM_robotWalk3" loops="1" volume="mid" />
+			<event frame="560" type="sound" soundID="sports11Up" loops="1" volume="mid" />
+			<event frame="590" type="sound" soundID="GAM_skid" loops="1" volume="min" />
+			<event frame="595" type="sound" soundID="stop" loops="-1" volume="min" />
+			<event frame="596" type="sound" soundID="GAM_deflect5" loops="1" volume="mid" />
+			
+		</m7>
+		<t1>
+			<event frame="2" type="sound" soundID="MUS_newsSting" loops="1" volume="mid" />
+			<event frame="91" type="news" h1="Roadblocks Lifted" h2="City outskirts reopened to Public" />
+			<event frame="92" type="sound" soundID="MUS_movie_news" loops="-1" volume="min" />
+			<event frame="93" type="sound" soundID="GAM_ambUrban" loops="-1" volume="min" />
+			<event frame="100" type="speech" tone="friendly" x="410" y="180">Seymour Brickstein here, reporting live for LEGO City news!</event>
+			<event frame="101" type="speech" tone="friendly" x="490" y="180">LEGO Agents have defeated the High Speed Jeeps...</event>
+			<event frame="103" type="speech" tone="friendly" x="120" y="210">...and ordered the roadblocks lifted!</event>
+			<event frame="102" type="sound" soundID="chopperUp" loops="1" volume="mid" />
+			<event frame="104" type="sound" soundID="GAM_skid" loops="1" volume="max" />
+			<event frame="123" type="sound" soundID="stop" loops="-1" volume="max" />
+			<event frame="124" type="speech" tone="friendly" x="440" y="180">Great news for anyone who has been feeling a bit cooped up!</event>
+			<event frame="125" type="speech" tone="friendly" x="440" y="180">Why not get out there and see the sights?</event>
+			<event frame="126" type="speech" tone="friendly" x="440" y="180">This has been Seymour Brickstein, reporting live for LEGO City News.</event>
+		</t1>
+		<t2>
+			<event frame="2" type="sound" soundID="MUS_movie_agents" loops="-1" volume="mid" />
+			<event frame="3" type="sound" soundID="truck2Max" loops="1" volume="max" />
+			<event frame="16" type="sound" soundID="stop" loops="-1" volume="max" />
+			<event frame="14" type="sound" soundID="truck21Down" loops="1" volume="mid" />
+			<event frame="44" type="sound" soundID="truckMin" loops="-1" volume="max" />
+			<event frame="61" type="sound" soundID="GAM_token3" loops="1" volume="mid" />
+			<event frame="76" type="sound" soundID="stop" loops="-1" volume="max" />
+			<event frame="77" type="sound" soundID="GAM_droneDie2" loops="1" volume="mid" />
+			<event frame="85" type="sound" soundID="INT_buttonOver" loops="1" volume="mid" />
+			<event frame="90" type="sound" soundID="INT_delete" loops="1" volume="mid" />
+			<event frame="96" type="sound" soundID="GAM_token1" loops="1" volume="mid" />
+			<event frame="99" type="sound" soundID="GAM_towRelease" loops="1" volume="mid" />
+			<event frame="127" type="speech" x="480" y="70">Unload the Jeep, Drones! Move! Move!</event>
+			<event frame="121" type="sound" soundID="GAM_droneDie1" loops="1" volume="max" />>
+			<event frame="125" type="sound" soundID="GAM_robotWalk1" loops="-1" volume="max" />>
+			<event frame="143" type="sound" soundID="stop" loops="-1" volume="max" />
+			<event frame="142" type="sound" soundID="GAM_robotWalk1" loops="-1" volume="min" />>
+			<event frame="166" type="sound" soundID="stop" loops="-1" volume="min" />
+			<event frame="164" type="speech" tone="serious" x="225" y="195">Ssshhh! Keep quiet - you are going to blow my cover!</event>
+			<event frame="165" type="sound" soundID="GAM_robotWalk1" loops="1" volume="max" />
+			<event frame="180" type="sound" soundID="GAM_robotWalk1" loops="1" volume="max" />
+			<event frame="195" type="sound" soundID="GAM_robotWalk1" loops="1" volume="max" />
+			<event frame="210" type="sound" soundID="GAM_robotWalk1" loops="1" volume="mid" />
+			<event frame="225" type="sound" soundID="GAM_robotWalk1" loops="1" volume="mid" />
+			<event frame="240" type="sound" soundID="GAM_robotWalk1" loops="1" volume="mid" />
+			<event frame="255" type="sound" soundID="GAM_robotWalk1" loops="1" volume="min" />
+			<event frame="270" type="sound" soundID="GAM_robotWalk1" loops="1" volume="min" />
+			<event frame="285" type="sound" soundID="GAM_robotWalk1" loops="1" volume="min" />
+			<event frame="313" type="sound" soundID="GAM_destroy1" loops="1" volume="max" />
+			<event frame="328" type="sound" soundID="truck11Up" loops="1" volume="min" />
+			<event frame="332" type="sound" soundID="truck11Up" loops="1" volume="min" />
+			<event frame="336" type="sound" soundID="truck11Up" loops="1" volume="max" />
+			<event frame="340" type="sound" soundID="truck11Up" loops="1" volume="max" />
+			<event frame="353" type="sound" soundID="stop" loops="-1" volume="min" />
+			<event frame="354" type="sound" soundID="stop" loops="-1" volume="max" />
+			<event frame="356" type="sound" soundID="GAM_robotDestroy" loops="1" volume="max" />
+			<event frame="357" type="sound" soundID="GAM_droneDie1" loops="1" volume="max" />
+			<event frame="358" type="sound" soundID="GAM_droneDie1" loops="1" volume="max" />
+			<event frame="375" type="sound" soundID="GAM_destroy2" loops="1" volume="max" />
+			<event frame="402" type="sound" soundID="GAM_speechSinister" loops="1" volume="max" />
+			<event frame="401" type="sound" soundID="GAM_lose" loops="1" volume="max" />
+			<event frame="425" type="speech" x="330" y="145">Ahahahaha!! At last - The Rise of the Robot! LEGO City is MINE!!!</event>
+			<event frame="436" type="sound" soundID="jetUp" loops="1" volume="mid" />
+		</t2>
+		<t3>
+			<event frame="2" type="sound" soundID="MUS_movie_city" loops="-1" volume="min" />
+			<event frame="1" type="sound" soundID="GAM_ambUrban" loops="-1" volume="mid" />
+			<event frame="11" type="speech" tone="friendly" x="100" y="220">Good job worker - Now that is what I call a Crane!</event>
+		</t3>
+		<t4>
+			<event frame="2" type="sound" soundID="MUS_movie_racers" loops="-1" volume="mid" />
+			<event frame="3" type="sound" soundID="sportsMin" loops="-1" volume="max" />
+			<event frame="81" type="sound" soundID="stop" loops="-1" volume="max" />
+			<event frame="82" type="sound" soundID="sports11Up" loops="1" volume="mid" />
+			<event frame="121" type="sound" soundID="sports22Up" loops="1" volume="mid" />
+			<event frame="141" type="sound" soundID="sports21Down" loops="1" volume="mid" />
+			<event frame="139" type="sound" soundID="GAM_destroy1" loops="1" volume="max" />
+			<event frame="159" type="sound" soundID="jetMax" loops="1" volume="max" />
+			<event frame="204" type="sound" soundID="stop" loops="-1" volume="max" />
+			<event frame="205" type="sound" soundID="GAM_robotDestroy" loops="1" volume="max" />
+			<event frame="206" type="sound" soundID="sports2Max" loops="1" volume="min" />
+			<event frame="218" type="sound" soundID="stop" loops="-1" volume="min" />
+			<event frame="217" type="sound" soundID="GAM_deflect5" loops="1" volume="max" />
+			<event frame="222" type="sound" soundID="sports21Down" loops="1" volume="mid" />
+			<event frame="236" type="sound" soundID="sports21Down" loops="1" volume="mid" />
+			<event frame="252" type="sound" soundID="GAM_robotWalk4" loops="1" volume="mid" />
+			<event frame="254" type="sound" soundID="GAM_robotWalk4" loops="1" volume="mid" />
+			<event frame="255" type="sound" soundID="GAM_skid" loops="1" volume="max" />
+			<event frame="293" type="sound" soundID="stop" loops="-1" volume="max" />
+			<event frame="294" type="sound" soundID="GAM_deflect5" loops="1" volume="mid" />
+		</t4>
+		<t5>
+			<event frame="2" type="sound" soundID="MUS_movie_racers" loops="-1" volume="min" />
+			<event frame="4" type="sound" soundID="sports11Up" loops="1" volume="mid" />
+			<event frame="9" type="sound" soundID="GAM_robotWalk3" loops="1" volume="min" />
+			<event frame="19" type="sound" soundID="GAM_robotWalk3" loops="1" volume="min" />
+			<event frame="29" type="sound" soundID="GAM_robotWalk3" loops="1" volume="mid" />
+			<event frame="39" type="sound" soundID="GAM_destroy" loops="1" volume="mid" />
+			<event frame="40" type="sound" soundID="sports11Down" loops="1" volume="mid" />
+			<event frame="49" type="sound" soundID="GAM_robotWalk3" loops="1" volume="max" />
+			<event frame="59" type="sound" soundID="GAM_robotWalk3" loops="1" volume="max" />
+			<event frame="69" type="sound" soundID="GAM_robotWalk3" loops="1" volume="max" />
+			<event frame="79" type="sound" soundID="stop" loops="-1" volume="mid" />
+			<event frame="80" type="sound" soundID="GAM_droneDie1" loops="1" volume="max" />
+			<event frame="111" type="sound" soundID="GAM_robotDestroy" loops="1" volume="max" />
+			<event frame="186" type="sound" soundID="jetUp" loops="1" volume="mid" />
+			<event frame="185" type="sound" soundID="jetMin" loops="-1" volume="mid" />
+			<event frame="259" type="sound" soundID="jetUp" loops="1" volume="mid" />
+			<event frame="284" type="sound" soundID="GAM_speechSinister" loops="1" volume="mid" />
+			<event frame="285" type="speech" x="290" y="150">Curses! I will return, LEGO City! The Robot will rise again!!!</event>
+			<event frame="300" type="sound" soundID="jetUp" loops="1" volume="max" />
+			<event frame="320" type="sound" soundID="stop" loops="-1" volume="mid" />
+			<event frame="300" type="sound" soundID="stop" volume="min" />
+			<event frame="301" type="sound" soundID="MUS_movie_city" loops="-1" volume="min" />
+			<event frame="321" type="sound" soundID="truckMin" loops="1" volume="max" />		
+			<event frame="330" type="speech" tone="serious" x="430" y="270">Fill that hole up - bury that robot for good!</event>
+			<event frame="349" type="sound" soundID="truckMax" loops="1" volume="max" />
+			<event frame="441" type="sound" soundID="stop" volume="max" />
+			<event frame="395" type="sound" soundID="GAM_ambUrban" loops="-1" volume="min" />
+			<event frame="467" type="news" h1="Rust in Peace" h2="City wide celebration as Rampaging Robot defeated" />
+			<event frame="482" type="speech" tone="friendly" x="471" y="150">Seymour Brickstein here - and the crowd is going wild for our brave construction workers...</event>
+			<event frame="483" type="speech" tone="friendly" x="471" y="150">... who last night, buried the Robot under a ton of gravel! </event>
+			<event frame="486" type="sound" soundID="stop" volume="min" />
+			<event frame="487" type="sound" soundID="MUS_movie_agents" loops="-1" volume="max" />
+			<event frame="563" type="speech" tone="serious" x="180" y="200">Nice job Agents! Looks like our work here is done...</event>
+			<event frame="565" type="speech" tone="female" x="470" y="220">Mission accomplished.  We need a holiday!</event>
+			<event frame="571" type="sound" soundID="chopperUp" loops="1" volume="mid" />
+			<event frame="577" type="sound" soundID="chopperMin" loops="-1" volume="mid" />
+			<event frame="583" type="sound" soundID="chopperMin" loops="-1" volume="min" />
+			<event frame="665" type="sound" soundID="stop" volume="mid" />
+		</t5>
+	</movieEvents>
+</root>

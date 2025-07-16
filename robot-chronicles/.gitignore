@@ -1,0 +1,10 @@
+# https://dart.dev/guides/libraries/private-files
+# Created by `dart pub`
+.dart_tool/
+
+# actionscript contains interesting snippets, but
+# actionscript/scripts contains the entire Flash decompiled code
+actionscript/scripts
+
+# Contains OAuth secrets
+lib/src/secrets.dart

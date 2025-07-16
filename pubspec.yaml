@@ -1,0 +1,13 @@
+name: mln_workspace
+
+environment:
+  sdk: ^3.7.0
+
+workspace:
+  - construction
+  - mln_shared
+  - robot-chronicles
+  - xor.dart
+
+dev_dependencies:
+  very_good_analysis: ^8.0.0

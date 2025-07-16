@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+  <resourceDirectory/>
+  <texturl>dialouge.xml</texturl>
+  <legolink/>
+  <carrierService>
+    <serviceUrl/>
+    <localeId>1033</localeId>
+    <awardCategory>SW Game 09</awardCategory>
+    <awardCodes>
+      <code1>Cross1</code1>
+      <code2>Cross2</code2>
+      <code3>Cross3</code3>
+      <code4>Cross4</code4>
+      <code5>Cross5</code5>
+      <code6>Cross6</code6>
+      <code7>Cross7</code7>
+    </awardCodes>
+  </carrierService>
+</config>
