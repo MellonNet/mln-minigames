@@ -7,7 +7,7 @@ import "utils.dart";
 
 class Mln {
   static const baseUrl = "http://localhost:8000";
-  static const rewardUrl = "$baseUrl/api/reward";
+  static const rewardUrl = "$baseUrl/api/award";
 
   final String encryptionKey;
   final Set<int> validAwards;
@@ -21,12 +21,12 @@ class Mln {
 
   Future<bool> grantReward({
     required AccessToken accessToken,
-    required int level,
+    required int award,
   }) async {
     final body = {
       "api_token": oauth.apiToken,
       "access_token": accessToken.value,
-      "level": level,
+      "award": award,
     };
     final response = await safelyAsync(() => post(
       Uri.parse(rewardUrl),

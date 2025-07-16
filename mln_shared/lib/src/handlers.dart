@@ -17,12 +17,12 @@ Handler loginHandler(Mln mln) => (Request request) async {
   if (accessToken == null) {
     return Response.internalServerError(body: "Could not sign in");
   }
-  final pendingReward = mln.pendingAwards[sessionID];
-  print("Found pending reward: $pendingReward");
-  if (pendingReward != null) {
+  final pendingAward = mln.pendingAwards[sessionID];
+  print("Found pending award: $pendingAward");
+  if (pendingAward != null) {
     final success = await mln.grantReward(
       accessToken: accessToken,
-      level: pendingReward,
+      award: pendingAward,
     );
     if (success) mln.pendingAwards.remove(sessionID);
   }
@@ -52,7 +52,7 @@ Handler awardHandler(Mln mln) => (Request request) async {
     );
     return Response.ok(encrypted);
   } else {
-    await safelyAsync(() => mln.grantReward(accessToken: accessToken, level: awardID));
+    await safelyAsync(() => mln.grantReward(accessToken: accessToken, award: awardID));
     return Response.ok(null);
   }
 };
