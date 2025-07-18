@@ -35,7 +35,7 @@ class JsonClient {
     return response?.ifOk;
   }
 
-  Future<Response?> post(String path, Json body) async {
+  Future<Response?> post(String path, [Json? body]) async {
     final uri = buildUri(path);
     final bodyString = jsonEncode(body);
     final response = await _tryAsync(() => _client.post(uri, headers: authHeaders, body: bodyString));
@@ -54,7 +54,7 @@ class JsonClient {
     return Json.from(jsonDecode(response.body));
   }
 
-  Future<Json?> postJson(String path, Json body) async {
+  Future<Json?> postJson(String path, [Json? body]) async {
     final response = await post(path, body);
     if (response == null) return null;
     return Json.from(jsonDecode(response.body));

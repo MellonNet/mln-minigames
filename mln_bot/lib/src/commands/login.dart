@@ -13,5 +13,5 @@ Future<void> login(ChatContext context) async {
     return;
   }
   final loginUrl = server.oauth.getLoginUri(context.sessionID);
-  await context.respondText("Here's a sign-in link!\n$loginUrl");
+  await context.respondLink("Sign in with My Lego Network", loginUrl);
 }

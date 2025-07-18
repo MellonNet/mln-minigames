@@ -26,4 +26,10 @@ class MlnClient {
     if (json == null) return null;
     return User.fromJson(json);
   }
+
+  Future<String?> befriend(String username) async {
+    final response = await _client.post("/users/$username/friendship");
+    if (response == null) return null;
+    return "Sent a friend request to $username";
+  }
 }

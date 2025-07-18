@@ -4,3 +4,6 @@
 
 # Contains sensitive secrets
 lib/secrets.dart
+
+sessions.txt
+snowflakes.txt

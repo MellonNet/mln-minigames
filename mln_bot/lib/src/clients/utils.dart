@@ -21,8 +21,10 @@ extension ResponseUtils on Response {
     ? this : throw ApiException(this);
 }
 
-extension MiscUtils<T> on Future<T?> {
-  Future<String> handle(String Function(T) describe) async {
+extension MiscUtils<T extends Object> on Future<T?> {
+  static String _toString(Object x) => x.toString();
+
+  Future<String> handle([String Function(T) describe = _toString]) async {
     try {
       final result = await this;
       if (result == null) return "An error occurred";
