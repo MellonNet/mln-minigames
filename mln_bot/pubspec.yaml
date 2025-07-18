@@ -1,0 +1,21 @@
+name: mln_bot
+description: A sample command-line application.
+version: 1.0.0
+# repository: https://github.com/my_org/my_repo
+
+environment:
+  sdk: ^3.7.0
+
+resolution: workspace
+dependencies:
+  http: ^1.4.0
+  http_status_code: ^0.0.2
+  mln_shared: ^1.0.0
+  nyxx: ^6.7.0
+  nyxx_commands: ^6.0.4
+  shelf: ^1.4.2
+  shelf_router: ^1.1.4
+
+dev_dependencies:
+  lints: ^5.0.0
+  test: ^1.24.0

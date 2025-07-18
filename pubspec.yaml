@@ -5,6 +5,7 @@ environment:
 
 workspace:
   - construction
+  - mln_bot
   - mln_shared
   - robot-chronicles
   - xor.dart
