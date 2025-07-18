@@ -1,8 +1,9 @@
 import "package:mln_bot/data.dart";
 import "package:mln_bot/secrets.dart";
+import "package:mln_bot/server.dart";
 import "package:mln_shared/mln_shared.dart";
 
-import "json_client.dart";
+import "json.dart";
 import "utils.dart";
 
 class MlnClient {
@@ -31,5 +32,28 @@ class MlnClient {
     final response = await _client.post("/users/$username/friendship");
     if (response == null) return null;
     return "Sent a friend request to $username";
+  }
+
+  Future<WebhookID?> registerMailWebhook() async {
+    final body = {
+      "webhook_url": MlnServer.messagesWebhookUrl,
+      "mln_secret": mlnWebhookApiToken,
+      "type": "messages",
+    };
+    final response = await _client.postJson("/webhooks", body);
+    if (response == null) return null;
+    return WebhookID(response["webhook_id"]);
+  }
+
+  Future<bool> deleteWebhook(WebhookID id) async {
+    final response = await tryAsync(() => _client.delete("/webhooks/$id"));
+    return response != null;
+  }
+
+  Future<bool> reply(int messageID, int replyID) async {
+    final body = {"body_id": replyID};
+    final response = await _client.post("/messages/$messageID/reply", body);
+    if (response == null) return false;
+    return true;
   }
 }

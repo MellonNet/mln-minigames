@@ -1,3 +1,4 @@
-export "src/clients/json_client.dart";
-export "src/clients/mln_client.dart";
+export "src/clients/discord.dart";
+export "src/clients/json.dart";
+export "src/clients/mln.dart";
 export "src/clients/utils.dart";

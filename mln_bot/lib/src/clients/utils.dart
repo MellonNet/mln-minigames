@@ -21,7 +21,7 @@ extension ResponseUtils on Response {
     ? this : throw ApiException(this);
 }
 
-extension MiscUtils<T extends Object> on Future<T?> {
+extension F1Utils<T extends Object> on Future<T?> {
   static String _toString(Object x) => x.toString();
 
   Future<String> handle([String Function(T) describe = _toString]) async {
@@ -31,6 +31,17 @@ extension MiscUtils<T extends Object> on Future<T?> {
       return describe(result);
     } on ApiException catch (error) {
       return error.toString();
+    }
+  }
+}
+
+extension F2Utils on Future<bool> {
+  Future<bool> succeeds() async {
+    try {
+      final result = await this;
+      return result;
+    } on ApiException {
+      return false;
     }
   }
 }

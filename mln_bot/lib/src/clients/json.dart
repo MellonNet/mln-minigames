@@ -17,34 +17,24 @@ class JsonClient {
 
   void dispose() => _client.close();
 
-  Future<T?> _tryAsync<T>(Future<T> Function() func) async {
-    try {
-      return await func();
-    // Catch all errors
-    // ignore: avoid_catches_without_on_clauses
-    } catch (_) {
-      return null;
-    }
-  }
-
   Uri buildUri(String path) => Uri.parse("$urlBase$path");
 
   Future<Response?> get(String path) async {
     final uri = buildUri(path);
-    final response = await _tryAsync(() => _client.get(uri, headers: authHeaders));
+    final response = await tryAsync(() => _client.get(uri, headers: authHeaders));
     return response?.ifOk;
   }
 
   Future<Response?> post(String path, [Json? body]) async {
     final uri = buildUri(path);
     final bodyString = jsonEncode(body);
-    final response = await _tryAsync(() => _client.post(uri, headers: authHeaders, body: bodyString));
+    final response = await tryAsync(() => _client.post(uri, headers: authHeaders, body: bodyString));
     return response?.ifOk;
   }
 
   Future<Response?> delete(String path) async {
     final uri = buildUri(path);
-    final response = await _tryAsync(() => _client.delete(uri, headers: authHeaders));
+    final response = await tryAsync(() => _client.delete(uri, headers: authHeaders));
     return response?.ifOk;
   }
 

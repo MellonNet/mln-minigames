@@ -5,5 +5,5 @@
 # Contains sensitive secrets
 lib/secrets.dart
 
-sessions.txt
-snowflakes.txt
+# Keeps server data, sign-in sessions and such
+cache/

@@ -9,14 +9,18 @@ import "package:mln_bot/data.dart";
 import "server.dart";
 
 class Cache {
-  static final sessionsFile = File("sessions.txt");
-  static final snowflakesFile = File("snowflakes.txt");
+  static final sessionsFile = File("cache/sessions.txt");
+  static final snowflakesFile = File("cache/snowflakes.txt");
+  static final mailWebhooksFile = File("cache/webhooks_mail.txt");
 
   Map<SessionID, AccessToken> get sessionToToken =>
     server.oauth.sessionToTokens;
 
+  Map<AccessToken, SessionID> get tokenToSession =>
+    server.oauth.tokenToSession;
+
   final sessionToDiscord = <SessionID, Snowflake>{};
-  final sessionToLoginMessage = <SessionID, Message>{};
+  final mailWebhooks = <AccessToken, WebhookID>{};
 
   Future<void> saveAccessTokens() => _writeCache(sessionsFile, {
     for (final (sessionID, accessToken) in sessionToToken.records)
@@ -28,6 +32,11 @@ class Cache {
       sessionID.value: snowflake.value,
   });
 
+  Future<void> saveMailWebhooks() => _writeCache(mailWebhooksFile, {
+    for (final (accessToken, webhookID) in mailWebhooks.records)
+      accessToken.value: webhookID.id,
+  });
+
   static Future<void> _writeCache(File file, Json data) async {
     final contents = jsonEncode(data);
     await file.writeAsString(contents);
@@ -37,8 +46,11 @@ class Cache {
     if (sessionsFile.existsSync()) {
       final contents = await sessionsFile.readAsString();
       final data = jsonDecode(contents) as Json;
-      for (final (sessionID, accessToken) in data.cast<String, String>().records) {
-        sessionToToken[SessionID(sessionID)] = AccessToken(accessToken);
+      for (final (rawSessionID, rawAccessToken) in data.cast<String, String>().records) {
+        final sessionID = SessionID(rawSessionID);
+        final accessToken = AccessToken(rawAccessToken);
+        sessionToToken[sessionID] = accessToken;
+        tokenToSession[accessToken] = sessionID;
       }
     }
 
@@ -47,6 +59,14 @@ class Cache {
       final data = jsonDecode(contents) as Json;
       for (final (sessionID, snowflake) in data.cast<String, int>().records) {
         sessionToDiscord[SessionID(sessionID)] = Snowflake(snowflake);
+      }
+    }
+
+    if (mailWebhooksFile.existsSync()) {
+      final contents = await mailWebhooksFile.readAsString();
+      final data = jsonDecode(contents) as Json;
+      for (final (accessToken, webhookID) in data.cast<String, int>().records) {
+        mailWebhooks[AccessToken(accessToken)] = WebhookID(webhookID);
       }
     }
   }

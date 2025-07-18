@@ -17,6 +17,7 @@ class OAuth {
   static const tokenUrl = "$mlnBaseUrl/oauth/token";
 
   final sessionToTokens = <SessionID, AccessToken>{};
+  final tokenToSession = <AccessToken, SessionID>{};
   final accessTokenToUsername = <AccessToken, String>{};
 
   final String apiToken;
@@ -74,6 +75,7 @@ class OAuth {
     final accessToken = AccessToken(data["access_token"] as String);
     final username = data["username"];
     accessTokenToUsername[accessToken] = username;
+    tokenToSession[accessToken] = sessionID;
     sessionToTokens[sessionID] = accessToken;
     loginCallback?.call(sessionID, accessToken);
     return accessToken;
