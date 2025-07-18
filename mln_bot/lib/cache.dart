@@ -16,6 +16,7 @@ class Cache {
     server.oauth.sessionToTokens;
 
   final sessionToDiscord = <SessionID, Snowflake>{};
+  final sessionToLoginMessage = <SessionID, Message>{};
 
   Future<void> saveAccessTokens() => _writeCache(sessionsFile, {
     for (final (sessionID, accessToken) in sessionToToken.records)
@@ -42,7 +43,7 @@ class Cache {
     }
 
     if (snowflakesFile.existsSync()) {
-      final contents = await sessionsFile.readAsString();
+      final contents = await snowflakesFile.readAsString();
       final data = jsonDecode(contents) as Json;
       for (final (sessionID, snowflake) in data.cast<String, int>().records) {
         sessionToDiscord[SessionID(sessionID)] = Snowflake(snowflake);
@@ -52,8 +53,10 @@ class Cache {
 
   SessionID discordToMln(Snowflake snowflake) {
     final sessionID = SessionID(snowflake.hashCode.toString());
-    sessionToDiscord[sessionID] = snowflake;
-    unawaited(saveSnowflakes());
+    if (!sessionToDiscord.containsKey(sessionID)) {
+      sessionToDiscord[sessionID] = snowflake;
+      unawaited(saveSnowflakes());
+    }
     return sessionID;
   }
 }

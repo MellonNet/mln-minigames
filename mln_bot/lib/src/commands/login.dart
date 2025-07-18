@@ -4,7 +4,11 @@ import "package:mln_bot/server.dart";
 
 import "utils.dart";
 
-final loginCommand = ChatCommand("login", "Associates your Discord user with MLN", login);
+final loginCommand = ChatCommand(
+  "login",
+  "Associates your Discord user with MLN",
+  login,
+);
 
 Future<void> login(ChatContext context) async {
   final accessToken = context.accessToken;

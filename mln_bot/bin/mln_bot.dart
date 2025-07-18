@@ -21,9 +21,10 @@ void main() async {
     ),
   );
 
-  commands.addCommand(userQuery);
-  commands.addCommand(loginCommand);
   commands.addCommand(befriendCommand);
+  commands.addCommand(loginCommand);
+  commands.addCommand(logoutCommand);
+  commands.addCommand(userQuery);
 
   // Connect the client
   final client = await Nyxx.connectGateway(

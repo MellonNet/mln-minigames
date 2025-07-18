@@ -12,16 +12,16 @@ class MlnServer {
   static const loginPath = "/api/login";
   static const loginUrl = "http://$host$loginPath";
 
-  final oauth = OAuth(
+  final OAuth oauth = OAuth(
     apiToken: mlnApiToken,
     clientID: mlnClientID,
     loginUrl: loginUrl,
-    loginCallback: (_, _) => cache.saveAccessTokens,
+    loginCallback: (sessionID, accessToken) async {
+      await cache.saveAccessTokens();
+    }
   );
 
   HttpServer? _server;
-
-  Uri getLoginUrl() => oauth.getLoginUri(OAuth.getSessionID());
 
   void dispose() => _server?.close();
 

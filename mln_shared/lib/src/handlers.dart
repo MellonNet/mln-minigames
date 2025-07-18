@@ -16,7 +16,6 @@ Future<SessionID> _handleOAuth(Request request, OAuth oauth) async {
     throw Response.badRequest(body: "Missing session_id or auth_code, please try again");
   }
   final accessToken = await safelyAsync(() => oauth.login(sessionID, authCode));
-  print("Signed user in with access token: $accessToken");
   if (accessToken == null) {
     throw Response.internalServerError(body: "Could not sign in");
   }

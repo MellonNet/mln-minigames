@@ -8,7 +8,7 @@ import "package:nyxx_commands/nyxx_commands.dart";
 extension ChatUtils on ChatContext {
   Future<void> respondText(String text) => respond(MessageBuilder(content: text));
 
-  Future<void> respondLink(String label, Uri uri) => respond(
+  Future<Message> respondLink(String label, Uri uri) => respond(
     MessageBuilder(
       flags: MessageFlags.isComponentsV2,
       components: [
@@ -27,7 +27,7 @@ extension ChatUtils on ChatContext {
   Future<MlnClient?> getClient() async {
     final accessToken = this.accessToken;
     if (accessToken == null) {
-      await respondText("You need to sign in first. DM me with the /login command to get a sign-in link!");
+      await respondText("You need to sign in first. Use the /login command to get a sign-in link!");
       return null;
     } else {
       return MlnClient(accessToken);
