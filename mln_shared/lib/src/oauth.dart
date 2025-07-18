@@ -10,6 +10,8 @@ extension type AccessToken(String value) { }
 
 const mlnBaseUrl = "http://localhost:8000";
 
+typedef LoginCallback = void Function(SessionID, AccessToken);
+
 class OAuth {
   static const oauthUrl = "$mlnBaseUrl/oauth";
   static const tokenUrl = "$mlnBaseUrl/oauth/token";
@@ -20,10 +22,12 @@ class OAuth {
   final String apiToken;
   final String clientID;
   final String loginUrl;
+  final LoginCallback? loginCallback;
   OAuth({
     required this.apiToken,
     required this.clientID,
     required this.loginUrl,
+    this.loginCallback,
   });
 
   static SessionID getSessionID() => SessionID(const UuidV4().generate());
@@ -71,6 +75,7 @@ class OAuth {
     final username = data["username"];
     accessTokenToUsername[accessToken] = username;
     sessionToTokens[sessionID] = accessToken;
+    loginCallback?.call(sessionID, accessToken);
     return accessToken;
   }
 }

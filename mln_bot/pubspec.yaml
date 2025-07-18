@@ -6,13 +6,15 @@ version: 1.0.0
 environment:
   sdk: ^3.7.0
 
-# Add regular dependencies here.
+resolution: workspace
 dependencies:
   http: ^1.4.0
   http_status_code: ^0.0.2
+  mln_shared: ^1.0.0
   nyxx: ^6.7.0
   nyxx_commands: ^6.0.4
-  # path: ^1.8.0
+  shelf: ^1.4.2
+  shelf_router: ^1.1.4
 
 dev_dependencies:
   lints: ^5.0.0

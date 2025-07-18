@@ -1,5 +1,7 @@
-import 'package:nyxx/nyxx.dart';
-import 'package:nyxx_commands/nyxx_commands.dart';
+import "package:mln_bot/clients.dart";
+import "package:nyxx_commands/nyxx_commands.dart";
+
+import "utils.dart";
 
 final userQuery = ChatCommand(
   "whois",
@@ -7,15 +9,13 @@ final userQuery = ChatCommand(
   userQueryAction,
 );
 
-extension on ChatContext {
-  Future<void> respondText(String text) => respond(MessageBuilder(content: text));
-}
-
 Future<void> userQueryAction(ChatContext context, [String? username]) async {
+  final client = await context.getClient();
+  if (client == null) return;
   if (username == null) {
     await context.respondText("You gotta tell me who you want to know about");
     return;
   }
-  final builder = MessageBuilder(content: "How should I know who $username is?");
-  await context.respond(builder);
+  final description = await client.getUser(username).handle((user) => user.describe());
+  await context.respondText(description);
 }

@@ -1,5 +1,5 @@
-import 'package:http/http.dart';
-import 'package:http_status_code/http_status_code.dart';
+import "package:http/http.dart";
+import "package:http_status_code/http_status_code.dart";
 
 typedef MlnHeaders = Map<String, String>;
 
@@ -19,4 +19,16 @@ class ApiException implements Exception {
 extension ResponseUtils on Response {
   Response get ifOk => statusCode >= 200 && statusCode < 300
     ? this : throw ApiException(this);
+}
+
+extension MiscUtils<T> on Future<T?> {
+  Future<String> handle(String Function(T) describe) async {
+    try {
+      final result = await this;
+      if (result == null) return "An error occurred";
+      return describe(result);
+    } on ApiException catch (error) {
+      return error.toString();
+    }
+  }
 }

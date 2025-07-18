@@ -1,3 +1,6 @@
+// We are going to throw [Response]s that represent errors
+// ignore_for_file: only_throw_errors
+
 import "package:shelf/shelf.dart";
 
 import "mln.dart";
@@ -5,18 +8,41 @@ import "oauth.dart";
 import "shelf.dart";
 import "utils.dart";
 
-Handler loginHandler(Mln mln) => (Request request) async {
+Future<SessionID> _handleOAuth(Request request, OAuth oauth) async {
   final query = request.url.queryParameters;
   final sessionID = query["session_id"] as SessionID?;
   final authCode = query["auth_code"];
   if (sessionID == null || authCode == null) {
-    return Response.badRequest(body: "Missing session_id or auth_code, please try again");
+    throw Response.badRequest(body: "Missing session_id or auth_code, please try again");
   }
-  final accessToken = await safelyAsync(() => mln.oauth.login(sessionID, authCode));
+  final accessToken = await safelyAsync(() => oauth.login(sessionID, authCode));
   print("Signed user in with access token: $accessToken");
   if (accessToken == null) {
-    return Response.internalServerError(body: "Could not sign in");
+    throw Response.internalServerError(body: "Could not sign in");
   }
+  return sessionID;
+}
+
+Handler oauthHandler(OAuth oauth) => (Request request) async {
+  try {
+    await _handleOAuth(request, oauth);
+  } on Response catch (response) {
+    return response;
+  }
+  return Response.ok("Authenticated. Please return to Discord");
+};
+
+Handler loginHandler(Mln mln) => (Request request) async {
+  final AccessToken accessToken;
+  final SessionID sessionID;
+
+  try {
+    sessionID = await _handleOAuth(request, mln.oauth);
+    accessToken = mln.oauth.sessionToTokens[sessionID]!;
+  } on Response catch (response) {
+    return response;
+  }
+
   final pendingAward = mln.pendingAwards[sessionID];
   print("Found pending award: $pendingAward");
   if (pendingAward != null) {

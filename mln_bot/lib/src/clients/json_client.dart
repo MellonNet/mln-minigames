@@ -8,10 +8,10 @@ import "utils.dart";
 class JsonClient {
   final _client = Client();
 
-  final String host;
+  final String urlBase;
   final MlnHeaders authHeaders;
   JsonClient({
-    required this.host,
+    required this.urlBase,
     required this.authHeaders,
   });
 
@@ -20,12 +20,14 @@ class JsonClient {
   Future<T?> _tryAsync<T>(Future<T> Function() func) async {
     try {
       return await func();
+    // Catch all errors
+    // ignore: avoid_catches_without_on_clauses
     } catch (_) {
       return null;
     }
   }
 
-  Uri buildUri(String path) => Uri.parse("$host/$path");
+  Uri buildUri(String path) => Uri.parse("$urlBase$path");
 
   Future<Response?> get(String path) async {
     final uri = buildUri(path);
