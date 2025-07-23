@@ -9,8 +9,8 @@ import "package:robot_chronicles/robot_chronicles.dart";
 void main() async {
   final app = Router();
   app.get("/", (_) => Response.found("/TheRobotChronicles.swf"));
-  app.post("/undefined/ExecuteAwardgiver", awardHandler(mln));
-  app.get("/api/login", loginHandler(mln));
+  app.post("/undefined/ExecuteAwardgiver", minigameAwardHandler(robotChronicles));
+  app.get("/api/login", minigameLoginHandler(robotChronicles));
 
   final staticHandler = createStaticHandler("static");
   final handler = buildServer(apiHandler: app.call, staticHandler: staticHandler);
