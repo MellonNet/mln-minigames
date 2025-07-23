@@ -1,7 +1,8 @@
 import "package:mln_bot/cache.dart";
-import "package:mln_bot/clients.dart";
 import "package:mln_bot/commands.dart";
 import "package:mln_bot/secrets.dart";
+import "package:mln_shared/mln_shared.dart";
+
 import "package:nyxx/nyxx.dart";
 import "package:nyxx_commands/nyxx_commands.dart";
 
@@ -71,10 +72,10 @@ class DiscordClient {
       if (accessToken == null) {
         await followUp(event.interaction, "You're not signed in");
       } else {
-        final client = MlnClient(accessToken);
+        final client = MlnClient(accessToken, mlnApiToken);
         final replyID = int.parse(data.values!.first);
-        final success = await client.reply(messageID, replyID).succeeds();
-        if (success) {
+        final success = await client.reply(messageID, replyID).ignoreApiErrors();
+        if (success ?? false) {
           await event.interaction.message!.react(ReactionBuilder(name: "👍", id: null));
           await followUp(event.interaction, "Reply sent");
         } else {

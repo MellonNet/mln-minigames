@@ -1,8 +1,8 @@
-import "package:mln_bot/clients.dart";
+import "package:mln_shared/utils.dart";
+import "package:mln_shared/clients.dart";
 
 import "badge.dart";
 import "friendship.dart";
-import "utils.dart";
 
 class User {
   final String username;

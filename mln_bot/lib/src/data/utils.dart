@@ -1,17 +1,38 @@
-export "package:mln_shared/mln_shared.dart" show Json;
+import "package:nyxx/nyxx.dart" hide Attachment, Message;
 
-extension type WebhookID(int id) { }
+import "package:mln_shared/data.dart";
+export "package:mln_shared/data.dart";
 
-extension MapUtils<K, V> on Map<K, V> {
-  Iterable<(K, V)> get records => entries.map((e) => (e.key, e.value));
-}
-
-Future<T?> tryAsync<T>(Future<T> Function() func) async {
-  try {
-    return await func().timeout(const Duration(seconds: 1));
-  // Catch all errors
-  // ignore: avoid_catches_without_on_clauses
-  } catch (_) {
-    return null;
+extension MessageUtils on Message {
+  MessageBuilder describe() {
+    final buffer = StringBuffer();
+    buffer.writeln("You got a message from $senderUsername!");
+    buffer.writeln("> ### ${body.subject}");
+    buffer.writeln("> ${body.text}");
+    if (attachments.isNotEmpty) {
+      buffer.writeln();
+      buffer.writeln("The message has the following attachments: ");
+      for (final attachment in attachments) {
+        buffer.writeln("- ${attachment.name} x${attachment.qty}");
+      }
+    }
+    return MessageBuilder(
+      flags: MessageFlags.isComponentsV2,
+      components: [
+        TextDisplayComponentBuilder(content: buffer.toString()),
+        if (replies.isNotEmpty) ActionRowBuilder(components: [
+          SelectMenuBuilder.stringSelect(
+            customId: "message_$id",
+            options: [
+              for (final reply in replies)
+                SelectMenuOptionBuilder(
+                  label: reply.shorthand,
+                  value: reply.id.toString(),
+                ),
+              ],
+            ),
+        ]),
+      ],
+    );
   }
 }

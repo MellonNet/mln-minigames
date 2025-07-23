@@ -1,10 +1,10 @@
-import "package:mln_bot/data.dart";
-import "package:mln_bot/secrets.dart";
-import "package:mln_bot/server.dart";
-import "package:mln_shared/mln_shared.dart";
+import "package:mln_shared/data.dart";
+import "package:mln_shared/utils.dart";
 
-import "json.dart";
-import "utils.dart";
+import "json_client.dart";
+import "oauth.dart";
+
+extension type WebhookID(int id) { }
 
 class MlnClient {
   static const host = "http://localhost:8000";
@@ -12,15 +12,27 @@ class MlnClient {
   final AccessToken accessToken;
   final JsonClient _client;
 
-  static MlnHeaders authHeaders(AccessToken accessToken) => {
+  static MlnHeaders authHeaders({
+    required AccessToken accessToken,
+    required String apiToken,
+  }) => {
     "Authorization": "Bearer $accessToken",
-    "Api-Token": mlnApiToken,
+    "Api-Token": apiToken,
   };
 
-  MlnClient(this.accessToken) :
-    _client = JsonClient(urlBase: "$host/api", authHeaders: authHeaders(accessToken));
+  MlnClient(this.accessToken, String apiToken) :
+    _client = JsonClient(
+      urlBase: "$host/api",
+      authHeaders: authHeaders(accessToken: accessToken, apiToken: apiToken),
+    );
 
   void dispose() => _client.dispose();
+
+  Future<bool> grantAward(int award) async {
+    final body = { "award": award };
+    final response = await _client.post("/award", body).ignoreApiErrors();
+    return response != null;
+  }
 
   Future<User?> getUser(String username) async {
     final json = await _client.getJson("/users/$username");
@@ -34,10 +46,10 @@ class MlnClient {
     return "Sent a friend request to $username";
   }
 
-  Future<WebhookID?> registerMailWebhook() async {
+  Future<WebhookID?> registerMailWebhook(String webhookUrl, String webhookSecret) async {
     final body = {
-      "webhook_url": MlnServer.messagesWebhookUrl,
-      "mln_secret": mlnWebhookApiToken,
+      "webhook_url": webhookUrl,
+      "mln_secret": webhookSecret,
       "type": "messages",
     };
     final response = await _client.postJson("/webhooks", body);
@@ -46,7 +58,7 @@ class MlnClient {
   }
 
   Future<bool> deleteWebhook(WebhookID id) async {
-    final response = await tryAsync(() => _client.delete("/webhooks/$id"));
+    final response = await _client.delete("/webhooks/$id").ignoreApiErrors();
     return response != null;
   }
 

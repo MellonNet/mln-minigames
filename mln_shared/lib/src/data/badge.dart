@@ -1,4 +1,4 @@
-import "utils.dart";
+import "package:mln_shared/utils.dart";
 
 class Badge {
   final int id;

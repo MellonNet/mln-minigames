@@ -9,8 +9,12 @@ const constructionBase = "http://localhost:7001";
 const constructionLoginUrl = "$constructionBase/api/login";
 const clientId = "cd6c1f57-72be-4b8f-8fb1-eb1889624e08";
 
-final oauth = OAuth(apiToken: apiToken, clientID: clientId, loginUrl: constructionLoginUrl);
-final mln = Mln(
+final oauth = OAuth(
+  apiToken: apiToken,
+  clientID: clientId,
+);
+
+final construction = MlnMinigame(
   oauth: oauth,
   encryptionKey: flashKey,
   validAwards: validAwards,
