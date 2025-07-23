@@ -17,9 +17,7 @@ Future<void> _subscribeMail(ChatContext context) async {
     await context.respondText("You've already subscribed to mail notifications.");
     return;
   }
-  webhookID = await tryAsync<WebhookID?>(
-    () => client.registerMailWebhook(MlnServer.messagesWebhookUrl, mlnWebhookApiToken),
-  );
+  webhookID = await client.registerMailWebhook(MlnServer.messagesWebhookUrl, mlnWebhookApiToken).ignoreApiErrors();
   if (webhookID == null) {
     await context.respondText("There was an issue. Please contact the developers and try again later");
     return;

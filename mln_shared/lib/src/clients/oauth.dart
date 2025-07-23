@@ -44,7 +44,7 @@ class OAuth {
       "api_token": apiToken,
       "auth_code": authCode,
     };
-    final data = await _client.postJson("/oauth/token", body).nullIfError();
+    final data = await _client.postJson("/oauth/token", body).ignoreApiErrors();
     if (data == null) return null;
     final accessToken = AccessToken(data["access_token"] as String);
     final username = data["username"];

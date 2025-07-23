@@ -14,16 +14,6 @@ String encrypt({
   required String source,
 }) => CipherXor.xorToBase64(source, key);
 
-Future<T?> tryAsync<T>(Future<T> Function() func) async {
-  try {
-    return await func().timeout(const Duration(seconds: 3));
-  // Catch all errors
-  // ignore: avoid_catches_without_on_clauses
-  } catch (_) {
-    return null;
-  }
-}
-
 extension on String {
   String? get nullIfEmpty => isEmpty ? null : this;
 }
@@ -46,11 +36,21 @@ extension MapUtils<K, V> on Map<K, V> {
   Iterable<(K, V)> get records => entries.map((e) => (e.key, e.value));
 }
 
-extension ApiFutureUtils<T> on Future<T> {
-  Future<T?> nullIfError() async {
+extension FutureUtils<T> on Future<T> {
+  Future<T?> ignoreApiErrors() async {
     try {
       return await this;
     } on ApiException {
+      return null;
+    }
+  }
+
+  Future<T?> ignoreAllErrors() async {
+    try {
+      return await timeout(const Duration(seconds: 3));
+    // Catch all errors
+    // ignore: avoid_catches_without_on_clauses
+    } catch (_) {
       return null;
     }
   }

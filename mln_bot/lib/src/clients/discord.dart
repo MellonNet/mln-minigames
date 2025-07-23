@@ -74,7 +74,7 @@ class DiscordClient {
       } else {
         final client = MlnClient(accessToken, mlnApiToken);
         final replyID = int.parse(data.values!.first);
-        final success = await client.reply(messageID, replyID).nullIfError();
+        final success = await client.reply(messageID, replyID).ignoreApiErrors();
         if (success ?? false) {
           await event.interaction.message!.react(ReactionBuilder(name: "👍", id: null));
           await followUp(event.interaction, "Reply sent");

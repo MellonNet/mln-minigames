@@ -30,7 +30,7 @@ class MlnClient {
 
   Future<bool> grantAward(int award) async {
     final body = { "award": award };
-    final response = await tryAsync(() => _client.post("/award", body));
+    final response = await _client.post("/award", body).ignoreApiErrors();
     return response != null;
   }
 
@@ -58,7 +58,7 @@ class MlnClient {
   }
 
   Future<bool> deleteWebhook(WebhookID id) async {
-    final response = await tryAsync(() => _client.delete("/webhooks/$id"));
+    final response = await _client.delete("/webhooks/$id").ignoreApiErrors();
     return response != null;
   }
 
