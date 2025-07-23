@@ -1,3 +1,4 @@
+import "package:mln_bot/src/clients/utils.dart";
 import "package:nyxx_commands/nyxx_commands.dart";
 
 import "package:mln_bot/clients.dart";
