@@ -7,7 +7,8 @@ import "oauth.dart";
 extension type WebhookID(int id) { }
 
 class MlnClient {
-  static const host = "http://localhost:8000";
+  static const host = "https://mln.mellonnet.com";
+  // static const host = "http://localhost:8000";
 
   final AccessToken accessToken;
   final JsonClient _client;
