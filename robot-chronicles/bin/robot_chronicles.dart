@@ -14,6 +14,6 @@ void main() async {
 
   final staticHandler = createStaticHandler("static");
   final handler = buildServer(apiHandler: app.call, staticHandler: staticHandler);
-  final server = await io.serve(handler, "localhost", 7000);
+  final server = await io.serve(handler, "0.0.0.0", 9001);
   print("Serving on http://localhost:${server.port}");
 }

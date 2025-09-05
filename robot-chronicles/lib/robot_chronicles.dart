@@ -2,7 +2,7 @@ import "package:mln_shared/mln_shared.dart";
 
 import "secrets.dart";
 
-const validAwards = {1, 2, 3, 4, 5};
+const validAwards = {1, 2, 3, 4, 5, 7};
 const key = "13bv9cyruhnflksjhtf+p1q";
 
 // This is a public, non-secret identifier for the OAuth login page.
