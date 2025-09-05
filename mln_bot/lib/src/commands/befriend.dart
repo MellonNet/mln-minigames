@@ -1,4 +1,3 @@
-import "package:mln_bot/src/clients/utils.dart";
 import "package:nyxx_commands/nyxx_commands.dart";
 
 import "package:mln_bot/clients.dart";
@@ -13,6 +12,7 @@ Future<void> _befriend(ChatContext context, [String? username]) async {
     await context.respondText("You gotta tell me who to befriend");
     return;
   }
+  username = await client.checkUsername(username);
   final description = await client.befriend(username).handle();
   await context.respondText(description);
 }

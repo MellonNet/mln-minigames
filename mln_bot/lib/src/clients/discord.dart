@@ -34,11 +34,12 @@ class DiscordClient {
 
   static List<CommandRegisterable> commands = [
     befriendCommand,
+    randomUserCommand,
+    userQuery,
     loginCommand,
     logoutCommand,
     subscribeCommand,
     unsubscribeCommand,
-    userQuery,
   ];
 
   late final NyxxGateway _client;

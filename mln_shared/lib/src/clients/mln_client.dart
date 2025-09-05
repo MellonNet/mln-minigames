@@ -41,6 +41,18 @@ class MlnClient {
     return User.fromJson(json);
   }
 
+  Future<User?> whoAmI() async {
+    final json = await _client.getJson("/users/whoami");
+    if (json == null) return null;
+    return User.fromJson(json);
+  }
+
+  Future<User?> getRandomUser(int rank) async {
+    final json = await _client.getJson("/users/random?rank=$rank");
+    if (json == null) return null;
+    return User.fromJson(json);
+  }
+
   Future<String?> befriend(String username) async {
     final response = await _client.post("/users/$username/friendship");
     if (response == null) return null;

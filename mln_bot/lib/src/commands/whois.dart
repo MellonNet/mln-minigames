@@ -16,6 +16,10 @@ Future<void> userQueryAction(ChatContext context, [String? username]) async {
     await context.respondText("You gotta tell me who you want to know about");
     return;
   }
-  final description = await client.getUser(username).handle((user) => user.describe());
+
+  const prefix = "Sure! Sure! Here's what I know about";
+  username = await client.checkUsername(username);
+  final description = await client.getUser(username)
+    .handle((user) => user.describe(prefix), "User not found");
   await context.respondText(description);
 }

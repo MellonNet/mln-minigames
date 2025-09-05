@@ -22,6 +22,11 @@ extension ChatUtils on ChatContext {
     ),
   );
 
+  Future<void> respondLogin() async {
+    final loginUrl = server.oauth.getLoginUri(sessionID);
+    await respondLink("Sign in with My Lego Network", loginUrl);
+  }
+
   /// We hash the snowflake so as not to leak real Discord IDs.
   SessionID get sessionID => cache.discordToMln(user.id);
 
@@ -30,7 +35,7 @@ extension ChatUtils on ChatContext {
   Future<MlnClient?> getClient() async {
     final accessToken = this.accessToken;
     if (accessToken == null) {
-      await respondText("You need to sign in first. Use the /login command to get a sign-in link!");
+      await respondLogin();
       return null;
     } else {
       return MlnClient(accessToken, mlnApiToken);

@@ -3,10 +3,13 @@ import "package:mln_shared/mln_shared.dart";
 extension F1Utils<T extends Object> on Future<T?> {
   static String _toString(Object x) => x.toString();
 
-  Future<String> handle([String Function(T) describe = _toString]) async {
+  Future<String> handle([
+    String Function(T) describe = _toString,
+    String ifNull = "An error occurred",
+  ]) async {
     try {
       final result = await this;
-      if (result == null) return "An error occurred";
+      if (result == null) return ifNull;
       return describe(result);
     } on ApiException catch (error) {
       return error.toString();

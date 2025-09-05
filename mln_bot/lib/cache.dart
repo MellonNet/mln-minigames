@@ -38,6 +38,7 @@ class Cache {
 
   static Future<void> _writeCache(File file, Json data) async {
     final contents = jsonEncode(data);
+    await file.create(recursive: true);
     await file.writeAsString(contents);
   }
 

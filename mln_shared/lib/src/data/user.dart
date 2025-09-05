@@ -23,8 +23,8 @@ class User {
         Badge.fromJson(Json.from(badgeJson)),
     ];
 
-  String describe() => """
-Sure! Sure! Here's what I know about $username:
+  String describe(String prefix) => """
+$prefix: $username
   - link: ${MlnClient.host}$pageUrl
   - rank: $rank${isNetworker ? "\n  - is a networker" : ""}
   - has ${badges.length} badges

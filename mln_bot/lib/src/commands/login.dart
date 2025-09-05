@@ -1,7 +1,5 @@
 import "package:nyxx_commands/nyxx_commands.dart";
 
-import "package:mln_bot/server.dart";
-
 import "utils.dart";
 
 final loginCommand = ChatCommand(
@@ -16,6 +14,5 @@ Future<void> login(ChatContext context) async {
     await context.respondText("You are already signed in!");
     return;
   }
-  final loginUrl = server.oauth.getLoginUri(context.sessionID);
-  await context.respondLink("Sign in with My Lego Network", loginUrl);
+  await context.respondLogin();
 }
