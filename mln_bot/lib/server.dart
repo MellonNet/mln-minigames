@@ -13,9 +13,8 @@ import "package:mln_bot/secrets.dart";
 import "cache.dart";
 
 class MlnServer {
-  static const host = "localhost:7002";
   static const messagesWebhookPath = "/api/message";
-  static const messagesWebhookUrl = "http://$host$messagesWebhookPath";
+  static const messagesWebhookUrl = "https://discord-bot.mellonnet.com/$messagesWebhookPath";
 
   final OAuth oauth = OAuth(
     apiToken: mlnApiToken,

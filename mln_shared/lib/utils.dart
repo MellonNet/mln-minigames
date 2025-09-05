@@ -23,6 +23,8 @@ class ApiException implements Exception {
   ApiException(Response response) :
     message = response.body.nullIfEmpty ?? getStatusMessage(response.statusCode);
 
+  ApiException.from(this.message);
+
   @override
   String toString() => message;
 }

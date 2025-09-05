@@ -13,6 +13,9 @@ Future<void> _befriend(ChatContext context, [String? username]) async {
     return;
   }
   username = await client.checkUsername(username);
+  if (username == null) {
+    return context.respondText("That user has not linked their MLN account");
+  }
   final description = await client.befriend(username).handle();
   await context.respondText(description);
 }
