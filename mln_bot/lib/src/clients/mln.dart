@@ -1,6 +1,6 @@
 import "package:nyxx/nyxx.dart";
 
-import "package:mln_bot/cache.dart";
+import "package:mln_bot/services.dart";
 import "package:mln_bot/secrets.dart";
 import "package:mln_shared/clients.dart";
 
@@ -10,8 +10,8 @@ extension MlnClientUtils on MlnClient {
     final discordID = username.substring(2, username.length - 1);
     final snowflake = Snowflake(int.parse(discordID));
     // Lookup the MLN access token
-    final sessionID = cache.discordToMln(snowflake);
-    final accessToken = cache.sessionToToken[sessionID];
+    final sessionID = services.cache.discordToMln(snowflake);
+    final accessToken = services.cache.sessionToToken[sessionID];
     if (accessToken == null) return null;
     // Find the user based on their access token
     final client2 = MlnClient(accessToken, mlnApiToken);

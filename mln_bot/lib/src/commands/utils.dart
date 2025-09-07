@@ -1,6 +1,5 @@
 import "package:mln_bot/secrets.dart";
-import "package:mln_bot/server.dart";
-import "package:mln_bot/cache.dart";
+import "package:mln_bot/services.dart";
 import "package:mln_shared/clients.dart";
 
 import "package:nyxx/nyxx.dart";
@@ -23,14 +22,14 @@ extension ChatUtils on ChatContext {
   );
 
   Future<void> respondLogin() async {
-    final loginUrl = server.oauth.getLoginUri(sessionID);
+    final loginUrl = services.server.oauth.getLoginUri(sessionID);
     await respondLink("Sign in with My Lego Network", loginUrl);
   }
 
   /// We hash the snowflake so as not to leak real Discord IDs.
-  SessionID get sessionID => cache.discordToMln(user.id);
+  SessionID get sessionID => services.cache.discordToMln(user.id);
 
-  AccessToken? get accessToken => server.oauth.sessionToTokens[sessionID];
+  AccessToken? get accessToken => services.server.oauth.sessionToTokens[sessionID];
 
   Future<MlnClient?> getClient() async {
     final accessToken = this.accessToken;

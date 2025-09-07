@@ -2,21 +2,21 @@ import "dart:async";
 import "dart:convert";
 import "dart:io";
 
+import "package:mln_bot/services.dart";
 import "package:nyxx/nyxx.dart";
 
 import "package:mln_shared/mln_shared.dart";
-import "server.dart";
 
-class Cache {
+class Cache extends Service {
   static final sessionsFile = File("cache/sessions.txt");
   static final snowflakesFile = File("cache/snowflakes.txt");
   static final mailWebhooksFile = File("cache/webhooks_mail.txt");
 
   Map<SessionID, AccessToken> get sessionToToken =>
-    server.oauth.sessionToTokens;
+    services.server.oauth.sessionToTokens;
 
   Map<AccessToken, SessionID> get tokenToSession =>
-    server.oauth.tokenToSession;
+    services.server.oauth.tokenToSession;
 
   final sessionToDiscord = <SessionID, Snowflake>{};
   final mailWebhooks = <AccessToken, WebhookID>{};
@@ -42,6 +42,7 @@ class Cache {
     await file.writeAsString(contents);
   }
 
+  @override
   Future<void> init() async {
     if (sessionsFile.existsSync()) {
       final contents = await sessionsFile.readAsString();
@@ -80,5 +81,3 @@ class Cache {
     return sessionID;
   }
 }
-
-final cache = Cache();

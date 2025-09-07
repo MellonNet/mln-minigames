@@ -14,4 +14,5 @@ dependencies:
   nyxx_commands: ^6.0.4
   shelf: ^1.4.2
   shelf_router: ^1.1.4
+  xml: ^6.6.1
 

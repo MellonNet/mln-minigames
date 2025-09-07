@@ -1,4 +1,4 @@
-import "package:mln_bot/cache.dart";
+import "package:mln_bot/services.dart";
 import "package:mln_bot/commands.dart";
 import "package:mln_bot/secrets.dart";
 import "package:mln_shared/mln_shared.dart";
@@ -6,7 +6,7 @@ import "package:mln_shared/mln_shared.dart";
 import "package:nyxx/nyxx.dart";
 import "package:nyxx_commands/nyxx_commands.dart";
 
-class DiscordClient {
+class DiscordClient extends Service {
   final commandsPlugin = CommandsPlugin(
     prefix: mentionOr((_) => "!"),
     options: const CommandsOptions(
@@ -43,6 +43,8 @@ class DiscordClient {
   ];
 
   late final NyxxGateway _client;
+
+  @override
   Future<void> init() async {
     commands.forEach(commandsPlugin.addCommand);
     _client = await Nyxx.connectGateway(
@@ -68,8 +70,8 @@ class DiscordClient {
     if (author == null) return;
     if (event.interaction.data case final MessageComponentInteractionData data) {
       final messageID = int.parse(data.customId.split("_").last);
-      final sessionID = cache.discordToMln(author.id);
-      final accessToken = cache.sessionToToken[sessionID];
+      final sessionID = services.cache.discordToMln(author.id);
+      final accessToken = services.cache.sessionToToken[sessionID];
       if (accessToken == null) {
         await followUp(event.interaction, "You're not signed in");
       } else {
@@ -123,5 +125,3 @@ class DiscordClient {
     await channel.sendMessage(message);
   }
 }
-
-final discordClient = DiscordClient();

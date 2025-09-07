@@ -1,4 +1,4 @@
-import "package:mln_bot/cache.dart";
+import "package:mln_bot/services.dart";
 import "package:nyxx_commands/nyxx_commands.dart";
 
 import "utils.dart";
@@ -12,9 +12,9 @@ Future<void> _logout(ChatContext context) async {
     return;
   }
   final sessionID = context.sessionID;
-  cache.sessionToToken.remove(sessionID);
-  await cache.saveAccessTokens();
-  cache.sessionToDiscord.remove(sessionID);
-  await cache.saveSnowflakes();
+  services.cache.sessionToToken.remove(sessionID);
+  await services.cache.saveAccessTokens();
+  services.cache.sessionToDiscord.remove(sessionID);
+  await services.cache.saveSnowflakes();
   await context.respondText("Done");
 }

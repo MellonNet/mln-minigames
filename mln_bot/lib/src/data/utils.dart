@@ -36,3 +36,11 @@ extension MessageUtils on Message {
     );
   }
 }
+
+extension StringUtils on String {
+  bool fuzzyMatch(String query) {
+    final parts = toLowerCase().split(" ");
+    return query.toLowerCase().split(" ")
+      .every((queryPart) => parts.any((part) => part.contains(queryPart)));
+  }
+}
