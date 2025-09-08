@@ -43,4 +43,8 @@ extension StringUtils on String {
     return query.toLowerCase().split(" ")
       .every((queryPart) => parts.any((part) => part.contains(queryPart)));
   }
+
+  bool caseInsensitive(String other) => toLowerCase() == other.toLowerCase();
+
+  bool containsInsensitive(String other) => toLowerCase().contains(other.toLowerCase());
 }

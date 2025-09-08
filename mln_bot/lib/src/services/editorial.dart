@@ -21,5 +21,6 @@ class Editorial extends Service {
   }
 
   Iterable<ItemInfo> searchItems(String query) => items
-    .where((item) => item.matches(query));
+    .where((item) => item.matches(query))
+    .where((item) => !item.name.containsInsensitive("blueprint"));
 }

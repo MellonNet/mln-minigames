@@ -9,6 +9,8 @@ environment:
 resolution: workspace
 dependencies:
   collection: ^1.19.1
+  html: ^0.15.6
+  http: ^1.5.0
   mln_shared: ^1.0.0
   nyxx: ^6.7.0
   nyxx_commands: ^6.0.4

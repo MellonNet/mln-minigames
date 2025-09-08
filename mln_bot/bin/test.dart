@@ -1,17 +1,19 @@
 import "package:mln_bot/services.dart";
 
-void main() async {
+void main(List<String> args) async {
   // Open OAuth server
   final editorial = Editorial();
   await editorial.init();
 
-  final items = editorial.searchItems("bee bat module 1");
-  print("Found ${items.length} items:");
-  for (final item in items) {
-    print("- $item");
-  }
-
+  final items = editorial.searchItems(args.first);
   print("");
 
-  print(items.first.describe());
+  final item = items.firstOrNull;
+  if (item != null) { 
+    print(item.describe());
+    final wiki = await services.wiki.getItem(item);
+    print("To obtain: ${wiki?.howToObtain}");
+    print("To build: ${wiki?.costToBuild}");
+    services.wiki.dispose();
+  }
 }

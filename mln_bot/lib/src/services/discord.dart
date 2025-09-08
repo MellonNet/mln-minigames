@@ -40,6 +40,8 @@ class DiscordClient extends Service {
     logoutCommand,
     subscribeCommand,
     unsubscribeCommand,
+    itemQuery,
+    itemQueryPublic,
   ];
 
   late final NyxxGateway _client;

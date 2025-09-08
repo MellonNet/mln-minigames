@@ -33,8 +33,8 @@ class MlnServer extends Service {
     app.get("/api/login", loginHandler(oauth));
     app.post(messagesWebhookPath, authMiddleware(_handleMessageWebhook));
 
-    final server = await io.serve(app.call, "localhost", 7002);
-    print("Serving on http://localhost:${server.port}");
+    final server = await io.serve(app.call, "0.0.0.0", 9005);
+    print("Serving on 0.0.0.0:${server.port}");
   }
 
   Future<Response> _handleMessageWebhook(Request request) async {
