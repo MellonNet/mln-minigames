@@ -93,6 +93,7 @@ class DiscordClient extends Service {
         case "user": await _handleBefriend(event, data, arg);
         case "item": await _handleItems(event, data, isPublic: arg == "true");
         case "unsubscribe-mail": await _handleUnsubscribeMail(event, data);
+        case "mark-as-read": await _handleMarkAsRead(event, data, int.parse(arg));
       }
     }
   }
@@ -160,6 +161,24 @@ class DiscordClient extends Service {
         event,
         func: () => deleteMailWebhook(client, webhookID),
         message: "Unsubscribed",
+      );
+    }
+  }
+
+  Future<void> _handleMarkAsRead(
+    InteractionCreateEvent event,
+    MessageComponentInteractionData data,
+    int messageID,
+  ) async {
+    final accessToken = event.mlnAccessToken;
+    if (accessToken == null) {
+      await _client.replyToString(event, "You're not signed in");
+    } else {
+      final client = MlnClient(accessToken, mlnApiToken);
+      await _client.followUp(
+        event,
+        func: () => client.markAsRead(messageID),
+        message: "Marked as Read",
       );
     }
   }

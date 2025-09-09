@@ -94,4 +94,9 @@ class MlnClient {
     final response = await _client.post("/messages/$messageID/reply", body);
     return response != null;
   }
+
+  Future<bool> markAsRead(int messageID) async {
+    final response = await _client.post("/messages/$messageID/mark-read");
+    return response != null;
+  }
 }

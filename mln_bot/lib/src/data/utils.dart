@@ -6,6 +6,8 @@ import "package:mln_shared/data.dart";
 import "item_info.dart";
 
 extension MessageUtils on Message {
+  Uri pageUrl(String username) => Uri.parse("${MlnClient.host}/mln/public_view/$username");
+
   MessageBuilder describe() {
     final buffer = StringBuffer();
     // buffer.writeln("You got a message from $senderUsername!");
@@ -16,7 +18,7 @@ extension MessageUtils on Message {
       buffer.writeln();
       buffer.writeln("The message has the following attachments: ");
       for (final attachment in attachments) {
-        // buffer.writeln("- ${attachment.name} x${attachment.qty}");
+        buffer.writeln("- ${attachment.name} x${attachment.qty}");
         final item = services.editorial.searchItems(attachment.name).firstOrNull;
         if (item == null) continue;
         // thumbnails.add(Uri.parse(item.thumbnailUrl));
@@ -25,7 +27,9 @@ extension MessageUtils on Message {
     return MessageBuilder(
       flags: MessageFlags.isComponentsV2,
       components: [
-        TextDisplayComponentBuilder(content: "You got a message from $senderUsername!"),
+        TextDisplayComponentBuilder(
+          content: "You got a message from ${pageUrl(senderUsername)}!",
+        ),
         ContainerComponentBuilder(components: [
           TextDisplayComponentBuilder(content: buffer.toString()),
           if (attachments.isNotEmpty)
@@ -37,17 +41,27 @@ extension MessageUtils on Message {
                 ),
             ]),
         ]),
-        if (replies.isNotEmpty) ActionRowBuilder(components: [
-          SelectMenuBuilder.stringSelect(
-            customId: "message_$id",
-            options: [
-              for (final reply in replies)
-                SelectMenuOptionBuilder(
-                  label: reply.shorthand,
-                  value: reply.id.toString(),
-                ),
-              ],
+        ActionRowBuilder(components: [
+          if (replies.isNotEmpty)
+            SelectMenuBuilder.stringSelect(
+              placeholder: "Choose a reply",
+              customId: "message_$id",
+              options: [
+                for (final reply in replies)
+                  SelectMenuOptionBuilder(
+                    label: reply.shorthand,
+                    value: reply.id.toString(),
+                  ),
+                ],
+              ),
+            ButtonBuilder.secondary(
+              customId: "mark-read_$id",
+              label: "Mark as Read",
             ),
+            ButtonBuilder.link(
+              url: Uri.parse("${MlnClient.host}/mln/private_view/default"),
+              label: "Go to mailbox",
+            )
         ]),
       ],
     );
