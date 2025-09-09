@@ -12,8 +12,8 @@ export "package:mln_shared/mln_shared.dart";
 
 extension ChatUtils on ChatContext {
   Future<void> handle<T>({
-    required Future<T?> Function() func, 
-    required void Function(T) onSuccess, 
+    required Future<T?> Function() func,
+    required void Function(T) onSuccess,
     String ifNull = "An error occurred",
   }) async {
     try {
@@ -31,11 +31,11 @@ extension ChatUtils on ChatContext {
       await respondText("An error occurred");
     }
   }
-  
+
   Future<void> respondText(String text, {bool isPublic = false}) => respond(
     MessageBuilder(
-      flags: isPublic 
-        ? MessageFlags.ephemeral 
+      flags: isPublic
+        ? MessageFlags.ephemeral
         : MessageFlags.ephemeral | MessageFlags.isComponentsV2,
       components: [
         TextDisplayComponentBuilder(content: text),
@@ -54,7 +54,7 @@ extension ChatUtils on ChatContext {
     ),
   );
 
-  Future<void> respondUser(mln.User user, String prefix) => 
+  Future<void> respondUser(mln.User user, String prefix) =>
     respond(user.describe(prefix));
 
   Future<void> respondLogin() async {
@@ -62,7 +62,7 @@ extension ChatUtils on ChatContext {
     await respondLink("Sign in with My Lego Network", loginUrl);
   }
 
-  Future<void> respondItem(ItemInfo item, {required bool isPublic}) async => 
+  Future<void> respondItem(ItemInfo item, {required bool isPublic}) async =>
     respond(await item.describe(isPublic: isPublic));
 
   Future<void> respondItems(List<ItemInfo> items, {required bool isPublic}) => respond(
@@ -72,7 +72,7 @@ extension ChatUtils on ChatContext {
         TextDisplayComponentBuilder(content: "Found multiple items that match, please choose one"),
         ActionRowBuilder(components: [
           SelectMenuBuilder.stringSelect(
-            customId: "item_$isPublic", 
+            customId: "item_$isPublic",
             options: [
               for (final item in items)
                 SelectMenuOptionBuilder(label: item.name, value: item.name),
