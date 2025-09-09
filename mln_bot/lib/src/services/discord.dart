@@ -185,7 +185,7 @@ class DiscordClient extends Service {
 
   Future<void> _handleReactions(MessageReactionAddEvent event) async {
     final reaction = event.emoji.name;
-    if (reaction == "❌") {
+    if (reaction == "❌" && event.messageAuthorId == _client.user.id) {
       // event.message.delete();
       final message = await event.message.get();
       print("Deleting ${message.content}");
