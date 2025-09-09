@@ -191,14 +191,16 @@ class DiscordClient extends Service {
   });
 
   Future<void> _handleReactions(MessageReactionAddEvent event) async {
+    final channel = await event.message.channel.get();
+    final isMod = await event.hasRole("Moderator");
+    final isDm = channel.type == ChannelType.dm;
+    final isFromBot = event.messageAuthorId == _client.user.id;
     final reaction = event.emoji.name;
-    final userRoles = event.member?.roles;
-    final allRoles = await event.guild?.roles.list();
-    final modRole = allRoles?.firstWhereOrNull((role) => role.name == "Moderator");
-    final isMod = modRole != null && (userRoles?.contains(modRole) ?? false);
+
     final shouldDelete = reaction == "❌"
-      && event.messageAuthorId == _client.user.id
-      && isMod;
+      && isFromBot
+      && (isMod || isDm);
+
     if (shouldDelete) {
       // event.message.delete();
       final message = await event.message.get();

@@ -1,5 +1,6 @@
 import "dart:io";
 
+import "package:collection/collection.dart";
 import "package:mln_bot/secrets.dart";
 import "package:mln_bot/services.dart";
 import "package:nyxx/nyxx.dart";
@@ -99,5 +100,15 @@ extension InteractionUtils on InteractionCreateEvent {
     final accessToken = services.cache.sessionToToken[sessionID];
     if (accessToken == null) return null;
     return MlnClient(accessToken, mlnApiToken);
+  }
+}
+
+extension MessageReactionAddEventUtils on MessageReactionAddEvent {
+  Future<bool> hasRole(String roleName) async {
+    final allRoles = await guild?.roles.list();
+    final roleID = allRoles
+      ?.firstWhereOrNull((role) => role.name == roleName)
+      ?.id;
+    return member?.roles.any((role) => role.id == roleID) ?? false;
   }
 }
