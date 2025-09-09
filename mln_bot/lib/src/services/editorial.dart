@@ -23,4 +23,13 @@ class Editorial extends Service {
   Iterable<ItemInfo> searchItems(String query) => items
     .where((item) => item.matches(query))
     .where((item) => !item.name.containsInsensitive("blueprint"));
+
+  Uri? getThumbnail(String itemName) => searchItems(itemName)
+    .first
+    .thumbnailUrl
+    .toUri();
+}
+
+extension on String {
+  Uri toUri() => Uri.parse(this);
 }
