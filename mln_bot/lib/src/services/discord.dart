@@ -121,7 +121,7 @@ class DiscordClient extends Service {
     await _client.followUp(
       event,
       func: () => client.reply(messageID, replyID),
-      message: "Message sent",
+      followUp: MessageReply("Message sent"),
     );
   });
 
@@ -133,7 +133,7 @@ class DiscordClient extends Service {
     await _client.followUp(
       event,
       func: () => client.befriend(username),
-      message: "Sent a friend request to $username",
+      followUp: MessageReply("Sent a friend request to $username"),
     );
   });
 
@@ -157,7 +157,7 @@ class DiscordClient extends Service {
     await _client.followUp(
       event,
       func: () => deleteMailWebhook(client, webhookID),
-      message: "Unsubscribed",
+      followUp: MessageReply("Unsubscribed"),
     );
   });
 
@@ -168,8 +168,7 @@ class DiscordClient extends Service {
     await _client.followUp(
       event,
       func: () => client.markAsRead(messageID),
-      message: null,
-      react: true,
+      followUp: MessageReaction.thumbsUp(),
     );
   });
 
@@ -180,9 +179,7 @@ class DiscordClient extends Service {
     await _client.followUp(
       event,
       func: () => client.deleteMessage(messageID),
-      message: null,
-      react: true,
-      delete: true,
+      followUp: MessageDelete(),
     );
   });
 }
