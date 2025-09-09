@@ -6,11 +6,13 @@ import "package:nyxx/nyxx.dart";
 import "package:mln_shared/mln_shared.dart" hide User;
 
 extension DiscordUtils on NyxxGateway {
-  Future<void> replyTo(InteractionCreateEvent<Interaction<dynamic>> event, MessageBuilder builder) async {
+  Future<void> replyTo(InteractionCreateEvent<Interaction<dynamic>> event, MessageBuilder? builder) async {
     await interactions.createResponse(
       event.interaction.id,
       event.interaction.token,
-      InteractionResponseBuilder.channelMessage(builder),
+      builder == null
+        ? InteractionResponseBuilder.deferredUpdateMessage()
+        : InteractionResponseBuilder.channelMessage(builder),
       withResponse: true,
     );
   }
@@ -33,6 +35,7 @@ extension DiscordUtils on NyxxGateway {
       }
       if (react) {
         await event.interaction.message?.react(ReactionBuilder(name: "👍", id: null));
+        await replyTo(event, null);
       }
     } on ApiException catch (error) {
       await replyToString(event, error.message);
