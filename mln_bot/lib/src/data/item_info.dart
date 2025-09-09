@@ -22,6 +22,4 @@ class ItemInfo {
   String toString() => name;
 
   bool matches(String query) => name.fuzzyMatch(query);
-
-  String describe() => "$name\n\n$description";
 }

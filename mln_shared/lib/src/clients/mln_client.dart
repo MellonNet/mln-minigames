@@ -53,10 +53,24 @@ class MlnClient {
     return User.fromJson(json);
   }
 
-  Future<String?> befriend(String username) async {
+  Future<bool> befriend(String username) async {
     final response = await _client.post("/users/$username/friendship");
-    if (response == null) return null;
-    return "Sent a friend request to $username";
+    return response != null;
+  }
+
+  Future<bool> unfriend(String username) async {
+    final response = await _client.delete("/users/$username/friendship");
+    return response != null;
+  }
+
+  Future<bool> block(String username) async {
+    final response = await _client.post("/users/$username/block");
+    return response != null;
+  }
+
+  Future<bool> unblock(String username) async {
+    final response = await _client.delete("/users/$username/block");
+    return response != null;
   }
 
   Future<WebhookID?> registerMailWebhook(String webhookUrl, String webhookSecret) async {
@@ -71,14 +85,13 @@ class MlnClient {
   }
 
   Future<bool> deleteWebhook(WebhookID id) async {
-    final response = await _client.delete("/webhooks/$id").ignoreApiErrors();
+    final response = await _client.delete("/webhooks/$id");
     return response != null;
   }
 
   Future<bool> reply(int messageID, int replyID) async {
     final body = {"body_id": replyID};
     final response = await _client.post("/messages/$messageID/reply", body);
-    if (response == null) return false;
-    return true;
+    return response != null;
   }
 }

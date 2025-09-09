@@ -1,7 +1,9 @@
-import "package:nyxx/nyxx.dart" hide Attachment, Message;
+import "package:mln_bot/services.dart";
+import "package:mln_shared/clients.dart";
+import "package:nyxx/nyxx.dart" hide Attachment, Message, User;
 
 import "package:mln_shared/data.dart";
-export "package:mln_shared/data.dart";
+import "item_info.dart";
 
 extension MessageUtils on Message {
   MessageBuilder describe() {
@@ -37,6 +39,79 @@ extension MessageUtils on Message {
   }
 }
 
+extension ItemUtils on ItemInfo {
+  Future<String> describeText() async {
+    final wikiItem = await services.wiki.getItem(this);
+    final buffer = StringBuffer();
+    buffer.writeln("Sure! Sure! Here's what I know about $name:");
+    buffer.writeln();
+    buffer.writeln(description);
+    buffer.writeln();
+    if (wikiItem != null) {
+      buffer.writeln("Here's what I found on the wiki: ");
+      buffer.writeln("- **How to obtain**: ${wikiItem.howToObtain}");
+      buffer.writeln("- **Cost to build**: ${wikiItem.costToBuild}");
+    } else {
+      buffer.writeln("I couldn't find any information about that on the wiki.");
+    }
+    return buffer.toString();
+  }
+
+  Uri get thumbnailUrl => Uri.parse("${MlnClient.host}$thumbnailPath");
+
+  Future<MessageBuilder> describe({bool isPublic = false}) async => MessageBuilder(
+    flags: isPublic 
+      ? MessageFlags.isComponentsV2
+      : MessageFlags.isComponentsV2 | MessageFlags.ephemeral,
+    components: [
+      SectionComponentBuilder(
+        components: [
+          TextDisplayComponentBuilder(content: await describeText())
+        ], 
+        accessory: ThumbnailComponentBuilder(
+          media: UnfurledMediaItemBuilder(url: thumbnailUrl),
+        ),
+      ),
+      ActionRowBuilder(components: [
+        ButtonBuilder.link(url: Wiki.buildUriItem(this), label: "Go to Wiki"),
+      ]),
+    ]
+  );
+}
+
+extension UserUtils on User {
+  String describeText(String prefix) {
+    final buffer = StringBuffer();
+    buffer.writeln("$prefix: [$username]($fullUrl)");
+    buffer.writeln("- rank: $rank");
+    if (isNetworker) buffer.writeln("- is a networker");
+    buffer.writeln("- has ${badges.length} badges");
+    buffer.writeln("- ${friendshipStatus.describe}");
+    return buffer.toString();
+  }
+
+  MessageBuilder describe(String prefix) => MessageBuilder(
+    flags: MessageFlags.isComponentsV2,
+    components: [
+      TextDisplayComponentBuilder(
+        content: describeText(prefix),
+      ),
+      if (friendshipStatus == FriendshipStatus.none || isNetworker)
+        ActionRowBuilder(
+          components: [
+            if (friendshipStatus == FriendshipStatus.none)
+              ButtonBuilder.primary(
+                customId: "user_$username",
+                label: "Send friend request",
+              ),
+            if (isNetworker) 
+              ButtonBuilder.link(label: "Go to Wiki", url: Wiki.buildUriUser(this))
+          ],
+        ),
+      ],
+  );
+}
+
 extension StringUtils on String {
   bool fuzzyMatch(String query) {
     final parts = toLowerCase().split(" ");
@@ -47,4 +122,10 @@ extension StringUtils on String {
   bool caseInsensitive(String other) => toLowerCase() == other.toLowerCase();
 
   bool containsInsensitive(String other) => toLowerCase().contains(other.toLowerCase());
+
+  (String, String)? splitFirst(String pattern) {
+    final index = indexOf(pattern);
+    if (index == -1) return null;
+    return (substring(0, index), substring(index + 1));
+  }
 }

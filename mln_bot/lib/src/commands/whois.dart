@@ -1,4 +1,4 @@
-import "package:mln_bot/clients.dart";
+import "package:mln_bot/services.dart";
 import "package:nyxx_commands/nyxx_commands.dart";
 
 import "utils.dart";
@@ -9,7 +9,11 @@ final userQuery = ChatCommand(
   userQueryAction,
 );
 
-Future<void> userQueryAction(ChatContext context, [String? username]) async {
+Future<void> userQueryAction(
+  ChatContext context, [
+  @Description("The MLN or Discord user to search")
+  String? username,
+]) async {
   final client = await context.getClient();
   if (client == null) return;
   if (username == null) {
@@ -22,7 +26,9 @@ Future<void> userQueryAction(ChatContext context, [String? username]) async {
   if (username == null) {
     return context.respondText("That user has not linked their MLN account");
   }
-  final description = await client.getUser(username)
-    .handle((user) => user.describe(prefix), "User not found");
-  await context.respondText(description);
+  await context.handle(
+    func: () => client.getUser(username!), 
+    onSuccess: (user) => context.respondUser(user, prefix),
+    ifNull: "Could not find user $username",
+  );
 }

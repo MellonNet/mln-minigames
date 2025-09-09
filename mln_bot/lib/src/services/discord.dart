@@ -1,7 +1,9 @@
+import "package:mln_bot/data.dart";
 import "package:mln_bot/services.dart";
 import "package:mln_bot/commands.dart";
 import "package:mln_bot/secrets.dart";
-import "package:mln_shared/mln_shared.dart";
+import "package:mln_bot/src/services/discord_utils.dart";
+import "package:mln_shared/mln_shared.dart" hide User;
 
 import "package:nyxx/nyxx.dart";
 import "package:nyxx_commands/nyxx_commands.dart";
@@ -42,6 +44,9 @@ class DiscordClient extends Service {
     unsubscribeCommand,
     itemQuery,
     itemQueryPublic,
+    unfriendCommand,
+    blockCommand,
+    unblockCommand,
   ];
 
   late final NyxxGateway _client;
@@ -52,9 +57,11 @@ class DiscordClient extends Service {
     _client = await Nyxx.connectGateway(
       discordApiToken, // Replace this with your bot's token
       GatewayIntents.allUnprivileged,
-      options: GatewayClientOptions(plugins: [logging, cliIntegration, commandsPlugin]),
+      options: GatewayClientOptions(
+        plugins: [logging, cliIntegration, commandsPlugin, ignoreExceptions],
+      ),
     );
-    updatePresence();
+    _client.setStatus();
     final botUser = await _client.users.fetchCurrentUser();
     _client.onMessageCreate.listen((event) async {
       if (event.mentions.contains(botUser)) {
@@ -63,67 +70,93 @@ class DiscordClient extends Service {
         ));
       }
     });
-
     _client.onInteractionCreate.listen(_handleInteractions);
-  }
-
-  Future<void> _handleInteractions(InteractionCreateEvent event) async {
-    final author = event.interaction.user;
-    if (author == null) return;
-    if (event.interaction.data case final MessageComponentInteractionData data) {
-      final messageID = int.parse(data.customId.split("_").last);
-      final sessionID = services.cache.discordToMln(author.id);
-      final accessToken = services.cache.sessionToToken[sessionID];
-      if (accessToken == null) {
-        await followUp(event.interaction, "You're not signed in");
-      } else {
-        final client = MlnClient(accessToken, mlnApiToken);
-        final replyID = int.parse(data.values!.first);
-        final success = await client.reply(messageID, replyID).ignoreApiErrors();
-        if (success ?? false) {
-          await event.interaction.message!.react(ReactionBuilder(name: "👍", id: null));
-          await followUp(event.interaction, "Reply sent");
-        } else {
-          await followUp(event.interaction, "An error occurred");
-        }
-      }
-    }
-  }
-
-  Future<void> followUp(Interaction<dynamic> interaction, String message) async {
-    final builder = MessageBuilder(content: message);
-    await _client.interactions.createResponse(
-      interaction.id,
-      interaction.token,
-      InteractionResponseBuilder.channelMessage(builder),
-      withResponse: true,
-    );
-  }
-
-  void updatePresence() => _client.updatePresence(
-    PresenceBuilder(
-      activities: [
-        ActivityBuilder(
-          name: "My Lego Network",
-          type: ActivityType.game,
-          state: "Baking an Apple Pie",
-          url: Uri.parse("https://mln.lcdruniverse.org"),
-        ),
-      ],
-      status: CurrentUserStatus.online,
-      isAfk: false,
-      since: DateTime.now(),
-    ),
-  );
-
-  Future<void> sendMessageText(Snowflake user, String message) async {
-    final channel = await _client.users.createDm(user);
-    final builder = MessageBuilder(content: message, flags: MessageFlags.ephemeral);
-    await channel.sendMessage(builder);
   }
 
   Future<void> sendMessage(Snowflake user, MessageBuilder message) async {
     final channel = await _client.users.createDm(user);
     await channel.sendMessage(message);
+  }
+
+  Future<void> _handleInteractions(InteractionCreateEvent event) async {
+    if (event.interaction.user == null) return;
+    if (event.interaction.data case final MessageComponentInteractionData data) {
+      final pattern = data.customId.splitFirst("_");
+      if (pattern == null) return;
+      final (type, arg) = pattern;
+      switch (type) {
+        case "message": await _handleReply(event, data, int.parse(arg));
+        case "user": await _handleBefriend(event, data, arg);
+        case "item": await _handleItems(event, data, isPublic: arg == "true");
+        case "unsubscribe-mail": await _handleUnsubscribeMail(event, data);
+      }
+    }
+  }
+  
+  Future<void> _handleReply(
+    InteractionCreateEvent event,
+    MessageComponentInteractionData data,
+    int messageID,
+  ) async {
+    final accessToken = event.mlnAccessToken;
+    if (accessToken == null) {
+      await _client.replyToString(event, "You're not signed in");
+    } else {
+      final client = MlnClient(accessToken, mlnApiToken);
+      final replyID = int.parse(data.values!.first);
+      await _client.followUp(
+        event,
+        func: () => client.reply(messageID, replyID),
+        message: "Message sent",
+      );
+    }
+  }
+  
+  Future<void> _handleBefriend(
+    InteractionCreateEvent event, 
+    MessageComponentInteractionData data, 
+    String username,
+  ) async {
+    final accessToken = event.mlnAccessToken;
+    if (accessToken == null) {
+      await _client.replyToString(event, "You're not signed in");
+    } else {
+      final client = MlnClient(accessToken, mlnApiToken);
+      await _client.followUp(
+        event, 
+        func: () => client.befriend(username), 
+        message: "Sent a friend request to $username",
+      );
+    }
+  }
+
+  Future<void> _handleItems(
+    InteractionCreateEvent event, 
+    MessageComponentInteractionData data, 
+    {required bool isPublic}
+  ) async {
+    final itemName = data.values!.first;
+    final item = services.editorial.searchItems(itemName).first;
+    final builder = await item.describe(isPublic: isPublic);
+    await _client.replyTo(event, builder);
+  }
+  
+  Future<void> _handleUnsubscribeMail(
+    InteractionCreateEvent event, 
+    MessageComponentInteractionData data,
+  ) async {
+    final accessToken = event.mlnAccessToken;
+    if (accessToken == null) {
+      await _client.replyToString(event, "You're not signed in");
+    } else {
+      final webhookID = services.cache.mailWebhooks[accessToken];
+      if (webhookID == null) return _client.replyToString(event, "You were not subscribed");
+      final client = MlnClient(accessToken, mlnApiToken);
+      await _client.followUp(
+        event, 
+        func: () => deleteMailWebhook(client, webhookID), 
+        message: "Unsubscribed",
+      );
+    }
   }
 }

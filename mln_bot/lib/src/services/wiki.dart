@@ -29,8 +29,11 @@ class Wiki extends Service {
 
   void dispose() => client.close();
 
-  Uri buildUriItem(ItemInfo item) =>
+  static Uri buildUriItem(ItemInfo item) =>
     Uri.parse("https://mylegonetwork.fandom.com/wiki/${item.name.replaceAll(" ", "_")}") ;
+
+  static Uri buildUriUser(User user) =>
+    Uri.parse("https://mylegonetwork.fandom.com/wiki/${user.username.replaceAll(" ", "_")}") ;
 
   Future<WikiItem?> getItem(ItemInfo item) async {
     final uri = buildUriItem(item);

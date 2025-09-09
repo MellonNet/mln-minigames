@@ -23,11 +23,5 @@ class User {
         Badge.fromJson(Json.from(badgeJson)),
     ];
 
-  String describe(String prefix) => """
-$prefix: $username
-  - link: ${MlnClient.host}$pageUrl
-  - rank: $rank${isNetworker ? "\n  - is a networker" : ""}
-  - has ${badges.length} badges
-  - ${friendshipStatus.describe}
-  """;
+  String get fullUrl => Uri.parse("${MlnClient.host}$pageUrl").toString();
 }

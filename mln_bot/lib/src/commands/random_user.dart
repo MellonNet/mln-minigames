@@ -1,7 +1,5 @@
-import "package:mln_bot/src/clients/utils.dart";
 import "package:nyxx_commands/nyxx_commands.dart";
 
-import "package:mln_bot/clients.dart";
 import "utils.dart";
 
 final randomUserCommand = ChatCommand("random", "Find a random user", _randomUser);
@@ -9,7 +7,7 @@ final randomUserCommand = ChatCommand("random", "Find a random user", _randomUse
 Future<void> _randomUser(
   ChatContext context, [
   @Choices({
-    "Your rank": "",
+    "My rank": "",
     "Rank 1": "1",
     "Rank 2": "2",
     "Rank 3": "3",
@@ -42,7 +40,8 @@ Future<void> _randomUser(
     rankInt = maybeRank;
   }
   const prefix = "Found a random user";
-  final description = await client.getRandomUser(rankInt)
-    .handle((user) => user.describe(prefix));
-  await context.respondText(description);
+  await context.handle(
+    func: () => client.getRandomUser(rankInt), 
+    onSuccess: (user) => context.respondUser(user, prefix),
+  );
 }

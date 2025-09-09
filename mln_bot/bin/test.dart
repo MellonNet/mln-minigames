@@ -10,7 +10,7 @@ void main(List<String> args) async {
 
   final item = items.firstOrNull;
   if (item != null) { 
-    print(item.describe());
+    print(item.name);
     final wiki = await services.wiki.getItem(item);
     print("To obtain: ${wiki?.howToObtain}");
     print("To build: ${wiki?.costToBuild}");

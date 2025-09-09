@@ -3,17 +3,17 @@ import "package:nyxx_commands/nyxx_commands.dart";
 
 import "utils.dart";
 
-final befriendCommand = ChatCommand("befriend", "Send or accept a friend request", _befriend);
+final unblockCommand = ChatCommand("unblock", "Unblock a friend", _unblock);
 
-Future<void> _befriend(
+Future<void> _unblock(
   ChatContext context, [
-  @Description("The MLN or Discord user to befriend")
+  @Description("The MLN or Discord user to block")
   String? username,
 ]) async {
   final client = await context.getClient();
   if (client == null) return;
   if (username == null) {
-    await context.respondText("You gotta tell me who to befriend");
+    await context.respondText("Please specify a user");
     return;
   }
   username = await client.checkUsername(username);
@@ -21,7 +21,7 @@ Future<void> _befriend(
     return context.respondText("That Discord user has not linked their MLN account");
   }
   await context.handle<bool>(
-    func: () => client.befriend(username!), 
-    onSuccess: (_) => context.respondText("Sent a friend request to $username"),
+    func: () => client.unblock(username!), 
+    onSuccess: (_) => context.respondText("$username is no longer your friend"),
   );
 }

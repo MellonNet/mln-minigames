@@ -1,5 +1,6 @@
 import "package:mln_bot/secrets.dart";
 import "package:mln_bot/services.dart";
+import "package:nyxx/nyxx.dart";
 import "package:nyxx_commands/nyxx_commands.dart";
 
 import "utils.dart";
@@ -23,7 +24,17 @@ Future<void> _subscribeMail(ChatContext context) async {
   }
   services.cache.mailWebhooks[client.accessToken] = webhookID;
   await services.cache.saveMailWebhooks();
-  await context.respondText("Subscribed! I'll let you know when a new MLN message arrives");
+  await context.respond(
+    MessageBuilder(
+      flags: MessageFlags.isComponentsV2,
+      components: [
+        TextDisplayComponentBuilder(content: "Subscribed! I'll let you know when a new MLN message arrives"),
+        ActionRowBuilder(components: [
+          ButtonBuilder.secondary(customId: "unsubscribe-mail_xxx", label: "Unsubscribe"),
+        ]),
+      ],
+    ),
+  );
 }
 
 Future<void> _unsubscribeMail(ChatContext context) async {
@@ -33,13 +44,18 @@ Future<void> _unsubscribeMail(ChatContext context) async {
   if (webhookID == null) {
     await context.respondText("You were not subscribed to messages");
   } else {
-    final success = await client.deleteWebhook(webhookID);
-    if (success) {
-      services.cache.mailWebhooks.remove(client.accessToken);
-      await services.cache.saveMailWebhooks();
-      await context.respondText("Unsubscribed");
-    } else {
-      await context.respondText("Something went wrong. Try again later");
-    }
+    await context.handle<void>(
+      func: () => deleteMailWebhook(client, webhookID), 
+      onSuccess: (_) => context.respondText("Unsubscribed"),
+    );
   }
+}
+
+Future<bool?> deleteMailWebhook(MlnClient client, WebhookID webhookID) async {
+  final success = await client.deleteWebhook(webhookID);
+  if (success) {
+    services.cache.mailWebhooks.remove(client.accessToken);
+    await services.cache.saveMailWebhooks();
+  }
+  return success ? true : null;  // error handlers treat null as failure
 }
