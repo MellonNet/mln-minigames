@@ -11,17 +11,29 @@ extension MessageUtils on Message {
     buffer.writeln("You got a message from $senderUsername!");
     buffer.writeln("> ### ${body.subject}");
     buffer.writeln("> ${body.text}");
+    final thumbnails = <Uri>[];
     if (attachments.isNotEmpty) {
       buffer.writeln();
       buffer.writeln("The message has the following attachments: ");
       for (final attachment in attachments) {
         buffer.writeln("- ${attachment.name} x${attachment.qty}");
+        final item = services.editorial.searchItems(attachment.name).firstOrNull;
+        if (item == null) continue;
+        thumbnails.add(Uri.parse(item.thumbnailUrl));
       }
     }
     return MessageBuilder(
       flags: MessageFlags.isComponentsV2,
       components: [
-        TextDisplayComponentBuilder(content: buffer.toString()),
+        ContainerComponentBuilder(components: [
+          TextDisplayComponentBuilder(content: buffer.toString()),
+          MediaGalleryComponentBuilder(items: [
+            for (final thumbnail in thumbnails)
+              MediaGalleryItemBuilder(
+                media: UnfurledMediaItemBuilder(url: thumbnail),
+              ),
+          ]),
+        ]),
         if (replies.isNotEmpty) ActionRowBuilder(components: [
           SelectMenuBuilder.stringSelect(
             customId: "message_$id",
@@ -60,14 +72,14 @@ extension ItemUtils on ItemInfo {
   Uri get thumbnailUrl => Uri.parse("${MlnClient.host}$thumbnailPath");
 
   Future<MessageBuilder> describe({bool isPublic = false}) async => MessageBuilder(
-    flags: isPublic 
+    flags: isPublic
       ? MessageFlags.isComponentsV2
       : MessageFlags.isComponentsV2 | MessageFlags.ephemeral,
     components: [
       SectionComponentBuilder(
         components: [
           TextDisplayComponentBuilder(content: await describeText())
-        ], 
+        ],
         accessory: ThumbnailComponentBuilder(
           media: UnfurledMediaItemBuilder(url: thumbnailUrl),
         ),
@@ -104,7 +116,7 @@ extension UserUtils on User {
                 customId: "user_$username",
                 label: "Send friend request",
               ),
-            if (isNetworker) 
+            if (isNetworker)
               ButtonBuilder.link(label: "Go to Wiki", url: Wiki.buildUriUser(this))
           ],
         ),
