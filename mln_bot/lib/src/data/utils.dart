@@ -28,13 +28,14 @@ extension MessageUtils on Message {
         TextDisplayComponentBuilder(content: "You got a message from $senderUsername!"),
         ContainerComponentBuilder(components: [
           TextDisplayComponentBuilder(content: buffer.toString()),
-          MediaGalleryComponentBuilder(items: [
-            for (final attachment in attachments)
-              MediaGalleryItemBuilder(
-                media: UnfurledMediaItemBuilder(url: services.editorial.getThumbnail(attachment.name)!),
-                description: "${attachment.name} x${attachment.qty}",
-              ),
-          ]),
+          if (attachments.isNotEmpty)
+            MediaGalleryComponentBuilder(items: [
+              for (final attachment in attachments)
+                MediaGalleryItemBuilder(
+                  media: UnfurledMediaItemBuilder(url: services.editorial.getThumbnail(attachment.name)!),
+                  description: "${attachment.name} x${attachment.qty}",
+                ),
+            ]),
         ]),
         if (replies.isNotEmpty) ActionRowBuilder(components: [
           SelectMenuBuilder.stringSelect(
