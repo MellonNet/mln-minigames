@@ -28,6 +28,7 @@ extension DiscordUtils on NyxxGateway {
     required Future<void> Function() func,
     required String? message,
     bool react = false,
+    bool delete = false,
   }) async {
     try {
       await func();
@@ -36,6 +37,10 @@ extension DiscordUtils on NyxxGateway {
       }
       if (react) {
         await event.interaction.message?.react(ReactionBuilder(name: "👍", id: null));
+        await replyTo(event, null);
+      }
+      if (delete) {
+        await event.interaction.message?.delete();
         await replyTo(event, null);
       }
     } on ApiException catch (error) {

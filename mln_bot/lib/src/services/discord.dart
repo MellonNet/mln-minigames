@@ -182,6 +182,7 @@ class DiscordClient extends Service {
       func: () => client.deleteMessage(messageID),
       message: null,
       react: true,
+      delete: true,
     );
   });
 }
