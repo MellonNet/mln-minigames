@@ -10,7 +10,7 @@ extension MessageUtils on Message {
     final buffer = StringBuffer();
     // buffer.writeln("You got a message from $senderUsername!");
     buffer.writeln("> ### ${body.subject}");
-    buffer.writeln("> ${body.text}");
+    buffer.writeln("> ${body.text.replaceAll("[item]", "\n- ")}");
     // final thumbnails = <Uri>[];
     if (attachments.isNotEmpty) {
       buffer.writeln();

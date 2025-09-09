@@ -71,6 +71,7 @@ class DiscordClient extends Service {
         ));
       }
     });
+    _client.onMessageReactionAdd.listen(_handleReactions);
     _client.onInteractionCreate.listen(_handleInteractions);
   }
 
@@ -80,7 +81,6 @@ class DiscordClient extends Service {
   }
 
   Future<void> _handleInteractions(InteractionCreateEvent event) async {
-    if (event.interaction.user == null) return;
     if (event.interaction.data case final ApplicationCommandInteractionData data) {
       final commandName = data.name;
       services.cache.updateStats(commandName).ignore();
@@ -182,4 +182,13 @@ class DiscordClient extends Service {
       followUp: MessageDelete(),
     );
   });
+
+  Future<void> _handleReactions(MessageReactionAddEvent event) async {
+    final reaction = event.emoji.name;
+    if (reaction == "❌") {
+      // event.message.delete();
+      final message = await event.message.get();
+      print("Deleting ${message.content}");
+    }
+  }
 }
