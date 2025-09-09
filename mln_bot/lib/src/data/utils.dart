@@ -39,8 +39,8 @@ extension MessageUtils on Message {
                 ),
             ]),
         ]),
-        ActionRowBuilder(components: [
-          if (replies.isNotEmpty)
+        if (replies.isNotEmpty)
+          ActionRowBuilder(components: [
             SelectMenuBuilder.stringSelect(
               placeholder: "Choose a reply",
               customId: "message_$id",
@@ -52,6 +52,8 @@ extension MessageUtils on Message {
                   ),
                 ],
               ),
+          ]),
+          ActionRowBuilder(components: [
             ButtonBuilder.secondary(
               customId: "mark-read_$id",
               label: "Mark as Read",
