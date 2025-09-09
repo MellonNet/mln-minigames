@@ -9,12 +9,12 @@ extension MessageUtils on Message {
   MessageBuilder describe() {
     final buffer = StringBuffer();
     // buffer.writeln("You got a message from $senderUsername!");
-    buffer.writeln("> ### ${body.subject}");
-    buffer.writeln("> ${body.text.replaceAll("[item]", "\n- ")}");
+    buffer.writeln("### ${body.subject}");
+    buffer.writeln("${body.text.replaceAll("[item]", "> - ")}");
     // final thumbnails = <Uri>[];
     if (attachments.isNotEmpty) {
       buffer.writeln();
-      buffer.writeln("The message has the following attachments: ");
+      buffer.writeln("### Attachments:");
       for (final attachment in attachments) {
         buffer.writeln("- ${attachment.name} x${attachment.qty}");
         final item = services.editorial.searchItems(attachment.name).firstOrNull;
@@ -54,17 +54,17 @@ extension MessageUtils on Message {
               ),
           ]),
           ActionRowBuilder(components: [
-            ButtonBuilder.secondary(
-              customId: "message-read_$id",
-              label: "Mark as Read",
+            ButtonBuilder.danger(
+              customId: "message-delete_$id",
+              label: "Delete message",
             ),
             ButtonBuilder.link(
               url: Uri.parse("${MlnClient.host}/mln/private_view/default"),
               label: "Go to mailbox",
             ),
-            ButtonBuilder.danger(
-              customId: "message-delete_$id",
-              label: "Delete message",
+            ButtonBuilder.primary(
+              customId: "message-read_$id",
+              label: "Mark as Read",
             ),
         ]),
       ],
