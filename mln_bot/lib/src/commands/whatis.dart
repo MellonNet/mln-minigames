@@ -36,12 +36,6 @@ Future<void> itemQueryAction(
   } else if (items.length > 1) {
     final exactMatch = items.firstWhereOrNull((item) => item.name.caseInsensitive(query));
     if (exactMatch != null) return context.respondItem(exactMatch, isPublic: isPublic);
-    final buffer = StringBuffer();
-    buffer.writeln("Found multiple items with that name, please try again with a more specific query");
-    buffer.writeln();
-    for (final item in items) {
-      buffer.writeln("- ${item.name}");
-    }
     await context.respondItems(items, isPublic: isPublic);
   } else {
     final item = items.first;

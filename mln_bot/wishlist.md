@@ -1,14 +1,9 @@
 Simple Commands: 
-- /setup
-- /mini-ranks
 - /subscribe friends
 - /inbox
-- /unfriend
-- /block
 - /harvest (offer button for tear-down)
 
 Parameter commands: 
-- /what-is MODULE
 - /who-has MODULE 
 - /click-request MODULE
 - /inventory ITEM

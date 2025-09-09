@@ -80,6 +80,10 @@ class DiscordClient extends Service {
 
   Future<void> _handleInteractions(InteractionCreateEvent event) async {
     if (event.interaction.user == null) return;
+    if (event.interaction.data case final ApplicationCommandInteractionData data) {
+      final commandName = data.name;
+      services.cache.updateStats(commandName).ignore();
+    }
     if (event.interaction.data case final MessageComponentInteractionData data) {
       final pattern = data.customId.splitFirst("_");
       if (pattern == null) return;
@@ -92,7 +96,7 @@ class DiscordClient extends Service {
       }
     }
   }
-  
+
   Future<void> _handleReply(
     InteractionCreateEvent event,
     MessageComponentInteractionData data,
@@ -111,10 +115,10 @@ class DiscordClient extends Service {
       );
     }
   }
-  
+
   Future<void> _handleBefriend(
-    InteractionCreateEvent event, 
-    MessageComponentInteractionData data, 
+    InteractionCreateEvent event,
+    MessageComponentInteractionData data,
     String username,
   ) async {
     final accessToken = event.mlnAccessToken;
@@ -123,16 +127,16 @@ class DiscordClient extends Service {
     } else {
       final client = MlnClient(accessToken, mlnApiToken);
       await _client.followUp(
-        event, 
-        func: () => client.befriend(username), 
+        event,
+        func: () => client.befriend(username),
         message: "Sent a friend request to $username",
       );
     }
   }
 
   Future<void> _handleItems(
-    InteractionCreateEvent event, 
-    MessageComponentInteractionData data, 
+    InteractionCreateEvent event,
+    MessageComponentInteractionData data,
     {required bool isPublic}
   ) async {
     final itemName = data.values!.first;
@@ -140,9 +144,9 @@ class DiscordClient extends Service {
     final builder = await item.describe(isPublic: isPublic);
     await _client.replyTo(event, builder);
   }
-  
+
   Future<void> _handleUnsubscribeMail(
-    InteractionCreateEvent event, 
+    InteractionCreateEvent event,
     MessageComponentInteractionData data,
   ) async {
     final accessToken = event.mlnAccessToken;
@@ -153,8 +157,8 @@ class DiscordClient extends Service {
       if (webhookID == null) return _client.replyToString(event, "You were not subscribed");
       final client = MlnClient(accessToken, mlnApiToken);
       await _client.followUp(
-        event, 
-        func: () => deleteMailWebhook(client, webhookID), 
+        event,
+        func: () => deleteMailWebhook(client, webhookID),
         message: "Unsubscribed",
       );
     }

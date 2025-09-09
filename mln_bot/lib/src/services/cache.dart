@@ -11,6 +11,7 @@ class Cache extends Service {
   static final sessionsFile = File("cache/sessions.txt");
   static final snowflakesFile = File("cache/snowflakes.txt");
   static final mailWebhooksFile = File("cache/webhooks_mail.txt");
+  static final statsFile = File("cache/stats.json");
 
   Map<SessionID, AccessToken> get sessionToToken =>
     services.server.oauth.sessionToTokens;
@@ -44,6 +45,7 @@ class Cache extends Service {
 
   @override
   Future<void> init() async {
+    if (!statsFile.existsSync()) await statsFile.create(recursive: true);
     if (sessionsFile.existsSync()) {
       final contents = await sessionsFile.readAsString();
       final data = jsonDecode(contents) as Json;
@@ -79,5 +81,13 @@ class Cache extends Service {
       unawaited(saveSnowflakes());
     }
     return sessionID;
+  }
+
+  Future<void> updateStats(String commandName) async {
+    final contents = await statsFile.readAsString();
+    final data = contents.isEmpty ? <String, dynamic>{} : jsonDecode(contents) as Map;
+    final count = data[commandName] as int?;
+    data[commandName] = (count ?? 0) + 1;
+    await statsFile.writeAsString(jsonEncode(data));
   }
 }
