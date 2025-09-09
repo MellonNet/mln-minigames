@@ -6,8 +6,6 @@ import "package:mln_shared/data.dart";
 import "item_info.dart";
 
 extension MessageUtils on Message {
-  String userLink(String username) => "[$username](${User.pageUrl(username)}";
-
   MessageBuilder describe() {
     final buffer = StringBuffer();
     // buffer.writeln("You got a message from $senderUsername!");
@@ -28,7 +26,7 @@ extension MessageUtils on Message {
       flags: MessageFlags.isComponentsV2,
       components: [
         TextDisplayComponentBuilder(
-          content: "You got a message from ${userLink(senderUsername)}!",
+          content: "You got a message from ${UserUtils.userLink(senderUsername)}!",
         ),
         ContainerComponentBuilder(components: [
           TextDisplayComponentBuilder(content: buffer.toString()),
@@ -109,9 +107,11 @@ extension ItemUtils on ItemInfo {
 }
 
 extension UserUtils on User {
+  static String userLink(String username) => "[$username](${User.pageUrl(username)}";
+
   String describeText(String prefix) {
     final buffer = StringBuffer();
-    buffer.writeln("$prefix: [$username]($fullUrl)");
+    buffer.writeln("$prefix: ${userLink(username)}");
     buffer.writeln("- rank: $rank");
     if (isNetworker) buffer.writeln("- is a networker");
     buffer.writeln("- has ${badges.length} badges");
