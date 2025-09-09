@@ -107,7 +107,7 @@ extension ItemUtils on ItemInfo {
 }
 
 extension UserUtils on User {
-  static String userLink(String username) => "[$username](${User.pageUrl(username)}";
+  static String userLink(String username) => "[$username](${User.pageUrl(username)})";
 
   String describeText(String prefix) {
     final buffer = StringBuffer();

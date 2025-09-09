@@ -23,11 +23,17 @@ extension DiscordUtils on NyxxGateway {
   Future<void> followUp(
     InteractionCreateEvent<Interaction<dynamic>> event, {
     required Future<void> Function() func,
-    required String message, 
+    required String? message,
+    bool react = false,
   }) async {
     try {
       await func();
-      await replyToString(event, message);
+      if (message != null) {
+        await replyToString(event, message);
+      }
+      if (react) {
+        await event.interaction.message?.react(ReactionBuilder(name: "👍", id: null));
+      }
     } on ApiException catch (error) {
       await replyToString(event, error.message);
     // Catch all errors
@@ -47,10 +53,10 @@ extension DiscordUtils on NyxxGateway {
             state: "Baking an Apple Pie",
             url: Uri.parse("https://mln.mellonnet.com"),
           )
-        else 
+        else
           ActivityBuilder(
             name: "Maintenance",
-            state: "Undergoing Maintenance", 
+            state: "Undergoing Maintenance",
             type: ActivityType.custom,
           )
       ],
@@ -67,5 +73,5 @@ extension InteractionUtils on InteractionCreateEvent {
     if (user == null) return null;
     final sessionID = services.cache.discordToMln(user.id);
     return services.cache.sessionToToken[sessionID];
-  } 
+  }
 }

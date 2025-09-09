@@ -178,7 +178,8 @@ class DiscordClient extends Service {
       await _client.followUp(
         event,
         func: () => client.markAsRead(messageID),
-        message: "Marked as Read",
+        message: null,
+        react: true,
       );
     }
   }
