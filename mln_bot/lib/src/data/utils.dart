@@ -6,7 +6,7 @@ import "package:mln_shared/data.dart";
 import "item_info.dart";
 
 extension MessageUtils on Message {
-  Uri pageUrl(String username) => Uri.parse("${MlnClient.host}/mln/public_view/$username");
+  String userLink(String username) => "[$username](${User.pageUrl(username)}";
 
   MessageBuilder describe() {
     final buffer = StringBuffer();
@@ -28,7 +28,7 @@ extension MessageUtils on Message {
       flags: MessageFlags.isComponentsV2,
       components: [
         TextDisplayComponentBuilder(
-          content: "You got a message from ${pageUrl(senderUsername)}!",
+          content: "You got a message from ${userLink(senderUsername)}!",
         ),
         ContainerComponentBuilder(components: [
           TextDisplayComponentBuilder(content: buffer.toString()),

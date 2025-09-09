@@ -6,7 +6,7 @@ import "friendship.dart";
 
 class User {
   final String username;
-  final String pageUrl;
+  final String pagePath;
   final int rank;
   final bool isNetworker;
   final FriendshipStatus friendshipStatus;
@@ -14,7 +14,7 @@ class User {
 
   User.fromJson(Json json) :
     username = json["username"],
-    pageUrl = json["page_url"],
+    pagePath = json["page_url"],
     rank = json["rank"],
     isNetworker = json["is_networker"],
     friendshipStatus = FriendshipStatus.fromJson(json["friendship_status"]),
@@ -23,5 +23,6 @@ class User {
         Badge.fromJson(Json.from(badgeJson)),
     ];
 
-  String get fullUrl => Uri.parse("${MlnClient.host}$pageUrl").toString();
+  static Uri pageUrl(String username) =>
+    Uri.parse("${MlnClient.host}/mln/public_view/$username");
 }

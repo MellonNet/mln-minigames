@@ -93,7 +93,7 @@ class DiscordClient extends Service {
         case "user": await _handleBefriend(event, data, arg);
         case "item": await _handleItems(event, data, isPublic: arg == "true");
         case "unsubscribe-mail": await _handleUnsubscribeMail(event, data);
-        case "mark-as-read": await _handleMarkAsRead(event, data, int.parse(arg));
+        case "mark-read": await _handleMarkAsRead(event, data, int.parse(arg));
       }
     }
   }
