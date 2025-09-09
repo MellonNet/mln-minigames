@@ -8,10 +8,8 @@ import "item_info.dart";
 extension MessageUtils on Message {
   MessageBuilder describe() {
     final buffer = StringBuffer();
-    // buffer.writeln("You got a message from $senderUsername!");
     buffer.writeln("### ${body.subject}");
-    buffer.writeln("${body.text.replaceAll("[item]", "> - ")}");
-    // final thumbnails = <Uri>[];
+    buffer.writeln(body.text.replaceAll("[item]", "> - "));
     if (attachments.isNotEmpty) {
       buffer.writeln();
       buffer.writeln("### Attachments:");
@@ -19,7 +17,6 @@ extension MessageUtils on Message {
         buffer.writeln("- ${attachment.name} x${attachment.qty}");
         final item = services.editorial.searchItems(attachment.name).firstOrNull;
         if (item == null) continue;
-        // thumbnails.add(Uri.parse(item.thumbnailUrl));
       }
     }
     return MessageBuilder(

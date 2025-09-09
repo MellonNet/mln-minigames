@@ -1,4 +1,3 @@
-import "package:collection/collection.dart";
 import "package:mln_bot/data.dart";
 import "package:mln_bot/services.dart";
 import "package:mln_bot/commands.dart";
@@ -73,8 +72,8 @@ class DiscordClient extends Service {
       }
     });
     _client.onMessageReactionAdd.listen(_handleReactions);
-    _client.onInteractionCreate.listen(_handleInteractions);
     _client.onMessageComponentInteraction.listen(_handleInteractions2);
+    _client.onApplicationCommandInteraction.listen(_handleCommand);
   }
 
   Future<void> sendMessage(Snowflake user, MessageBuilder message) async {
@@ -97,14 +96,10 @@ class DiscordClient extends Service {
     }
   }
 
-  Future<void> _handleInteractions(InteractionCreateEvent event) async {
-    if (event.interaction.data case final ApplicationCommandInteractionData data) {
-      final commandName = data.name;
-      services.cache.updateStats(commandName).ignore();
-    }
-    if (event.interaction.data case final MessageComponentInteractionData data) {
-
-    }
+  void _handleCommand(InteractionCreateEvent<ApplicationCommandInteraction> event) {
+    final data = event.interaction.data;
+    final commandName = data.name;
+    services.cache.updateStats(commandName).ignore();
   }
 
   Future<void> _handleInteraction(
@@ -191,20 +186,20 @@ class DiscordClient extends Service {
   });
 
   Future<void> _handleReactions(MessageReactionAddEvent event) async {
+    final emoji = event.emoji;
+    final isX = emoji.name == "❌";
+    if (!isX) return;
+
     final channel = await event.message.channel.get();
     final isMod = await event.hasRole("Moderator");
     final isDm = channel.type == ChannelType.dm;
     final isFromBot = event.messageAuthorId == _client.user.id;
-    final reaction = event.emoji.name;
 
-    final shouldDelete = reaction == "❌"
-      && isFromBot
-      && (isMod || isDm);
-
+    final shouldDelete = isFromBot && (isMod || isDm);
     if (shouldDelete) {
-      // event.message.delete();
-      final message = await event.message.get();
-      print("Deleting ${message.content}");
+      await event.message.delete();
+    } else {
+      await event.message.deleteReaction(ReactionBuilder.fromEmoji(emoji));
     }
   }
 }
