@@ -1,3 +1,4 @@
+import "package:collection/collection.dart";
 import "package:mln_bot/data.dart";
 import "package:mln_bot/services.dart";
 import "package:mln_bot/commands.dart";
@@ -73,11 +74,27 @@ class DiscordClient extends Service {
     });
     _client.onMessageReactionAdd.listen(_handleReactions);
     _client.onInteractionCreate.listen(_handleInteractions);
+    _client.onMessageComponentInteraction.listen(_handleInteractions2);
   }
 
   Future<void> sendMessage(Snowflake user, MessageBuilder message) async {
     final channel = await _client.users.createDm(user);
     await channel.sendMessage(message);
+  }
+
+  Future<void> _handleInteractions2(InteractionCreateEvent<MessageComponentInteraction> event) async {
+   final data = event.interaction.data;
+    final pattern = data.customId.splitFirst("_");
+    if (pattern == null) return;
+    final (type, arg) = pattern;
+    switch (type) {
+      case "message-reply": await _handleReply(event, data, int.parse(arg));
+      case "message-read": await _handleMarkAsRead(event, int.parse(arg));
+      case "message-delete": await _handleMessageDelete(event, int.parse(arg));
+      case "user": await _handleBefriend(event, data, arg);
+      case "item": await _handleItems(event, data, isPublic: arg == "true");
+      case "unsubscribe-mail": await _handleUnsubscribeMail(event, data);
+    }
   }
 
   Future<void> _handleInteractions(InteractionCreateEvent event) async {
@@ -86,17 +103,7 @@ class DiscordClient extends Service {
       services.cache.updateStats(commandName).ignore();
     }
     if (event.interaction.data case final MessageComponentInteractionData data) {
-      final pattern = data.customId.splitFirst("_");
-      if (pattern == null) return;
-      final (type, arg) = pattern;
-      switch (type) {
-        case "message-reply": await _handleReply(event, data, int.parse(arg));
-        case "message-read": await _handleMarkAsRead(event, int.parse(arg));
-        case "message-delete": await _handleMessageDelete(event, int.parse(arg));
-        case "user": await _handleBefriend(event, data, arg);
-        case "item": await _handleItems(event, data, isPublic: arg == "true");
-        case "unsubscribe-mail": await _handleUnsubscribeMail(event, data);
-      }
+
     }
   }
 
@@ -185,7 +192,14 @@ class DiscordClient extends Service {
 
   Future<void> _handleReactions(MessageReactionAddEvent event) async {
     final reaction = event.emoji.name;
-    if (reaction == "❌" && event.messageAuthorId == _client.user.id) {
+    final userRoles = event.member?.roles;
+    final allRoles = await event.guild?.roles.list();
+    final modRole = allRoles?.firstWhereOrNull((role) => role.name == "Moderator");
+    final isMod = modRole != null && (userRoles?.contains(modRole) ?? false);
+    final shouldDelete = reaction == "❌"
+      && event.messageAuthorId == _client.user.id
+      && isMod;
+    if (shouldDelete) {
       // event.message.delete();
       final message = await event.message.get();
       print("Deleting ${message.content}");
