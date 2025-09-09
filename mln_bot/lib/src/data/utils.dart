@@ -43,7 +43,7 @@ extension MessageUtils on Message {
           ActionRowBuilder(components: [
             SelectMenuBuilder.stringSelect(
               placeholder: "Choose a reply",
-              customId: "message_$id",
+              customId: "message-reply_$id",
               options: [
                 for (final reply in replies)
                   SelectMenuOptionBuilder(
@@ -55,13 +55,17 @@ extension MessageUtils on Message {
           ]),
           ActionRowBuilder(components: [
             ButtonBuilder.secondary(
-              customId: "mark-read_$id",
+              customId: "message-read_$id",
               label: "Mark as Read",
             ),
             ButtonBuilder.link(
               url: Uri.parse("${MlnClient.host}/mln/private_view/default"),
               label: "Go to mailbox",
-            )
+            ),
+            ButtonBuilder.danger(
+              customId: "message-delete_$id",
+              label: "Delete message",
+            ),
         ]),
       ],
     );

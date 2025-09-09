@@ -1,5 +1,6 @@
 import "dart:io";
 
+import "package:mln_bot/secrets.dart";
 import "package:mln_bot/services.dart";
 import "package:nyxx/nyxx.dart";
 
@@ -71,10 +72,12 @@ extension DiscordUtils on NyxxGateway {
 }
 
 extension InteractionUtils on InteractionCreateEvent {
-  AccessToken? get mlnAccessToken {
+  MlnClient? get mlnClient {
     final user = interaction.user;
     if (user == null) return null;
     final sessionID = services.cache.discordToMln(user.id);
-    return services.cache.sessionToToken[sessionID];
+    final accessToken = services.cache.sessionToToken[sessionID];
+    if (accessToken == null) return null;
+    return MlnClient(accessToken, mlnApiToken);
   }
 }

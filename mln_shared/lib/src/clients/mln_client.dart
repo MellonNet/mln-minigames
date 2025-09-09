@@ -99,4 +99,9 @@ class MlnClient {
     final response = await _client.post("/messages/$messageID/mark-read");
     return response != null;
   }
+
+  Future<bool> deleteMessage(int messageID) async {
+    final response = await _client.delete("/messages/$messageID");
+    return response != null;
+  }
 }
