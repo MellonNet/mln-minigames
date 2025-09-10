@@ -10,7 +10,7 @@ extension MessageUtils on Message {
     final buffer = StringBuffer();
     final filteredBody = body.text
       .replaceAll("[item]", "\n- ")
-      .replaceAll("[list]", "\n###")
+      .replaceAll("[list]", "\n### ")
       .replaceAll("[/list]", "");
 
     buffer.writeln("## ${body.subject}");
