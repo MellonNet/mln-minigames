@@ -1,5 +1,3 @@
-import "dart:io";
-
 import "package:collection/collection.dart";
 import "package:mln_bot/secrets.dart";
 import "package:mln_bot/services.dart";
@@ -72,21 +70,22 @@ extension DiscordUtils on NyxxGateway {
   void setStatus() => updatePresence(
     PresenceBuilder(
       activities: [
-        if (Platform.isLinux && !Services.debug)
+        if (Services.debug)
+          ActivityBuilder(
+            name: "Maintenance",
+            state: "Undergoing Maintenance",
+            type: ActivityType.custom,
+          )
+        else
           ActivityBuilder(
             type: ActivityType.game,
             name: "My Lego Network",
             state: "Baking an Apple Pie",
             url: Uri.parse("https://mln.mellonnet.com"),
           )
-        else
-          ActivityBuilder(
-            name: "Maintenance",
-            state: "Undergoing Maintenance",
-            type: ActivityType.custom,
-          )
       ],
-      status: Platform.isLinux ? CurrentUserStatus.online : CurrentUserStatus.dnd,
+      status: Services.debug
+        ? CurrentUserStatus.dnd : CurrentUserStatus.online,
       isAfk: false,
       since: DateTime.now(),
     ),

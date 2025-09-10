@@ -5,10 +5,13 @@ export "src/services/server.dart";
 export "src/services/service.dart";
 export "src/services/wiki.dart";
 
+import "dart:io";
+
 import "";
 
 class Services extends Service {
-  static bool debug = false;
+  static bool debugFlag = false;
+  static bool get debug => !Platform.isLinux || debugFlag;
 
   final cache = Cache();
   final editorial = Editorial();
