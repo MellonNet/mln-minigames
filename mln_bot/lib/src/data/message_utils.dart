@@ -7,12 +7,42 @@ import "package:mln_shared/data.dart";
 import "user_utils.dart";
 
 extension MessageUtils on Message {
+  static final linkRegex = RegExp(r'a href="(.+)" (.+) \/a');
+
+  String? replaceUrl(String url) {
+    if (url.contains("construction.aspx")) {
+      return "https://construction.mellonnet.com";
+    } else if (url.contains("coastguard.aspx")) {
+      return "https://coast-guard.mellonnet.com";
+    } else if (url.contains("etwork/default.aspx")) {
+      return "https://mln.mellonnet.com";
+    } else if (url.contains("elp/default.aspx")) {
+      return "https://mellonnet.com/wiki";
+    } else if (url.contains("etwork/Pages.aspx")) {
+      return "https://mellonnet.com/discord";
+    } else if (url.contains("elp/Gettingstarted.aspx")) {
+      return "https://mellonnet.com/wiki";
+    } else {
+      return null;
+    }
+  }
+
+  String filterLink(Match match) {
+    final url = match.group(1);
+    final text = match.group(2);
+    if (url == null || text == null) return match.group(0)!;
+    final replacement = replaceUrl(url);
+    return replacement == null
+      ? text : "[$text]($replacement)";
+  }
+
   String describeText() {
     final buffer = StringBuffer();
     final filteredBody = body.text
       .replaceAll("[item]", "\n- ")
       .replaceAll("[list]", "\n### ")
-      .replaceAll("[/list]", "");
+      .replaceAll("[/list]", "")
+      .replaceAllMapped(linkRegex, filterLink);
 
     buffer.writeln("## ${body.subject}");
     buffer.writeln(filteredBody);
