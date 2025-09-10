@@ -110,7 +110,7 @@ final class MlnClient extends BaseMlnClient {
   Future<bool> deleteMessage(int messageID) => _client.delete("/messages/$messageID");
 
   Future<List<Message>?> mailbox() async {
-    final response = await _client.getJsonList("/api/messages?count=3");
+    final response = await _client.getJsonList("/messages?count=3");
     if (response == null) return null;
     return [
       for (final messageJson in response)

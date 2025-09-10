@@ -1,5 +1,4 @@
 Coming soon:
-  /inbox
   /harvest
 
 Coming later

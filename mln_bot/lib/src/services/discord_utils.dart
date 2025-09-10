@@ -122,4 +122,11 @@ extension MessageReactionAddEventUtils on MessageReactionAddEvent {
 
   Future<bool> isDm() async => (await message.channel.get())
     .type == ChannelType.dm;
+
+  Future<bool> isOriginalUser() async {
+    final originalMessage = await message.get();
+    final originalInteraction = originalMessage.interactionMetadata;
+    final originalUser = originalInteraction?.user;
+    return user.id == originalUser?.id;
+  }
 }
