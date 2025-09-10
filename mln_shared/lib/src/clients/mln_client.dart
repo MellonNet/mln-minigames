@@ -71,20 +71,14 @@ final class MlnClient extends BaseMlnClient {
     return response != null;
   }
 
-  Future<bool> unfriend(String username) async {
-    final response = await _client.delete("/users/$username/friendship");
-    return response != null;
-  }
+  Future<bool> unfriend(String username) => _client.delete("/users/$username/friendship");
 
   Future<bool> block(String username) async {
     final response = await _client.post("/users/$username/block");
     return response != null;
   }
 
-  Future<bool> unblock(String username) async {
-    final response = await _client.delete("/users/$username/block");
-    return response != null;
-  }
+  Future<bool> unblock(String username) => _client.delete("/users/$username/block");
 
   Future<WebhookID?> registerMailWebhook(String webhookUrl, String webhookSecret) async {
     final body = {
@@ -97,10 +91,7 @@ final class MlnClient extends BaseMlnClient {
     return WebhookID(response["webhook_id"]);
   }
 
-  Future<bool> deleteWebhook(WebhookID id) async {
-    final response = await _client.delete("/webhooks/$id");
-    return response != null;
-  }
+  Future<bool> deleteWebhook(WebhookID id) => _client.delete("/webhooks/$id");
 
   Future<bool> reply(int messageID, int replyID) async {
     final body = {"body_id": replyID};
@@ -113,8 +104,5 @@ final class MlnClient extends BaseMlnClient {
     return response != null;
   }
 
-  Future<bool> deleteMessage(int messageID) async {
-    final response = await _client.delete("/messages/$messageID");
-    return response != null;
-  }
+  Future<bool> deleteMessage(int messageID) => _client.delete("/messages/$messageID");
 }

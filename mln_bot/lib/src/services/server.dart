@@ -13,7 +13,7 @@ import "package:mln_bot/services.dart";
 
 class MlnServer extends Service {
   static const messagesWebhookPath = "/api/message";
-  static const messagesWebhookUrl = "https://discord-bot.mellonnet.com/$messagesWebhookPath";
+  static const messagesWebhookUrl = "https://discord-bot.mellonnet.com$messagesWebhookPath";
 
   final OAuth oauth = OAuth(
     apiToken: mlnApiToken,
@@ -27,7 +27,7 @@ class MlnServer extends Service {
 
   void dispose() => _server?.close();
 
-  @override 
+  @override
   Future<void> init() async {
     final app = Router();
     app.get("/api/login", loginHandler(oauth));

@@ -33,10 +33,12 @@ class JsonClient {
     return response?.ifOk;
   }
 
-  Future<Response?> delete(String path) async {
+  Future<bool> delete(String path) async {
+    // DELETE is a special case. Most errors are valid errors, like 403.
+    // But 404 is a non-error, since the end state is that the resource is gone.
     final uri = buildUri(path);
     final response = await _client.delete(uri, headers: authHeaders).ignoreAllErrors();
-    return response?.ifOk;
+    return response != null && (response.isOk || response.statusCode == 404);
   }
 
   Future<Json?> getJson(String path) async {

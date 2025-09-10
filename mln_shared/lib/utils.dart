@@ -35,17 +35,21 @@ extension StringUtils on String {
 
 class ApiException implements Exception {
   final String message;
+  final int? statusCode;
   ApiException(Response response) :
-    message = response.body.nullIfEmpty ?? getStatusMessage(response.statusCode);
+    message = response.body.nullIfEmpty ?? getStatusMessage(response.statusCode),
+    statusCode = response.statusCode;
 
-  ApiException.from(this.message);
+  ApiException.from(this.message) : statusCode = null;
 
   @override
   String toString() => message;
 }
 
 extension ResponseUtils on Response {
-  Response get ifOk => statusCode >= 200 && statusCode < 300
+  bool get isOk => statusCode >= 200 && statusCode < 300;
+
+  Response get ifOk => isOk
     ? this : throw ApiException(this);
 }
 
