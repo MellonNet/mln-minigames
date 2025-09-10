@@ -6,6 +6,7 @@ export "src/commands/help.dart";
 export "src/commands/login.dart";
 export "src/commands/logout.dart";
 export "src/commands/mail_webhooks.dart";
+export "src/commands/friend_webhooks.dart";
 export "src/commands/random_user.dart";
 export "src/commands/webhook_utils.dart";
 export "src/commands/whatis.dart";
@@ -27,6 +28,7 @@ final subscribeCommand = ChatGroup(
   "Get notified in Discord about MLN events",
   children: [
     subscribeMailCommand,
+    subscribeFriendCommand,
   ],
 );
 
@@ -35,21 +37,27 @@ final unsubscribeCommand = ChatGroup(
   "Stop Discord notifications for MLN events",
   children: [
     unsubscribeMailCommand,
+    unsubscribeFriendCommand,
   ],
 );
 
 List<CommandRegisterable> commands = [
+  // Users
   befriendCommand,
-  randomUserCommand,
+  unfriendCommand,
+  blockCommand,
+  unblockCommand,
   userQuery,
+  randomUserCommand,
+
+  // Items and Modules
+  itemQuery,
+  itemQueryPublic,
+
+  // Misc
   loginCommand,
   logoutCommand,
   subscribeCommand,
   unsubscribeCommand,
-  itemQuery,
-  itemQueryPublic,
-  unfriendCommand,
-  blockCommand,
-  unblockCommand,
   helpCommand,
 ];
