@@ -26,13 +26,13 @@ Did you know? When a command asks for a user, you can either give me their Mello
 
 **Misc**
 - `/login` and `/logout`
-- `/subscribe mail` and `/unsubscribe mail`
+- `/subscribe messages` and `/unsubscribe messages`
+- `/subscribe friends` and `/unsubscribe friends`
 - `/help`
 
-Most of my messages are shown privately, only to you, and there's a button to dismiss it. If I ever send a public message that you want to delete, just use the :x: reaction and I'll get rid of it.
+Most of my messages are shown privately, only to you, and there's a button to dismiss it. If you subscribe to something, I'll send you a DM. If you want to delete my messages, just use the :x: reaction and I'll get rid of it.
 
--# I'm being improved all the time, and new commands are coming soon!
-""";
+-# I'm being improved all the time, and new commands are coming soon!""";
 
 Future<void> _help(ChatContext context) =>
   context.respondText(helpText);
