@@ -1,8 +1,3 @@
-import "package:mln_bot/secrets.dart";
-import "package:mln_bot/services.dart";
-import "package:nyxx/nyxx.dart";
-import "package:nyxx_commands/nyxx_commands.dart";
-
 import "utils.dart";
 
 final subscribeMailCommand = ChatCommand("mail", "Get notified of new MLN messages", _subscribeMail);

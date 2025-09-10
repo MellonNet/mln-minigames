@@ -1,5 +1,3 @@
-import "package:nyxx_commands/nyxx_commands.dart";
-
 import "utils.dart";
 
 final blockCommand = ChatCommand("block", "Block a friend", _block);

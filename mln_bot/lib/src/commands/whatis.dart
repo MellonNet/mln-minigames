@@ -1,7 +1,4 @@
 import "package:collection/collection.dart";
-import "package:mln_bot/data.dart";
-import "package:mln_bot/services.dart";
-import "package:nyxx_commands/nyxx_commands.dart";
 
 import "utils.dart";
 

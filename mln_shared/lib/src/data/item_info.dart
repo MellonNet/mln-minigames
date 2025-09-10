@@ -1,7 +1,6 @@
 import "package:mln_shared/clients.dart";
+import "package:mln_shared/utils.dart";
 import "package:xml/xml.dart";
-
-import "utils.dart";
 
 extension type ItemID(String value) { }
 class ItemInfo {
@@ -10,7 +9,7 @@ class ItemInfo {
   final ItemID id;
   final String thumbnailPath;
 
-  ItemInfo.fromXml(XmlElement element) : 
+  ItemInfo.fromXml(XmlElement element) :
     name = element.getAttribute("name")!,
     description = element.getAttribute("description")!,
     id = ItemID(element.getAttribute("id")!),

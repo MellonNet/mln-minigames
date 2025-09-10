@@ -1,5 +1,3 @@
-import "package:nyxx_commands/nyxx_commands.dart";
-
 import "utils.dart";
 
 final unfriendCommand = ChatCommand("unfriend", "Delete a friend (or rescind friend request)", _unfriend);

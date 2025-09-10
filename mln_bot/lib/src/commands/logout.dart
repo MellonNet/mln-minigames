@@ -1,6 +1,3 @@
-import "package:mln_bot/services.dart";
-import "package:nyxx_commands/nyxx_commands.dart";
-
 import "utils.dart";
 
 final logoutCommand = ChatCommand("logout", "Removes your MLN data from Discord", _logout);

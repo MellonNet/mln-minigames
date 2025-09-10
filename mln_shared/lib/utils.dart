@@ -14,8 +14,23 @@ String encrypt({
   required String source,
 }) => CipherXor.xorToBase64(source, key);
 
-extension on String {
+extension StringUtils on String {
   String? get nullIfEmpty => isEmpty ? null : this;
+
+  bool fuzzyMatch(String query) {
+    final parts = toLowerCase().split(" ");
+    return query.toLowerCase().split(" ")
+      .every((queryPart) => parts.any((part) => part.contains(queryPart)));
+  }
+
+  bool caseInsensitive(String other) => toLowerCase() == other.toLowerCase();
+  bool containsInsensitive(String other) => toLowerCase().contains(other.toLowerCase());
+
+  (String, String)? splitFirst(String pattern) {
+    final index = indexOf(pattern);
+    if (index == -1) return null;
+    return (substring(0, index), substring(index + 1));
+  }
 }
 
 class ApiException implements Exception {

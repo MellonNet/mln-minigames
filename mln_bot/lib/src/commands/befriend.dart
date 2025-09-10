@@ -1,5 +1,3 @@
-import "package:nyxx_commands/nyxx_commands.dart";
-
 import "utils.dart";
 
 final befriendCommand = ChatCommand("befriend", "Send or accept a friend request", _befriend);

@@ -1,8 +1,9 @@
 import "dart:io";
 
-import "package:mln_bot/data.dart";
 import "package:xml/xml.dart";
 
+import "package:mln_shared/data.dart";
+import "package:mln_shared/utils.dart";
 
 import "service.dart";
 

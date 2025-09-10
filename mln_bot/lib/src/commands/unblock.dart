@@ -1,5 +1,3 @@
-import "package:nyxx_commands/nyxx_commands.dart";
-
 import "utils.dart";
 
 final unblockCommand = ChatCommand("unblock", "Unblock a friend", _unblock);
