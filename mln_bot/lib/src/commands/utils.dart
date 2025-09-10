@@ -8,7 +8,21 @@ export "package:mln_shared/mln_shared.dart";
 
 import "";
 
-Future<String?> checkUsername(String username) async {
+typedef ClientCommand = Future<void> Function(MlnClient);
+Future<void> authedCommand(ChatContext context, ClientCommand command) async {
+  final client = await context.getClient();
+  if (client == null) return;
+  await command(client);
+}
+
+typedef UserCommand = Future<void> Function(String username);
+Future<void> userCommand(ChatContext context, String username, UserCommand command) async {
+  final realUser = await checkDiscordUser(username);
+  if (realUser == null) return context.respondText("That Discord user has not linked their MLN account");
+  await command(realUser);
+}
+
+Future<String?> checkDiscordUser(String username) async {
   if (!username.startsWith("<@")) return username;
   final discordID = username.substring(2, username.length - 1);
   final snowflake = Snowflake(int.parse(discordID));

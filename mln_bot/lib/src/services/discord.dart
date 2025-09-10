@@ -6,50 +6,9 @@ import "package:mln_bot/src/services/discord_utils.dart";
 import "package:mln_shared/mln_shared.dart" hide User;
 
 import "package:nyxx/nyxx.dart";
-import "package:nyxx_commands/nyxx_commands.dart";
 
 typedef MlnClientCallback = Future<void> Function(MlnClient client);
 class DiscordClient extends Service {
-  final commandsPlugin = CommandsPlugin(
-    prefix: mentionOr((_) => "!"),
-    options: const CommandsOptions(
-      defaultResponseLevel: ResponseLevel.hint,
-      type: CommandType.slashOnly,
-      // logErrors: false,
-    ),
-  );
-
-  static final subscribeCommand = ChatGroup(
-    "subscribe",
-    "Get notified in Discord about MLN events",
-    children: [
-      subscribeMailCommand,
-    ],
-  );
-
-  static final unsubscribeCommand = ChatGroup(
-    "unsubscribe",
-    "Stop Discord notifications for MLN events",
-    children: [
-      unsubscribeMailCommand,
-    ],
-  );
-
-  static List<CommandRegisterable> commands = [
-    befriendCommand,
-    randomUserCommand,
-    userQuery,
-    loginCommand,
-    logoutCommand,
-    subscribeCommand,
-    unsubscribeCommand,
-    itemQuery,
-    itemQueryPublic,
-    unfriendCommand,
-    blockCommand,
-    unblockCommand,
-  ];
-
   late final NyxxGateway _client;
 
   @override
