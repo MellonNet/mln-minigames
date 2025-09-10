@@ -64,9 +64,10 @@ final class MlnClient extends BaseMlnClient {
     return User.fromJson(json);
   }
 
-  Future<bool> befriend(String username) async {
-    final response = await _client.post("/users/$username/friendship");
-    return response != null;
+  Future<Friendship?> befriend(String username) async {
+    final response = await _client.postJson("/users/$username/friendship");
+    if (response == null) return null;
+    return Friendship.fromJson(response);
   }
 
   Future<bool> unfriend(String username) => _client.delete("/users/$username/friendship");

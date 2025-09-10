@@ -4,9 +4,6 @@ import "package:mln_shared/clients.dart";
 import "badge.dart";
 import "friendship.dart";
 
-T? _parse<T, J>(T Function(J) fromJson, J? json) =>
-  json == null ? null : fromJson(json);
-
 class User {
   final String username;
   final String pagePath;
@@ -20,7 +17,7 @@ class User {
     pagePath = json["page_url"],
     rank = json["rank"],
     isNetworker = json["is_networker"],
-    friendshipStatus = _parse(FriendshipStatus.fromJson, json["friendship_status"] as String?),
+    friendshipStatus = FriendshipStatus.fromJson(json["friendship_status"]),
     badges = [
       for (final badgeJson in json["badges"])
         Badge.fromJson(Json.from(badgeJson)),

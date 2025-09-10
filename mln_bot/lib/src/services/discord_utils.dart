@@ -39,17 +39,18 @@ extension DiscordUtils on NyxxGateway {
     return replyTo(event, builder);
   }
 
-  Future<void> followUp(
+  Future<void> followUp<T>(
     InteractionCreateEvent<Interaction<dynamic>> event, {
-    required Future<void> Function() func,
-    required MessageFollowUp followUp,
+    required Future<T?> Function() func,
+    required MessageFollowUp Function(T) followUp,
     // required String? message,
     // bool react = false,
     // bool delete = false,
   }) async {
     try {
-      await func();
-      switch (followUp) {
+      final result = await func();
+      if (result == null) return replyToString(event, "An error occurred");
+      switch (followUp(result)) {
         case MessageReply(:final message):
           await replyToString(event, message);
         case MessageReaction(:final emoji):

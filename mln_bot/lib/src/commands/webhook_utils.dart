@@ -5,9 +5,13 @@ Future<void> subscribeWebhook(ChatContext context, WebhookType type) => authedCo
   if (webhook != null) {
     return context.respondText("You've already subscribed to $type");
   }
+  final url = switch (type) {
+    WebhookType.friendships => MlnServer.friendsWebhookUrl,
+    WebhookType.messages => MlnServer.messagesWebhookUrl,
+  };
   webhook = await client.registerWebhook(
     type: type,
-    webhookUrl: MlnServer.messagesWebhookUrl,
+    webhookUrl: url,
     webhookSecret: mlnWebhookApiToken,
   ).ignoreApiErrors();
   if (webhook == null) return context.respondText("An error occurred");

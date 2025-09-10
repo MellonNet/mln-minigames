@@ -49,7 +49,8 @@ class DiscordClient extends Service {
       case "message-reply": await _handleReply(event, data, int.parse(arg));
       case "message-read": await _handleMarkAsRead(event, int.parse(arg));
       case "message-delete": await _handleMessageDelete(event, int.parse(arg));
-      case "user": await _handleBefriend(event, data, arg);
+      case "friend-add": await _handleFriend(event, true, arg);
+      case "friend-delete": await _handleFriend(event, false, arg);
       case "item": await _handleItems(event, data, isPublic: arg == "true");
       case "unsubscribe": await _handleUnsubscribe(event, WebhookType.values.byName(arg));
     }
@@ -82,20 +83,28 @@ class DiscordClient extends Service {
     await _client.followUp(
       event,
       func: () => client.reply(messageID, replyID),
-      followUp: MessageReply("Message sent"),
+      followUp: (_) => MessageReply("Message sent"),
     );
   });
 
-  Future<void> _handleBefriend(
+  Future<void> _handleFriend(
     InteractionCreateEvent event,
-    MessageComponentInteractionData data,
+    bool accept,
     String username,
   ) => _handleInteraction(event, (client) async {
-    await _client.followUp(
-      event,
-      func: () => client.befriend(username),
-      followUp: MessageReply("Sent a friend request to $username"),
-    );
+    if (accept) {
+      await _client.followUp(
+        event,
+        func: () => client.befriend(username),
+        followUp: (friendship) => MessageReply(friendship.action!),
+      );
+    } else {
+      await _client.followUp(
+        event,
+        func: () => client.unfriend(username),
+        followUp: (_) => MessageDelete(),
+      );
+    }
   });
 
   Future<void> _handleItems(
@@ -118,7 +127,7 @@ class DiscordClient extends Service {
     await _client.followUp(
       event,
       func: () => deleteWebhook(client, webhook),
-      followUp: MessageReply("Unsubscribed"),
+      followUp: (_) => MessageReply("Unsubscribed"),
     );
   });
 
@@ -129,7 +138,7 @@ class DiscordClient extends Service {
     await _client.followUp(
       event,
       func: () => client.markAsRead(messageID),
-      followUp: MessageReaction.thumbsUp(),
+      followUp: (_) => MessageReaction.thumbsUp(),
     );
   });
 
@@ -140,7 +149,7 @@ class DiscordClient extends Service {
     await _client.followUp(
       event,
       func: () => client.deleteMessage(messageID),
-      followUp: MessageDelete(),
+      followUp: (_) => MessageDelete(),
     );
   });
 
