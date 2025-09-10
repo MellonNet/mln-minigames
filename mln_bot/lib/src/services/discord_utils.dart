@@ -111,4 +111,7 @@ extension MessageReactionAddEventUtils on MessageReactionAddEvent {
       ?.id;
     return member?.roles.any((role) => role.id == roleID) ?? false;
   }
+
+  Future<bool> isDm() async => (await message.channel.get())
+    .type == ChannelType.dm;
 }

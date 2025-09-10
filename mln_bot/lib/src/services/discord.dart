@@ -191,14 +191,8 @@ class DiscordClient extends Service {
     final isFromBot = event.messageAuthorId == _client.user.id;
     if (!isX || !isFromBot) return;
 
-    final channel = await event.message.channel.get();
-    final isMod = await event.hasRole("Moderator");
-    final isDm = channel.type == ChannelType.dm;
-
-    if (isMod || isDm) {
-      await event.message.delete();
-    } else {
-      await event.message.deleteReaction(ReactionBuilder.fromEmoji(emoji));
-    }
+    final isDm = await event.isDm();
+    if (!isDm) return;
+    await event.message.delete();
   }
 }
