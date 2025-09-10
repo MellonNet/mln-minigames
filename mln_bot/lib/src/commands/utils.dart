@@ -57,24 +57,30 @@ extension ChatUtils on ChatContext {
     ),
   );
 
-  Future<void> respondLink(String label, Uri uri) => respond(
-    MessageBuilder(
-      flags: MessageFlags.isComponentsV2,
-      components: [
-        ActionRowBuilder(components: [
-          ButtonBuilder.link(url: uri, label: label),
-        ]),
-      ],
-    ),
-  );
-
   Future<void> respondUser(mln.User user, String prefix) =>
     respond(user.describe(prefix));
 
-  Future<void> respondLogin() async {
+  Future<void> respondLogin({bool promptToRetry = false}) async {
     final loginUrl = services.server.oauth.getLoginUri(sessionID);
-    await respondLink("Sign in with My Lego Network", loginUrl);
+    final message = promptToRetry
+      ? "First sign in, then retry your command"
+      : "Sign in to get access to all the features!";
+    final button = ButtonBuilder.link(
+      url: loginUrl,
+      label: "Sign in with My Lego Network",
+    );
+    await respondButton(message, button);
   }
+
+  Future<void> respondButton(String text, ButtonBuilder button) => respond(
+    MessageBuilder(
+      flags: MessageFlags.isComponentsV2,
+      components: [
+        TextDisplayComponentBuilder(content: text),
+        ActionRowBuilder(components: [button]),
+      ]
+    )
+  );
 
   Future<void> respondItem(ItemInfo item, {required bool isPublic}) async =>
     respond(await item.describe(isPublic: isPublic));
@@ -104,7 +110,7 @@ extension ChatUtils on ChatContext {
   Future<MlnClient?> getClient({bool promptLogin = true}) async {
     final accessToken = this.accessToken;
     if (accessToken == null) {
-      if (promptLogin) await respondLogin();
+      if (promptLogin) await respondLogin(promptToRetry: true);
       return null;
     } else {
       return MlnClient(accessToken, mlnApiToken);
