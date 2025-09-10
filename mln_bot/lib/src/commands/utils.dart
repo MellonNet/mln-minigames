@@ -101,10 +101,10 @@ extension ChatUtils on ChatContext {
 
   AccessToken? get accessToken => services.server.oauth.sessionToTokens[sessionID];
 
-  Future<MlnClient?> getClient() async {
+  Future<MlnClient?> getClient({bool promptLogin = true}) async {
     final accessToken = this.accessToken;
     if (accessToken == null) {
-      await respondLogin();
+      if (promptLogin) await respondLogin();
       return null;
     } else {
       return MlnClient(accessToken, mlnApiToken);
@@ -114,5 +114,5 @@ extension ChatUtils on ChatContext {
   AnonymousMlnClient getAnonymousClient() => AnonymousMlnClient(mlnApiToken);
 
   Future<BaseMlnClient> getAnyClient() async =>
-    (await getClient()) ?? getAnonymousClient();
+    (await getClient(promptLogin: false)) ?? getAnonymousClient();
 }
