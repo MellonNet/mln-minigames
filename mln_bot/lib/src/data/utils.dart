@@ -8,8 +8,14 @@ import "item_info.dart";
 extension MessageUtils on Message {
   String describeText() {
     final buffer = StringBuffer();
-    buffer.writeln("### ${body.subject}");
-    buffer.writeln(body.text.replaceAll("[item]", "\n- "));
+    final filteredBody = body.text
+      .replaceAll("[item]", "\n- ")
+      .replaceAll("[list]", "\n###")
+      .replaceAll("[/list]", "");
+
+    buffer.writeln("## ${body.subject}");
+    buffer.writeln(filteredBody);
+
     if (attachments.isNotEmpty) {
       buffer.writeln("### Attachments:");
       for (final attachment in attachments) {
@@ -18,6 +24,7 @@ extension MessageUtils on Message {
         if (item == null) continue;
       }
     }
+
     return buffer.toString();
   }
 
@@ -119,7 +126,9 @@ extension UserUtils on User {
     buffer.writeln("- rank: $rank");
     if (isNetworker) buffer.writeln("- is a networker");
     buffer.writeln("- has ${badges.length} badges");
-    buffer.writeln("- ${friendshipStatus.describe}");
+    if (friendshipStatus != null) {
+      buffer.writeln("- ${friendshipStatus!.describe}");
+    }
     return buffer.toString();
   }
 
