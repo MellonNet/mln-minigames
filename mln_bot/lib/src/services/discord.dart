@@ -50,7 +50,7 @@ class DiscordClient extends Service {
       case "message-read": await _handleMarkAsRead(event, int.parse(arg));
       case "message-delete": await _handleMessageDelete(event, int.parse(arg));
       case "friend-add": await _handleFriend(event, accept: true, arg);
-      case "friend-add-edit": await _handleFriend(event, accept: true, edit: true, arg);
+      case "friend-add-edit": await _handleFriend(event, accept: true, replace: true, arg);
       case "friend-delete": await _handleFriend(event, accept: false, arg);
       case "item": await _handleItems(event, data, isPublic: arg == "true");
       case "unsubscribe": await _handleUnsubscribe(event, WebhookType.values.byName(arg));
@@ -91,15 +91,13 @@ class DiscordClient extends Service {
   Future<void> _handleFriend(
     InteractionCreateEvent event,
     String username,
-    {required bool accept, bool edit = false}
+    {required bool accept, bool replace = false}
   ) => _handleInteraction(event, (client) async {
     if (accept) {
       await _client.followUp(
         event,
         func: () => client.befriend(username),
-        followUp: (friendship) => edit
-          ? MessageEdit(friendship.action!)
-          : MessageReply(friendship.action!),
+        followUp: (friendship) => MessageReply(friendship.action!, replace: replace),
       );
     } else {
       await _client.followUp(

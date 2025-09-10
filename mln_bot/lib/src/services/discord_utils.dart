@@ -9,7 +9,8 @@ sealed class MessageFollowUp { }
 
 class MessageReply extends MessageFollowUp {
   final String message;
-  MessageReply(this.message);
+  final bool replace;
+  MessageReply(this.message, {this.replace = false});
 }
 
 class MessageReaction extends MessageFollowUp {
@@ -19,11 +20,6 @@ class MessageReaction extends MessageFollowUp {
 }
 
 class MessageDelete extends MessageFollowUp { }
-
-class MessageEdit extends MessageFollowUp {
-  final String message;
-  MessageEdit(this.message);
-}
 
 extension DiscordUtils on NyxxGateway {
   Future<void> replyTo(InteractionCreateEvent event, MessageBuilder? builder) => interactions
@@ -60,7 +56,8 @@ extension DiscordUtils on NyxxGateway {
       final result = await func();
       if (result == null) return replyToString(event, "An error occurred");
       switch (followUp(result)) {
-        case MessageReply(:final message):
+        case MessageReply(:final message, :final replace):
+          if (replace) await event.interaction.message?.delete();
           await replyToString(event, message);
         case MessageReaction(:final emoji):
           await event.interaction.message?.react(ReactionBuilder(name: emoji, id: null));
@@ -68,12 +65,6 @@ extension DiscordUtils on NyxxGateway {
         case MessageDelete():
           await event.interaction.message?.delete();
           await replyTo(event, null);
-        case MessageEdit(:final message):
-          await edit(event, MessageUpdateBuilder(
-            components: [
-              TextDisplayComponentBuilder(content: message),
-            ],
-          ));
       }
     } on ApiException catch (error) {
       await replyToString(event, error.message);
