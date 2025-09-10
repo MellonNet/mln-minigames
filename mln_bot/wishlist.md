@@ -1,13 +1,9 @@
-Coming soon:
-  /subscribe friends
-  /inbox
-  /harvest
-
 Coming later
   /who-has MODULE
   /click-request MODULE
   /inventory ITEM
   /craft ITEM
+  /harvest
 
 Even later -- Bot posts based on MLN events:
   User X ranked up to rank Y (Discord role!)

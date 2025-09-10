@@ -70,7 +70,9 @@ extension DiscordUtils on NyxxGateway {
       await replyToString(event, error.message);
     // Catch all errors
     // ignore: avoid_catches_without_on_clauses
-    } catch (_) {
+    } catch (error, stack) {
+      print(error);
+      print(stack);
       await replyToString(event, "An error occurred");
     }
   }
@@ -122,4 +124,11 @@ extension MessageReactionAddEventUtils on MessageReactionAddEvent {
 
   Future<bool> isDm() async => (await message.channel.get())
     .type == ChannelType.dm;
+
+  Future<bool> isOriginalUser() async {
+    final originalMessage = await message.get();
+    final originalInteraction = originalMessage.interactionMetadata;
+    final originalUser = originalInteraction?.user;
+    return user.id == originalUser?.id;
+  }
 }
