@@ -5,7 +5,7 @@ import "package:mln_bot/secrets.dart";
 import "package:mln_bot/src/services/discord_utils.dart";
 import "package:mln_shared/mln_shared.dart" hide User;
 
-import "package:nyxx/nyxx.dart";
+import "package:nyxx/nyxx.dart" hide Webhook, WebhookType;
 
 typedef MlnClientCallback = Future<void> Function(MlnClient client);
 class DiscordClient extends Service {
@@ -51,7 +51,7 @@ class DiscordClient extends Service {
       case "message-delete": await _handleMessageDelete(event, int.parse(arg));
       case "user": await _handleBefriend(event, data, arg);
       case "item": await _handleItems(event, data, isPublic: arg == "true");
-      case "unsubscribe-mail": await _handleUnsubscribeMail(event, data);
+      case "unsubscribe": await _handleUnsubscribe(event, WebhookType.values.byName(arg));
     }
   }
 
@@ -109,15 +109,15 @@ class DiscordClient extends Service {
     await _client.replyTo(event, builder);
   }
 
-  Future<void> _handleUnsubscribeMail(
+  Future<void> _handleUnsubscribe(
     InteractionCreateEvent event,
-    MessageComponentInteractionData data,
+    WebhookType type,
   ) => _handleInteraction(event, (client) async {
-    final webhookID = services.cache.mailWebhooks[client.accessToken];
-    if (webhookID == null) return _client.replyToString(event, "You were not subscribed");
+    final webhook = services.cache.getWebhook(client.accessToken, type);
+    if (webhook == null) return _client.replyToString(event, "You were not subscribed");
     await _client.followUp(
       event,
-      func: () => deleteMailWebhook(client, webhookID),
+      func: () => deleteWebhook(client, webhook),
       followUp: MessageReply("Unsubscribed"),
     );
   });

@@ -1,4 +1,4 @@
-export "package:nyxx/nyxx.dart" hide Attachment, Cache, Message, User;
+export "package:nyxx/nyxx.dart" hide Attachment, Cache, Message, User, Webhook, WebhookType;
 export "package:nyxx_commands/nyxx_commands.dart";
 
 export "package:mln_bot/data.dart";

@@ -7,9 +7,8 @@ export "src/commands/login.dart";
 export "src/commands/logout.dart";
 export "src/commands/mail_webhooks.dart";
 export "src/commands/random_user.dart";
+export "src/commands/webhook_utils.dart";
 export "src/commands/whatis.dart";
-export "src/commands/unfriend.dart";
-export "src/commands/unblock.dart";
 export "src/commands/whois.dart";
 
 import "";

@@ -2,15 +2,16 @@ import "dart:async";
 import "dart:convert";
 import "dart:io";
 
+import "package:collection/collection.dart";
 import "package:mln_bot/services.dart";
-import "package:nyxx/nyxx.dart";
+import "package:nyxx/nyxx.dart" hide Webhook, WebhookType;
 
 import "package:mln_shared/mln_shared.dart";
 
 class Cache extends Service {
   static final sessionsFile = File("cache/sessions.txt");
   static final snowflakesFile = File("cache/snowflakes.txt");
-  static final mailWebhooksFile = File("cache/webhooks_mail.txt");
+  static final webhooksFile = File("cache/webhooks.json");
   static final statsFile = File("cache/stats.json");
 
   Map<SessionID, AccessToken> get sessionToToken =>
@@ -20,7 +21,10 @@ class Cache extends Service {
     services.server.oauth.tokenToSession;
 
   final sessionToDiscord = <SessionID, Snowflake>{};
-  final mailWebhooks = <AccessToken, WebhookID>{};
+  final webhooks = <Webhook>[];
+
+  Webhook? getWebhook(AccessToken accessToken, WebhookType type) => webhooks
+    .firstWhereOrNull((webhook) => webhook.accessToken == accessToken && webhook.type == type);
 
   Future<void> saveAccessTokens() => _writeCache(sessionsFile, {
     for (final (sessionID, accessToken) in sessionToToken.records)
@@ -32,12 +36,18 @@ class Cache extends Service {
       sessionID.value: snowflake.value,
   });
 
-  Future<void> saveMailWebhooks() => _writeCache(mailWebhooksFile, {
-    for (final (accessToken, webhookID) in mailWebhooks.records)
-      accessToken.value: webhookID.id,
-  });
+  Future<void> saveWebhooks() => _writeCacheList(webhooksFile, [
+    for (final webhook in webhooks)
+      webhook.toJson(),
+  ]);
 
   static Future<void> _writeCache(File file, Json data) async {
+    final contents = jsonEncode(data);
+    await file.create(recursive: true);
+    await file.writeAsString(contents);
+  }
+
+  static Future<void> _writeCacheList(File file, List<Json> data) async {
     final contents = jsonEncode(data);
     await file.create(recursive: true);
     await file.writeAsString(contents);
@@ -65,11 +75,11 @@ class Cache extends Service {
       }
     }
 
-    if (mailWebhooksFile.existsSync()) {
-      final contents = await mailWebhooksFile.readAsString();
-      final data = jsonDecode(contents) as Json;
-      for (final (accessToken, webhookID) in data.cast<String, int>().records) {
-        mailWebhooks[AccessToken(accessToken)] = WebhookID(webhookID);
+    if (webhooksFile.existsSync()) {
+      final contents = await webhooksFile.readAsString();
+      final data = jsonDecode(contents) as List;
+      for (final webhookJson in data.cast<Json>()) {
+        webhooks.add(Webhook.fromJson(webhookJson));
       }
     }
   }
