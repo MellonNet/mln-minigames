@@ -11,7 +11,6 @@ extension MessageUtils on Message {
     buffer.writeln("### ${body.subject}");
     buffer.writeln(body.text.replaceAll("[item]", "> - "));
     if (attachments.isNotEmpty) {
-      buffer.writeln();
       buffer.writeln("### Attachments:");
       for (final attachment in attachments) {
         buffer.writeln("- ${attachment.name} x${attachment.qty}");
