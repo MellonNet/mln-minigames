@@ -72,7 +72,7 @@ extension DiscordUtils on NyxxGateway {
   void setStatus() => updatePresence(
     PresenceBuilder(
       activities: [
-        if (Platform.isLinux)
+        if (Platform.isLinux && !Services.debug)
           ActivityBuilder(
             type: ActivityType.game,
             name: "My Lego Network",

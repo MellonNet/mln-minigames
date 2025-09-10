@@ -8,6 +8,8 @@ export "src/services/wiki.dart";
 import "";
 
 class Services extends Service {
+  static bool debug = false;
+
   final cache = Cache();
   final editorial = Editorial();
   final server = MlnServer();
