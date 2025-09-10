@@ -6,9 +6,9 @@ extension FriendUtils on Friendship {
     flags: MessageFlags.isComponentsV2,
     components: [
       TextDisplayComponentBuilder(content: describeText(username)),
-      ActionRowBuilder(components: [
-        if (status == FriendshipStatus.pending) ...[
-          ButtonBuilder.secondary(
+      if (status == FriendshipStatus.pending)
+        ActionRowBuilder(components: [
+          ButtonBuilder.danger(
             customId: "friend-delete_${getOther(username)})",
             label: "Delete",
           ),
@@ -16,8 +16,7 @@ extension FriendUtils on Friendship {
             customId: "friend-add_${getOther(username)}",
             label: "Accept",
           ),
-        ]
-      ]),
+        ]),
     ],
   );
 }
