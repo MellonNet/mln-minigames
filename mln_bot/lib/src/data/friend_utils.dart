@@ -9,7 +9,7 @@ extension FriendUtils on Friendship {
       if (status == FriendshipStatus.pending)
         ActionRowBuilder(components: [
           ButtonBuilder.danger(
-            customId: "friend-delete_${getOther(username)})",
+            customId: "friend-delete_${getOther(username)}",
             label: "Delete",
           ),
           ButtonBuilder.primary(
