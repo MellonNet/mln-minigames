@@ -1,8 +1,8 @@
 import "package:collection/collection.dart";
-import "package:html/dom.dart";
 import "package:http/http.dart";
+import "package:html/dom.dart";
 import "package:html/parser.dart";
-import "package:mln_bot/data.dart";
+
 import "package:mln_shared/mln_shared.dart";
 
 import "service.dart";
@@ -23,7 +23,7 @@ extension on Element {
 
 class Wiki extends Service {
   final client = Client();
-  
+
   @override
   Future<void> init() async { }
 

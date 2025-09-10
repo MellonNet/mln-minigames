@@ -1,27 +1,16 @@
-import "package:mln_bot/services.dart";
-import "package:nyxx_commands/nyxx_commands.dart";
-
 import "utils.dart";
 
 final unfriendCommand = ChatCommand("unfriend", "Delete a friend (or rescind friend request)", _unfriend);
 
 Future<void> _unfriend(
-  ChatContext context, [
+  ChatContext context,
   @Description("The MLN or Discord user to unfriend")
-  String? username,
-]) async {
-  final client = await context.getClient();
-  if (client == null) return;
-  if (username == null) {
-    await context.respondText("Please specify a user");
-    return;
-  }
-  username = await client.checkUsername(username);
-  if (username == null) {
-    return context.respondText("That Discord user has not linked their MLN account");
-  }
-  await context.handle<bool>(
-    func: () => client.unfriend(username!), 
-    onSuccess: (_) => context.respondText("$username is no longer your friend"),
-  );
-}
+  String username,
+) => authedCommand(context,
+  (client) => userCommand(context, username,
+    (user) => context.handle<bool>(
+      func: () => client.unfriend(user),
+      onSuccess: (_) => context.respondText("$user is no longer your friend"),
+    ),
+  ),
+);

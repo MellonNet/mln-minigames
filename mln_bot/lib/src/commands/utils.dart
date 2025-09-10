@@ -1,14 +1,40 @@
-import "package:mln_bot/data.dart";
-import "package:mln_bot/secrets.dart";
-import "package:mln_bot/services.dart";
-import "package:mln_shared/data.dart" as mln;
-import "package:mln_shared/clients.dart";
-import "package:mln_shared/utils.dart";
+export "package:nyxx/nyxx.dart" hide Attachment, Cache, Message, User;
+export "package:nyxx_commands/nyxx_commands.dart";
 
-import "package:nyxx/nyxx.dart";
-import "package:nyxx_commands/nyxx_commands.dart";
-
+export "package:mln_bot/data.dart";
+export "package:mln_bot/secrets.dart";
+export "package:mln_bot/services.dart";
 export "package:mln_shared/mln_shared.dart";
+
+import "";
+
+typedef ClientCommand = Future<void> Function(MlnClient);
+Future<void> authedCommand(ChatContext context, ClientCommand command) async {
+  final client = await context.getClient();
+  if (client == null) return;
+  await command(client);
+}
+
+typedef UserCommand = Future<void> Function(String username);
+Future<void> userCommand(ChatContext context, String username, UserCommand command) async {
+  final realUser = await checkDiscordUser(username);
+  if (realUser == null) return context.respondText("That Discord user has not linked their MLN account");
+  await command(realUser);
+}
+
+Future<String?> checkDiscordUser(String username) async {
+  if (!username.startsWith("<@")) return username;
+  final discordID = username.substring(2, username.length - 1);
+  final snowflake = Snowflake(int.parse(discordID));
+  // Lookup the MLN access token
+  final sessionID = services.cache.discordToMln(snowflake);
+  final accessToken = services.cache.sessionToToken[sessionID];
+  if (accessToken == null) return null;
+  // Find the user based on their access token
+  final client2 = MlnClient(accessToken, mlnApiToken);
+  final user2 = await client2.whoAmI();
+  return user2?.username;
+}
 
 extension ChatUtils on ChatContext {
   Future<void> handle<T>({
@@ -43,24 +69,30 @@ extension ChatUtils on ChatContext {
     ),
   );
 
-  Future<void> respondLink(String label, Uri uri) => respond(
+  Future<void> respondUser(User user, String prefix) =>
+    respond(user.describe(prefix));
+
+  Future<void> respondLogin({bool promptToRetry = false}) async {
+    final loginUrl = services.server.oauth.getLoginUri(sessionID);
+    final message = promptToRetry
+      ? "First sign in, then retry your command"
+      : "Sign in to get access to all the features!";
+    final button = ButtonBuilder.link(
+      url: loginUrl,
+      label: "Sign in with My Lego Network",
+    );
+    await respondButton(message, button);
+  }
+
+  Future<void> respondButton(String text, ButtonBuilder button) => respond(
     MessageBuilder(
       flags: MessageFlags.isComponentsV2,
       components: [
-        ActionRowBuilder(components: [
-          ButtonBuilder.link(url: uri, label: label),
-        ]),
-      ],
-    ),
+        TextDisplayComponentBuilder(content: text),
+        ActionRowBuilder(components: [button]),
+      ]
+    )
   );
-
-  Future<void> respondUser(mln.User user, String prefix) =>
-    respond(user.describe(prefix));
-
-  Future<void> respondLogin() async {
-    final loginUrl = services.server.oauth.getLoginUri(sessionID);
-    await respondLink("Sign in with My Lego Network", loginUrl);
-  }
 
   Future<void> respondItem(ItemInfo item, {required bool isPublic}) async =>
     respond(await item.describe(isPublic: isPublic));
@@ -87,13 +119,18 @@ extension ChatUtils on ChatContext {
 
   AccessToken? get accessToken => services.server.oauth.sessionToTokens[sessionID];
 
-  Future<MlnClient?> getClient() async {
+  Future<MlnClient?> getClient({bool promptLogin = true}) async {
     final accessToken = this.accessToken;
     if (accessToken == null) {
-      await respondLogin();
+      if (promptLogin) await respondLogin(promptToRetry: true);
       return null;
     } else {
       return MlnClient(accessToken, mlnApiToken);
     }
   }
+
+  AnonymousMlnClient getAnonymousClient() => AnonymousMlnClient(mlnApiToken);
+
+  Future<BaseMlnClient> getAnyClient() async =>
+    (await getClient(promptLogin: false)) ?? getAnonymousClient();
 }

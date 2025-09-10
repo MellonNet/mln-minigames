@@ -1,8 +1,9 @@
 import "dart:io";
 
-import "package:mln_bot/data.dart";
 import "package:xml/xml.dart";
 
+import "package:mln_shared/data.dart";
+import "package:mln_shared/utils.dart";
 
 import "service.dart";
 
@@ -20,7 +21,16 @@ class Editorial extends Service {
     items = itemRoot.childElements.map(ItemInfo.fromXml).toList();
   }
 
-  Iterable<ItemInfo> searchItems(String query) => items
+  Iterable<ItemInfo> searchItems(String query, {bool blueprints = false}) => items
     .where((item) => item.matches(query))
-    .where((item) => !item.name.containsInsensitive("blueprint"));
+    .where((item) => blueprints || !item.name.containsInsensitive("blueprint"));
+
+  Uri? getThumbnail(String itemName) => searchItems(itemName, blueprints: true)
+    .first
+    .thumbnailUrl
+    .toUri();
+}
+
+extension on String {
+  Uri toUri() => Uri.parse(this);
 }

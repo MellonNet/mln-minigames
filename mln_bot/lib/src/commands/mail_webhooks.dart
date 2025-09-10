@@ -1,17 +1,10 @@
-import "package:mln_bot/secrets.dart";
-import "package:mln_bot/services.dart";
-import "package:nyxx/nyxx.dart";
-import "package:nyxx_commands/nyxx_commands.dart";
-
 import "utils.dart";
 
 final subscribeMailCommand = ChatCommand("mail", "Get notified of new MLN messages", _subscribeMail);
 
 final unsubscribeMailCommand = ChatCommand("mail", "Stop getting notified about MLN messages", _unsubscribeMail);
 
-Future<void> _subscribeMail(ChatContext context) async {
-  final client = await context.getClient();
-  if (client == null) return;
+Future<void> _subscribeMail(ChatContext context) => authedCommand(context, (client) async {
   var webhookID = services.cache.mailWebhooks[client.accessToken];
   if (webhookID != null) {
     await context.respondText("You've already subscribed to mail notifications.");
@@ -24,32 +17,23 @@ Future<void> _subscribeMail(ChatContext context) async {
   }
   services.cache.mailWebhooks[client.accessToken] = webhookID;
   await services.cache.saveMailWebhooks();
-  await context.respond(
-    MessageBuilder(
-      flags: MessageFlags.isComponentsV2,
-      components: [
-        TextDisplayComponentBuilder(content: "Subscribed! I'll let you know when a new MLN message arrives"),
-        ActionRowBuilder(components: [
-          ButtonBuilder.secondary(customId: "unsubscribe-mail_xxx", label: "Unsubscribe"),
-        ]),
-      ],
-    ),
+  await context.respondButton(
+    "Subscribed! I'll let you know when a new MLN message arrives",
+    ButtonBuilder.secondary(customId: "unsubscribe-mail_xxx", label: "Unsubscribe"),
   );
-}
+});
 
-Future<void> _unsubscribeMail(ChatContext context) async {
-  final client = await context.getClient();
-  if (client == null) return;
+Future<void> _unsubscribeMail(ChatContext context) => authedCommand(context, (client) async {
   final webhookID = services.cache.mailWebhooks[client.accessToken];
   if (webhookID == null) {
     await context.respondText("You were not subscribed to messages");
   } else {
     await context.handle<void>(
-      func: () => deleteMailWebhook(client, webhookID), 
+      func: () => deleteMailWebhook(client, webhookID),
       onSuccess: (_) => context.respondText("Unsubscribed"),
     );
   }
-}
+});
 
 Future<bool?> deleteMailWebhook(MlnClient client, WebhookID webhookID) async {
   final success = await client.deleteWebhook(webhookID);

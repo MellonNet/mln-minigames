@@ -1,5 +1,3 @@
-import "package:nyxx_commands/nyxx_commands.dart";
-
 import "utils.dart";
 
 final randomUserCommand = ChatCommand("random", "Find a random user", _randomUser);
@@ -22,13 +20,15 @@ Future<void> _randomUser(
   @Description("Which rank to search")
   String? rank
 ]) async {
-  final client = await context.getClient();
-  if (client == null) return;
+  final client = await context.getAnyClient();
   final int rankInt;
   if (rank == null || rank.isEmpty) {
+    if (client is! MlnClient) {
+      return context.respondText("Either specify a rank, or use the /login command to search your rank");
+    }
     final user = await client.whoAmI().ignoreApiErrors();
     if (user == null) {
-      await context.respondText("Either specify a rank, or use the /login command to search your rank");
+      await context.respondText("Could not find your rank. Try using /logout then /login again");
       return;
     }
     rankInt = user.rank;
@@ -41,7 +41,7 @@ Future<void> _randomUser(
   }
   const prefix = "Found a random user";
   await context.handle(
-    func: () => client.getRandomUser(rankInt), 
+    func: () => client.getRandomUser(rankInt),
     onSuccess: (user) => context.respondUser(user, prefix),
   );
 }

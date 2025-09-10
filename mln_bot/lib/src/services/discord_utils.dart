@@ -1,16 +1,35 @@
 import "dart:io";
 
+import "package:collection/collection.dart";
+import "package:mln_bot/secrets.dart";
 import "package:mln_bot/services.dart";
 import "package:nyxx/nyxx.dart";
 
 import "package:mln_shared/mln_shared.dart" hide User;
 
+sealed class MessageFollowUp { }
+
+class MessageReply extends MessageFollowUp {
+  final String message;
+  MessageReply(this.message);
+}
+
+class MessageReaction extends MessageFollowUp {
+  final String emoji;
+  MessageReaction(this.emoji);
+  MessageReaction.thumbsUp() : emoji = "👍";
+}
+
+class MessageDelete extends MessageFollowUp { }
+
 extension DiscordUtils on NyxxGateway {
-  Future<void> replyTo(InteractionCreateEvent<Interaction<dynamic>> event, MessageBuilder builder) async {
+  Future<void> replyTo(InteractionCreateEvent<Interaction<dynamic>> event, MessageBuilder? builder) async {
     await interactions.createResponse(
       event.interaction.id,
       event.interaction.token,
-      InteractionResponseBuilder.channelMessage(builder),
+      builder == null
+        ? InteractionResponseBuilder.deferredUpdateMessage()
+        : InteractionResponseBuilder.channelMessage(builder),
       withResponse: true,
     );
   }
@@ -23,11 +42,23 @@ extension DiscordUtils on NyxxGateway {
   Future<void> followUp(
     InteractionCreateEvent<Interaction<dynamic>> event, {
     required Future<void> Function() func,
-    required String message, 
+    required MessageFollowUp followUp,
+    // required String? message,
+    // bool react = false,
+    // bool delete = false,
   }) async {
     try {
       await func();
-      await replyToString(event, message);
+      switch (followUp) {
+        case MessageReply(:final message):
+          await replyToString(event, message);
+        case MessageReaction(:final emoji):
+          await event.interaction.message?.react(ReactionBuilder(name: emoji, id: null));
+          await replyTo(event, null);
+        case MessageDelete():
+          await event.interaction.message?.delete();
+          await replyTo(event, null);
+      }
     } on ApiException catch (error) {
       await replyToString(event, error.message);
     // Catch all errors
@@ -47,10 +78,10 @@ extension DiscordUtils on NyxxGateway {
             state: "Baking an Apple Pie",
             url: Uri.parse("https://mln.mellonnet.com"),
           )
-        else 
+        else
           ActivityBuilder(
             name: "Maintenance",
-            state: "Undergoing Maintenance", 
+            state: "Undergoing Maintenance",
             type: ActivityType.custom,
           )
       ],
@@ -62,10 +93,25 @@ extension DiscordUtils on NyxxGateway {
 }
 
 extension InteractionUtils on InteractionCreateEvent {
-  AccessToken? get mlnAccessToken {
+  MlnClient? get mlnClient {
     final user = interaction.user;
     if (user == null) return null;
     final sessionID = services.cache.discordToMln(user.id);
-    return services.cache.sessionToToken[sessionID];
-  } 
+    final accessToken = services.cache.sessionToToken[sessionID];
+    if (accessToken == null) return null;
+    return MlnClient(accessToken, mlnApiToken);
+  }
+}
+
+extension MessageReactionAddEventUtils on MessageReactionAddEvent {
+  Future<bool> hasRole(String roleName) async {
+    final allRoles = await guild?.roles.list();
+    final roleID = allRoles
+      ?.firstWhereOrNull((role) => role.name == roleName)
+      ?.id;
+    return member?.roles.any((role) => role.id == roleID) ?? false;
+  }
+
+  Future<bool> isDm() async => (await message.channel.get())
+    .type == ChannelType.dm;
 }
