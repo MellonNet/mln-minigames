@@ -24,16 +24,9 @@ Future<void> _subscribeMail(ChatContext context) async {
   }
   services.cache.mailWebhooks[client.accessToken] = webhookID;
   await services.cache.saveMailWebhooks();
-  await context.respond(
-    MessageBuilder(
-      flags: MessageFlags.isComponentsV2,
-      components: [
-        TextDisplayComponentBuilder(content: "Subscribed! I'll let you know when a new MLN message arrives"),
-        ActionRowBuilder(components: [
-          ButtonBuilder.secondary(customId: "unsubscribe-mail_xxx", label: "Unsubscribe"),
-        ]),
-      ],
-    ),
+  await context.respondButton(
+    "Subscribed! I'll let you know when a new MLN message arrives",
+    ButtonBuilder.secondary(customId: "unsubscribe-mail_xxx", label: "Unsubscribe"),
   );
 }
 
@@ -45,7 +38,7 @@ Future<void> _unsubscribeMail(ChatContext context) async {
     await context.respondText("You were not subscribed to messages");
   } else {
     await context.handle<void>(
-      func: () => deleteMailWebhook(client, webhookID), 
+      func: () => deleteMailWebhook(client, webhookID),
       onSuccess: (_) => context.respondText("Unsubscribed"),
     );
   }
