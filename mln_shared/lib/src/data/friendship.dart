@@ -34,7 +34,7 @@ class Friendship {
 
   String describeText(String username) => switch (status) {
     FriendshipStatus.none => "${getOther(username)} removed you as a friend 😟",
-    FriendshipStatus.friend => "${getOther(username)} accepted your request!",
+    FriendshipStatus.friend => "${getOther(username)} accepted your friend request!",
     FriendshipStatus.pending => "${getOther(username)} sent you a friend request!",
     FriendshipStatus.blocked => "${getOther(username)} blocked you... did you say something mean?",
   };

@@ -53,7 +53,9 @@ extension ChatUtils on ChatContext {
       await respondText(error.toString());
     // We want to catch any error here
     // ignore: avoid_catches_without_on_clauses
-    } catch (_) {
+    } catch (error, stack) {
+      print(error);
+      print(stack);
       await respondText("An error occurred");
     }
   }
