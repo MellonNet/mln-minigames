@@ -16,7 +16,7 @@ Future<void> _mailbox(
         context.respondText("Your mailbox is empty");
       } else {
         for (final message in mailbox) {
-          context.respond(message.describe());
+          context.respond(message.describe(isHidden: true));
         }
       }
     },
