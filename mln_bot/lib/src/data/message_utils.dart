@@ -92,7 +92,7 @@ extension MessageUtils on Message {
         ]),
         ActionRowBuilder(components: [
           ButtonBuilder.danger(
-            customId: "message-delete-hidden_$id",
+            customId: isHidden ? "message-delete-hidden_$id" : "message-delete_$id",
             label: "Delete message",
           ),
           ButtonBuilder.link(
@@ -100,7 +100,7 @@ extension MessageUtils on Message {
             label: "Go to mailbox",
           ),
           ButtonBuilder.primary(
-            customId: "message-read-hidden_$id",
+            customId: isHidden ? "message-read-hidden_$id" : "message-read_$id",
             label: "Mark as Read",
           ),
       ]),
