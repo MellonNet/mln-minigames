@@ -6,7 +6,7 @@ import "package:mln_shared/data.dart";
 import "item_info.dart";
 
 extension MessageUtils on Message {
-  MessageBuilder describe() {
+  String describeText() {
     final buffer = StringBuffer();
     buffer.writeln("### ${body.subject}");
     buffer.writeln(body.text.replaceAll("[item]", "> - "));
@@ -18,54 +18,56 @@ extension MessageUtils on Message {
         if (item == null) continue;
       }
     }
-    return MessageBuilder(
-      flags: MessageFlags.isComponentsV2,
-      components: [
-        TextDisplayComponentBuilder(
-          content: "You got a message from ${UserUtils.userLink(senderUsername)}!",
-        ),
-        ContainerComponentBuilder(components: [
-          TextDisplayComponentBuilder(content: buffer.toString()),
-          if (attachments.isNotEmpty)
-            MediaGalleryComponentBuilder(items: [
-              for (final attachment in attachments)
-                MediaGalleryItemBuilder(
-                  media: UnfurledMediaItemBuilder(url: services.editorial.getThumbnail(attachment.name)!),
-                  description: "${attachment.name} x${attachment.qty}",
-                ),
-            ]),
-        ]),
-        if (replies.isNotEmpty)
-          ActionRowBuilder(components: [
-            SelectMenuBuilder.stringSelect(
-              placeholder: "Choose a reply",
-              customId: "message-reply_$id",
-              options: [
-                for (final reply in replies)
-                  SelectMenuOptionBuilder(
-                    label: reply.shorthand,
-                    value: reply.id.toString(),
-                  ),
-                ],
+    return buffer.toString();
+  }
+
+  MessageBuilder describe() => MessageBuilder(
+    flags: MessageFlags.isComponentsV2,
+    components: [
+      TextDisplayComponentBuilder(
+        content: "You got a message from ${UserUtils.userLink(senderUsername)}!",
+      ),
+      ContainerComponentBuilder(components: [
+        TextDisplayComponentBuilder(content: describeText()),
+        if (attachments.isNotEmpty)
+          MediaGalleryComponentBuilder(items: [
+            for (final attachment in attachments)
+              MediaGalleryItemBuilder(
+                media: UnfurledMediaItemBuilder(url: services.editorial.getThumbnail(attachment.name)!),
+                description: "${attachment.name} x${attachment.qty}",
               ),
           ]),
-          ActionRowBuilder(components: [
-            ButtonBuilder.danger(
-              customId: "message-delete_$id",
-              label: "Delete message",
-            ),
-            ButtonBuilder.link(
-              url: Uri.parse("${MlnClient.host}/mln/private_view/default"),
-              label: "Go to mailbox",
-            ),
-            ButtonBuilder.primary(
-              customId: "message-read_$id",
-              label: "Mark as Read",
+      ]),
+      if (replies.isNotEmpty)
+        ActionRowBuilder(components: [
+          SelectMenuBuilder.stringSelect(
+            placeholder: "Choose a reply",
+            customId: "message-reply_$id",
+            options: [
+              for (final reply in replies)
+                SelectMenuOptionBuilder(
+                  label: reply.shorthand,
+                  value: reply.id.toString(),
+                ),
+              ],
             ),
         ]),
-      ],
-    );
-  }
+        ActionRowBuilder(components: [
+          ButtonBuilder.danger(
+            customId: "message-delete_$id",
+            label: "Delete message",
+          ),
+          ButtonBuilder.link(
+            url: Uri.parse("${MlnClient.host}/mln/private_view/default"),
+            label: "Go to mailbox",
+          ),
+          ButtonBuilder.primary(
+            customId: "message-read_$id",
+            label: "Mark as Read",
+          ),
+      ]),
+    ],
+  );
 }
 
 extension ItemUtils on ItemInfo {
