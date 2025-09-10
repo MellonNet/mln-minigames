@@ -159,7 +159,8 @@ class DiscordClient extends Service {
     final isX = emoji.name == "❌";
     final isFromBot = event.messageAuthorId == _client.user.id;
     if (!isX || !isFromBot) return;
-
+    // final t = await event.message.get();
+    // final d = t.interactionMetadata?.user;
     final isDm = await event.isDm();
     if (!isDm) return;
     await event.message.delete();

@@ -1,5 +1,4 @@
 Coming soon:
-  /subscribe friends
   /inbox
   /harvest
 

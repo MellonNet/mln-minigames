@@ -47,6 +47,13 @@ class JsonClient {
     return Json.from(jsonDecode(response.body));
   }
 
+  Future<List<Json>?> getJsonList(String path) async {
+    final response = await get(path);
+    if (response == null) return null;
+    final data = jsonDecode(response.body) as List;
+    return data.cast<Json>();
+  }
+
   Future<Json?> postJson(String path, [Json? body]) async {
     final response = await post(path, body);
     if (response == null) return null;

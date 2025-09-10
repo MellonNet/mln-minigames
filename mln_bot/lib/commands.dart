@@ -6,8 +6,9 @@ export "src/commands/block.dart";
 export "src/commands/help.dart";
 export "src/commands/login.dart";
 export "src/commands/logout.dart";
-export "src/commands/mail_webhooks.dart";
 export "src/commands/friend_webhooks.dart";
+export "src/commands/mail_webhooks.dart";
+export "src/commands/mailbox.dart";
 export "src/commands/random_user.dart";
 export "src/commands/webhook_utils.dart";
 export "src/commands/whatis.dart";
@@ -50,6 +51,7 @@ List<CommandRegisterable> commands = [
   unblockCommand,
   userQuery,
   randomUserCommand,
+  mailboxCommand,
 
   // Items and Modules
   itemQuery,
