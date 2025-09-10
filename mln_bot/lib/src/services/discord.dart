@@ -188,15 +188,14 @@ class DiscordClient extends Service {
   Future<void> _handleReactions(MessageReactionAddEvent event) async {
     final emoji = event.emoji;
     final isX = emoji.name == "❌";
-    if (!isX) return;
+    final isFromBot = event.messageAuthorId == _client.user.id;
+    if (!isX || !isFromBot) return;
 
     final channel = await event.message.channel.get();
     final isMod = await event.hasRole("Moderator");
     final isDm = channel.type == ChannelType.dm;
-    final isFromBot = event.messageAuthorId == _client.user.id;
 
-    final shouldDelete = isFromBot && (isMod || isDm);
-    if (shouldDelete) {
+    if (isMod || isDm) {
       await event.message.delete();
     } else {
       await event.message.deleteReaction(ReactionBuilder.fromEmoji(emoji));
