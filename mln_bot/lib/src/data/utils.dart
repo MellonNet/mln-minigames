@@ -9,7 +9,7 @@ extension MessageUtils on Message {
   String describeText() {
     final buffer = StringBuffer();
     buffer.writeln("### ${body.subject}");
-    buffer.writeln(body.text.replaceAll("[item]", "> - "));
+    buffer.writeln(body.text.replaceAll("[item]", "\n- "));
     if (attachments.isNotEmpty) {
       buffer.writeln("### Attachments:");
       for (final attachment in attachments) {
