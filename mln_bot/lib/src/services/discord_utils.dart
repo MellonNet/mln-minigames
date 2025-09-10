@@ -70,7 +70,9 @@ extension DiscordUtils on NyxxGateway {
       await replyToString(event, error.message);
     // Catch all errors
     // ignore: avoid_catches_without_on_clauses
-    } catch (_) {
+    } catch (error, stack) {
+      print(error);
+      print(stack);
       await replyToString(event, "An error occurred");
     }
   }

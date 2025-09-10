@@ -163,7 +163,6 @@ class DiscordClient extends Service {
     final isDm = await event.isDm();
     final isOriginalUser = await event.isOriginalUser();
     if (isDm || isOriginalUser) {
-      print("Going to delete this");
       await event.message.delete();
     }
   }
