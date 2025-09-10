@@ -17,7 +17,7 @@ Here's a bit of what I can do:
 - `/befriend USER` and `/unfriend USER`
 - `/block USER` and `/unblock USER`
 - `/who-is USER`
-- `/random RANK`
+- `/random RANK` to see a random user at any rank
 
 Did you know? When a command asks for a user, you can either give me their MellonNet username or `@mention` their Discord username. If they're also using the MellonBot, I can find their MellonNet profiles automatically!
 
@@ -28,11 +28,13 @@ Did you know? When a command asks for a user, you can either give me their Mello
 - `/login` and `/logout`
 - `/subscribe messages` and `/unsubscribe messages`
 - `/subscribe friends` and `/unsubscribe friends`
-- `/help`
+- `/mailbox` to see your last 3 messages
+- `/help` to show this message
 
 Most of my messages are shown privately, only to you, and there's a button to dismiss it. If you subscribe to something, I'll send you a DM. If you want to delete my messages, just use the :x: reaction and I'll get rid of it.
 
--# I'm being improved all the time, and new commands are coming soon!""";
+-# I'm being improved all the time, and new commands are coming soon!
+""";
 
 Future<void> _help(ChatContext context) =>
   context.respondText(helpText);
