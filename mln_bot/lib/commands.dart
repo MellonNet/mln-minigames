@@ -1,3 +1,4 @@
+import "package:mln_bot/services.dart";
 import "package:nyxx_commands/nyxx_commands.dart";
 
 export "src/commands/befriend.dart";
@@ -16,10 +17,10 @@ import "";
 
 final commandsPlugin = CommandsPlugin(
   prefix: mentionOr((_) => "!"),
-  options: const CommandsOptions(
+  options: CommandsOptions(
     defaultResponseLevel: ResponseLevel.hint,
     type: CommandType.slashOnly,
-    // logErrors: false,
+    logErrors: Services.debug,
   ),
 );
 
