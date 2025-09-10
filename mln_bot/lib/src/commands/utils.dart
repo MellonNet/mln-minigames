@@ -1,4 +1,4 @@
-export "package:nyxx/nyxx.dart" hide Attachment, Cache, Message, User;
+export "package:nyxx/nyxx.dart" hide Attachment, Cache, Message, User, Webhook, WebhookType;
 export "package:nyxx_commands/nyxx_commands.dart";
 
 export "package:mln_bot/data.dart";
@@ -53,7 +53,9 @@ extension ChatUtils on ChatContext {
       await respondText(error.toString());
     // We want to catch any error here
     // ignore: avoid_catches_without_on_clauses
-    } catch (_) {
+    } catch (error, stack) {
+      print(error);
+      print(stack);
       await respondText("An error occurred");
     }
   }

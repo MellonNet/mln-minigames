@@ -29,7 +29,7 @@ extension UserUtils on User {
           components: [
             if (friendshipStatus == FriendshipStatus.none)
               ButtonBuilder.primary(
-                customId: "user_$username",
+                customId: "friend-add_$username",
                 label: "Send friend request",
               ),
             if (isNetworker)

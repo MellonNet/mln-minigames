@@ -15,6 +15,9 @@ class MlnServer extends Service {
   static const messagesWebhookPath = "/api/message";
   static const messagesWebhookUrl = "https://discord-bot.mellonnet.com$messagesWebhookPath";
 
+  static const friendsWebhookPath = "/api/friends";
+  static const friendsWebhookUrl = "https://discord-bot.mellonnet.com$friendsWebhookPath";
+
   final OAuth oauth = OAuth(
     apiToken: mlnApiToken,
     clientID: mlnClientID,
@@ -32,6 +35,7 @@ class MlnServer extends Service {
     final app = Router();
     app.get("/api/login", loginHandler(oauth));
     app.post(messagesWebhookPath, authMiddleware(_handleMessageWebhook));
+    app.post(friendsWebhookPath, authMiddleware(_handleFriendWebhook));
 
     final server = await io.serve(app.call, "0.0.0.0", 9005);
     print("Serving on 0.0.0.0:${server.port}");
@@ -39,7 +43,9 @@ class MlnServer extends Service {
 
   Future<Response> _handleMessageWebhook(Request request) async {
     // Get the associated Discord user for this message
-    final sessionID = request.sessionIDFromWebhook;
+    final accessToken = request.accessToken;
+    if (accessToken == null) return Response.ok(null);
+    final sessionID = services.cache.tokenToSession[accessToken];
     if (sessionID == null) return Response.ok(null);
     final discordUser = services.cache.sessionToDiscord[sessionID];
     if (discordUser == null) return Response.ok(null);
@@ -53,6 +59,28 @@ class MlnServer extends Service {
     // The MLN server does not care about this response
     return Response.ok(null);
   }
+
+  Future<Response> _handleFriendWebhook(Request request) async {
+    // Get the associated Discord user for this webhook
+    final accessToken = request.accessToken;
+    if (accessToken == null) return Response.ok(null);
+    final sessionID = services.cache.tokenToSession[accessToken];
+    if (sessionID == null) return Response.ok(null);
+    final discordUser = services.cache.sessionToDiscord[sessionID];
+    if (discordUser == null) return Response.ok(null);
+    final client = MlnClient(accessToken, mlnApiToken);
+    final user = await client.whoAmI();
+    if (user == null) return Response.ok(null);
+
+    final body = await request.readAsString();
+    final data = jsonDecode(body);
+    final friendship = Friendship.fromJson(data);
+    final message = friendship.describe(user.username);
+    await services.discord.sendMessage(discordUser, message);
+
+    // The MLN server does not care about this response
+    return Response.ok(null);
+  }
 }
 
 Handler authMiddleware(Handler innerHandler) => (Request request) {
@@ -62,10 +90,10 @@ Handler authMiddleware(Handler innerHandler) => (Request request) {
 };
 
 extension on Request {
-  SessionID? get sessionIDFromWebhook {
+  AccessToken get accessToken {
     final authHeader = headers[HttpHeaders.authorizationHeader]!;
     final [_, token] = authHeader.split(" ");  // "Bearer TOKEN"
     final accessToken = AccessToken(token);
-    return services.cache.tokenToSession[accessToken];
+    return accessToken;
   }
 }

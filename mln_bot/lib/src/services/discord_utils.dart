@@ -1,5 +1,3 @@
-import "dart:io";
-
 import "package:collection/collection.dart";
 import "package:mln_bot/secrets.dart";
 import "package:mln_bot/services.dart";
@@ -11,7 +9,8 @@ sealed class MessageFollowUp { }
 
 class MessageReply extends MessageFollowUp {
   final String message;
-  MessageReply(this.message);
+  final bool replace;
+  MessageReply(this.message, {this.replace = false});
 }
 
 class MessageReaction extends MessageFollowUp {
@@ -23,8 +22,8 @@ class MessageReaction extends MessageFollowUp {
 class MessageDelete extends MessageFollowUp { }
 
 extension DiscordUtils on NyxxGateway {
-  Future<void> replyTo(InteractionCreateEvent<Interaction<dynamic>> event, MessageBuilder? builder) async {
-    await interactions.createResponse(
+  Future<void> replyTo(InteractionCreateEvent event, MessageBuilder? builder) => interactions
+    .createResponse(
       event.interaction.id,
       event.interaction.token,
       builder == null
@@ -32,25 +31,33 @@ extension DiscordUtils on NyxxGateway {
         : InteractionResponseBuilder.channelMessage(builder),
       withResponse: true,
     );
-  }
+
+  Future<void> edit(InteractionCreateEvent event, MessageUpdateBuilder builder) => interactions
+    .createResponse(
+      event.interaction.id,
+      event.interaction.token,
+      InteractionResponseBuilder.updateMessage(builder),
+    );
 
   Future<void> replyToString(InteractionCreateEvent<Interaction<dynamic>> event, String message) async {
     final builder = MessageBuilder(flags: MessageFlags.ephemeral, content: message);
     return replyTo(event, builder);
   }
 
-  Future<void> followUp(
+  Future<void> followUp<T>(
     InteractionCreateEvent<Interaction<dynamic>> event, {
-    required Future<void> Function() func,
-    required MessageFollowUp followUp,
+    required Future<T?> Function() func,
+    required MessageFollowUp Function(T) followUp,
     // required String? message,
     // bool react = false,
     // bool delete = false,
   }) async {
     try {
-      await func();
-      switch (followUp) {
-        case MessageReply(:final message):
+      final result = await func();
+      if (result == null) return replyToString(event, "An error occurred");
+      switch (followUp(result)) {
+        case MessageReply(:final message, :final replace):
+          if (replace) await event.interaction.message?.delete();
           await replyToString(event, message);
         case MessageReaction(:final emoji):
           await event.interaction.message?.react(ReactionBuilder(name: emoji, id: null));
@@ -71,21 +78,22 @@ extension DiscordUtils on NyxxGateway {
   void setStatus() => updatePresence(
     PresenceBuilder(
       activities: [
-        if (Platform.isLinux)
+        if (Services.debug)
+          ActivityBuilder(
+            name: "Maintenance",
+            state: "Undergoing Maintenance",
+            type: ActivityType.custom,
+          )
+        else
           ActivityBuilder(
             type: ActivityType.game,
             name: "My Lego Network",
             state: "Baking an Apple Pie",
             url: Uri.parse("https://mln.mellonnet.com"),
           )
-        else
-          ActivityBuilder(
-            name: "Maintenance",
-            state: "Undergoing Maintenance",
-            type: ActivityType.custom,
-          )
       ],
-      status: Platform.isLinux ? CurrentUserStatus.online : CurrentUserStatus.dnd,
+      status: Services.debug
+        ? CurrentUserStatus.dnd : CurrentUserStatus.online,
       isAfk: false,
       since: DateTime.now(),
     ),

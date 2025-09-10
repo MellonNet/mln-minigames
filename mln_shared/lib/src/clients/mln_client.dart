@@ -4,8 +4,6 @@ import "package:mln_shared/utils.dart";
 import "json_client.dart";
 import "oauth.dart";
 
-extension type WebhookID(int id) { }
-
 final class BaseMlnClient {
   final JsonClient _client;
   BaseMlnClient(this._client);
@@ -66,9 +64,10 @@ final class MlnClient extends BaseMlnClient {
     return User.fromJson(json);
   }
 
-  Future<bool> befriend(String username) async {
-    final response = await _client.post("/users/$username/friendship");
-    return response != null;
+  Future<Friendship?> befriend(String username) async {
+    final response = await _client.postJson("/users/$username/friendship");
+    if (response == null) return null;
+    return Friendship.fromJson(response);
   }
 
   Future<bool> unfriend(String username) => _client.delete("/users/$username/friendship");
@@ -80,18 +79,22 @@ final class MlnClient extends BaseMlnClient {
 
   Future<bool> unblock(String username) => _client.delete("/users/$username/block");
 
-  Future<WebhookID?> registerMailWebhook(String webhookUrl, String webhookSecret) async {
+  Future<Webhook?> registerWebhook({
+    required WebhookType type,
+    required String webhookUrl,
+    required String webhookSecret,
+  }) async {
     final body = {
       "webhook_url": webhookUrl,
       "mln_secret": webhookSecret,
-      "type": "messages",
+      "type": type.name,
     };
     final response = await _client.postJson("/webhooks", body);
     if (response == null) return null;
-    return WebhookID(response["webhook_id"]);
+    return Webhook.fromJson(response);
   }
 
-  Future<bool> deleteWebhook(WebhookID id) => _client.delete("/webhooks/$id");
+  Future<bool> deleteWebhook(Webhook webhook) => _client.delete("/webhooks/${webhook.id}");
 
   Future<bool> reply(int messageID, int replyID) async {
     final body = {"body_id": replyID};
