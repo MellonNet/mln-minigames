@@ -70,14 +70,16 @@ final class MlnClient extends BaseMlnClient {
     return Friendship.fromJson(response);
   }
 
-  Future<bool> unfriend(String username) => _client.delete("/users/$username/friendship");
+  Future<bool> unfriend(String username) =>
+    _client.delete("/users/$username/friendship");
 
   Future<bool> block(String username) async {
     final response = await _client.post("/users/$username/block");
     return response != null;
   }
 
-  Future<bool> unblock(String username) => _client.delete("/users/$username/block");
+  Future<bool> unblock(String username) =>
+    _client.delete("/users/$username/block");
 
   Future<Webhook?> registerWebhook({
     required WebhookType type,

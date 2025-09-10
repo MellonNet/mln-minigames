@@ -44,7 +44,7 @@ extension ChatUtils on ChatContext {
   }) async {
     try {
       final result = await func();
-      if (result == null) {
+      if (result == null || result == false) {
         await respondText(ifNull);
       } else {
         onSuccess(result);
