@@ -1,4 +1,3 @@
-import "package:mln_bot/services.dart";
 import "package:nyxx_commands/nyxx_commands.dart";
 
 import "utils.dart";
@@ -16,12 +15,12 @@ Future<void> _befriend(
     await context.respondText("You gotta tell me who to befriend");
     return;
   }
-  username = await client.checkUsername(username);
+  username = await checkUsername(username);
   if (username == null) {
     return context.respondText("That Discord user has not linked their MLN account");
   }
   await context.handle<bool>(
-    func: () => client.befriend(username!), 
+    func: () => client.befriend(username!),
     onSuccess: (_) => context.respondText("Sent a friend request to $username"),
   );
 }

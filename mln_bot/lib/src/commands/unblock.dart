@@ -1,4 +1,3 @@
-import "package:mln_bot/services.dart";
 import "package:nyxx_commands/nyxx_commands.dart";
 
 import "utils.dart";
@@ -16,12 +15,12 @@ Future<void> _unblock(
     await context.respondText("Please specify a user");
     return;
   }
-  username = await client.checkUsername(username);
+  username = await checkUsername(username);
   if (username == null) {
     return context.respondText("That Discord user has not linked their MLN account");
   }
   await context.handle<bool>(
-    func: () => client.unblock(username!), 
+    func: () => client.unblock(username!),
     onSuccess: (_) => context.respondText("$username is no longer your friend"),
   );
 }

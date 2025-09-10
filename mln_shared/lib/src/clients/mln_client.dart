@@ -6,26 +6,51 @@ import "oauth.dart";
 
 extension type WebhookID(int id) { }
 
-class MlnClient {
-  static const host = "https://mln.mellonnet.com";
-  // static const host = "http://localhost:8000";
-
-  final AccessToken accessToken;
+final class BaseMlnClient {
   final JsonClient _client;
+  BaseMlnClient(this._client);
+
+  Future<User?> getUser(String username) async {
+    final json = await _client.getJson("/users/$username");
+    if (json == null) return null;
+    return User.fromJson(json);
+  }
+
+  Future<User?> getRandomUser(int rank) async {
+    final json = await _client.getJson("/users/random?rank=$rank");
+    if (json == null) return null;
+    return User.fromJson(json);
+  }
+}
+
+final class AnonymousMlnClient extends BaseMlnClient {
+  AnonymousMlnClient(String apiToken) : super(
+    JsonClient(
+      urlBase: "${MlnClient.host}/api",
+      authHeaders: MlnClient.authHeaders(apiToken: apiToken),
+    ),
+  );
+}
+
+final class MlnClient extends BaseMlnClient {
+  static const host = "https://mln.mellonnet.com";
 
   static MlnHeaders authHeaders({
-    required AccessToken accessToken,
     required String apiToken,
+    AccessToken? accessToken,
   }) => {
-    "Authorization": "Bearer $accessToken",
+    if (accessToken != null) "Authorization": "Bearer $accessToken",
     "Api-Token": apiToken,
   };
 
-  MlnClient(this.accessToken, String apiToken) :
-    _client = JsonClient(
+  final AccessToken accessToken;
+
+  MlnClient(this.accessToken, String apiToken) : super(
+    JsonClient(
       urlBase: "$host/api",
       authHeaders: authHeaders(accessToken: accessToken, apiToken: apiToken),
-    );
+    ),
+  );
 
   void dispose() => _client.dispose();
 
@@ -35,20 +60,8 @@ class MlnClient {
     return response != null;
   }
 
-  Future<User?> getUser(String username) async {
-    final json = await _client.getJson("/users/$username");
-    if (json == null) return null;
-    return User.fromJson(json);
-  }
-
   Future<User?> whoAmI() async {
     final json = await _client.getJson("/users/whoami");
-    if (json == null) return null;
-    return User.fromJson(json);
-  }
-
-  Future<User?> getRandomUser(int rank) async {
-    final json = await _client.getJson("/users/random?rank=$rank");
     if (json == null) return null;
     return User.fromJson(json);
   }

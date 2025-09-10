@@ -4,7 +4,6 @@ export "src/services/editorial.dart";
 export "src/services/server.dart";
 export "src/services/service.dart";
 export "src/services/wiki.dart";
-export "src/services/mln_utils.dart";
 
 import "";
 

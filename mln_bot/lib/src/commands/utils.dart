@@ -10,6 +10,20 @@ import "package:nyxx_commands/nyxx_commands.dart";
 
 export "package:mln_shared/mln_shared.dart";
 
+Future<String?> checkUsername(String username) async {
+  if (!username.startsWith("<@")) return username;
+  final discordID = username.substring(2, username.length - 1);
+  final snowflake = Snowflake(int.parse(discordID));
+  // Lookup the MLN access token
+  final sessionID = services.cache.discordToMln(snowflake);
+  final accessToken = services.cache.sessionToToken[sessionID];
+  if (accessToken == null) return null;
+  // Find the user based on their access token
+  final client2 = MlnClient(accessToken, mlnApiToken);
+  final user2 = await client2.whoAmI();
+  return user2?.username;
+}
+
 extension ChatUtils on ChatContext {
   Future<void> handle<T>({
     required Future<T?> Function() func,
@@ -96,4 +110,9 @@ extension ChatUtils on ChatContext {
       return MlnClient(accessToken, mlnApiToken);
     }
   }
+
+  AnonymousMlnClient getAnonymousClient() => AnonymousMlnClient(mlnApiToken);
+
+  Future<BaseMlnClient> getAnyClient() async =>
+    (await getClient()) ?? getAnonymousClient();
 }
