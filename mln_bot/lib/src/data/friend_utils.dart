@@ -13,7 +13,7 @@ extension FriendUtils on Friendship {
             label: "Delete",
           ),
           ButtonBuilder.primary(
-            customId: "friend-add_${getOther(username)}",
+            customId: "friend-add-edit_${getOther(username)}",
             label: "Accept",
           ),
         ]),

@@ -20,9 +20,14 @@ class MessageReaction extends MessageFollowUp {
 
 class MessageDelete extends MessageFollowUp { }
 
+class MessageEdit extends MessageFollowUp {
+  final String message;
+  MessageEdit(this.message);
+}
+
 extension DiscordUtils on NyxxGateway {
-  Future<void> replyTo(InteractionCreateEvent<Interaction<dynamic>> event, MessageBuilder? builder) async {
-    await interactions.createResponse(
+  Future<void> replyTo(InteractionCreateEvent event, MessageBuilder? builder) => interactions
+    .createResponse(
       event.interaction.id,
       event.interaction.token,
       builder == null
@@ -30,7 +35,13 @@ extension DiscordUtils on NyxxGateway {
         : InteractionResponseBuilder.channelMessage(builder),
       withResponse: true,
     );
-  }
+
+  Future<void> edit(InteractionCreateEvent event, MessageUpdateBuilder builder) => interactions
+    .createResponse(
+      event.interaction.id,
+      event.interaction.token,
+      InteractionResponseBuilder.updateMessage(builder),
+    );
 
   Future<void> replyToString(InteractionCreateEvent<Interaction<dynamic>> event, String message) async {
     final builder = MessageBuilder(flags: MessageFlags.ephemeral, content: message);
@@ -57,6 +68,12 @@ extension DiscordUtils on NyxxGateway {
         case MessageDelete():
           await event.interaction.message?.delete();
           await replyTo(event, null);
+        case MessageEdit(:final message):
+          await edit(event, MessageUpdateBuilder(
+            components: [
+              TextDisplayComponentBuilder(content: message),
+            ],
+          ));
       }
     } on ApiException catch (error) {
       await replyToString(event, error.message);
