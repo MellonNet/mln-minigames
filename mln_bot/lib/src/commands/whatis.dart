@@ -18,14 +18,10 @@ final itemQueryPublic = ChatCommand(
 );
 
 Future<void> itemQueryAction(
-  ChatContext context, [
+  ChatContext context,
   @Description("The item or module to describe")
-  String? query,
-]) async {
-  if (query == null) {
-    await context.respondText("Please tell me what item you want to see");
-    return;
-  }
+  String query
+) async {
   final isPublic = context.command.name == "explain";
   final items = services.editorial.searchItems(query).toList();
   if (items.isEmpty) {

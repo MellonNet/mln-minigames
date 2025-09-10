@@ -48,7 +48,9 @@ class DiscordClient extends Service {
     switch (type) {
       case "message-reply": await _handleReply(event, data, int.parse(arg));
       case "message-read": await _handleMarkAsRead(event, int.parse(arg));
+      case "message-read-hidden": await _handleMarkAsRead(event, int.parse(arg), isHidden: true);
       case "message-delete": await _handleMessageDelete(event, int.parse(arg));
+      case "message-delete-hidden": await _handleMessageDelete(event, int.parse(arg), isHidden: true);
       case "friend-add": await _handleFriend(event, accept: true, arg);
       case "friend-add-edit": await _handleFriend(event, accept: true, replace: true, arg);
       case "friend-delete": await _handleFriend(event, accept: false, arg);
@@ -135,22 +137,24 @@ class DiscordClient extends Service {
   Future<void> _handleMarkAsRead(
     InteractionCreateEvent event,
     int messageID,
+    {bool isHidden = false}
   ) => _handleInteraction(event, (client) async {
     await _client.followUp(
       event,
       func: () => client.markAsRead(messageID),
-      followUp: (_) => MessageReaction.thumbsUp(),
+      followUp: (_) => isHidden ? MessageReply("Marked as read") : MessageReaction.thumbsUp(),
     );
   });
 
   Future<void> _handleMessageDelete(
     InteractionCreateEvent event,
     int messageID,
+    {bool isHidden = false}
   ) => _handleInteraction(event, (client) async {
     await _client.followUp(
       event,
       func: () => client.deleteMessage(messageID),
-      followUp: (_) => MessageDelete(),
+      followUp: (_) => isHidden ? MessageReply("Deleted message") : MessageDelete(),
     );
   });
 

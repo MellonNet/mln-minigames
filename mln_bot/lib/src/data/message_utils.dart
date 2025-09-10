@@ -59,7 +59,7 @@ extension MessageUtils on Message {
     return buffer.toString();
   }
 
-  MessageBuilder describe() => MessageBuilder(
+  MessageBuilder describe({bool isHidden = false}) => MessageBuilder(
     flags: MessageFlags.isComponentsV2,
     components: [
       TextDisplayComponentBuilder(
@@ -92,7 +92,7 @@ extension MessageUtils on Message {
         ]),
         ActionRowBuilder(components: [
           ButtonBuilder.danger(
-            customId: "message-delete_$id",
+            customId: "message-delete-hidden_$id",
             label: "Delete message",
           ),
           ButtonBuilder.link(
@@ -100,7 +100,7 @@ extension MessageUtils on Message {
             label: "Go to mailbox",
           ),
           ButtonBuilder.primary(
-            customId: "message-read_$id",
+            customId: "message-read-hidden_$id",
             label: "Mark as Read",
           ),
       ]),
