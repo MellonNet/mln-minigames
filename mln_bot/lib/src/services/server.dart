@@ -85,7 +85,7 @@ class MlnServer extends Service {
     final badge = json["badge"] as String;
     final text = "${UserUtils.userLink(username)} just got the $badge!";
     final button = nyxx.ButtonBuilder.primary(customId: "friend-add_$username", label: "Send friend request");
-    final builder = buildButton(text, button);
+    final builder = buildButton(text, button, isPublic: true);
     await services.discord.sendToBotChannel(builder);
     return Response.ok(null);
   }
@@ -96,7 +96,7 @@ class MlnServer extends Service {
     final rank = json["rank"] as int;
     final text = "${UserUtils.userLink(username)} just got to Rank $rank! Keep it up!";
     final button = nyxx.ButtonBuilder.primary(customId: "friend-add_$username", label: "Send friend request");
-    final builder = buildButton(text, button);
+    final builder = buildButton(text, button, isPublic: true);
     await services.discord.sendToBotChannel(builder);
 
     // Update the user's role if they're signed into the MellonBot

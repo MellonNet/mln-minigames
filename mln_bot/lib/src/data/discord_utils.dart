@@ -2,8 +2,14 @@ import "package:mln_bot/services.dart";
 import "package:mln_shared/clients.dart";
 import "package:nyxx/nyxx.dart";
 
-MessageBuilder buildButton(String text, ButtonBuilder button) => MessageBuilder(
-  flags: MessageFlags.isComponentsV2,
+MessageBuilder buildButton(
+  String text,
+  ButtonBuilder button,
+  {bool isPublic = false}
+) => MessageBuilder(
+  flags: isPublic
+    ? MessageFlags.isComponentsV2
+    : MessageFlags.isComponentsV2 | MessageFlags.ephemeral,
   components: [
     TextDisplayComponentBuilder(content: text),
     ActionRowBuilder(components: [button]),

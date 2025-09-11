@@ -45,6 +45,17 @@ class Cache extends Service {
     sessions.add(session);
   }
 
+  Future<void> removeSession(Snowflake discordID) async {
+    final session = sessionsByDiscord[discordID];
+    if (session == null) return;
+    // The opposite of _cacheSession
+    sessionsByDiscord.remove(session.discordID);
+    sessionsByMlnUsername.remove(session.mlnUsername);
+    sessionsByAccessToken.remove(session.accessToken);
+    sessions.remove(session);
+    await _saveSessions();
+  }
+
   Future<void> _saveSessions() => _writeCacheList(sessionsFile, [
     for (final session in sessions)
       session.toJson(),
@@ -99,12 +110,5 @@ class Cache extends Service {
     final count = data[commandName] as int?;
     data[commandName] = (count ?? 0) + 1;
     await statsFile.writeAsString(jsonEncode(data));
-  }
-
-  Future<void> removeSession(Snowflake discordID) async {
-    final session = sessionsByDiscord[discordID];
-    if (session == null) return;
-    sessions.remove(session);
-    await _saveSessions();
   }
 }
