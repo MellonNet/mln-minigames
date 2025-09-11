@@ -209,12 +209,23 @@ class DiscordClient extends Service {
   }
 
   Future<void> grantRankRole(Snowflake userID, int rank) async {
+    const serverID = Snowflake(botServerID);
+    final server = await _client.guilds.get(serverID);
+    final member = await server.members.fetch(userID);
+    final memberRoles = member.roles;
     for (var otherRank = 0; otherRank < 11; otherRank++) {
-      final role = rankRoles[otherRank];
-      if (rank == otherRank) {
-        await _client.grantRole(userID, role);
-      } else {
-        await _client.removeRole(userID, role);
+      final roleName = rankRoles[otherRank];
+      final role = server.roleList.findRole(roleName);
+      if (role == null) {
+        continue;  // could not find role for some reason
+      } else if (rank == otherRank) {  // user should be granted this role
+        if (!memberRoles.containsRole(role)) {
+          await member.addRole(role.id);
+        }
+      } else {  // this role should be taken away
+        if (memberRoles.containsRole(role)) {
+          await member.removeRole(role.id);
+        }
       }
     }
   }

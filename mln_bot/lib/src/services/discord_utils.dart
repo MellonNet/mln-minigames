@@ -114,22 +114,15 @@ extension DiscordUtils on NyxxGateway {
       await server.roles.create(builder);
     }
   }
+}
 
-  Future<void> grantRole(Snowflake user, String roleName) async {
-    const serverID = Snowflake(botServerID);
-    final server = await guilds.get(serverID);
-    final role = server.roleList.firstWhereOrNull((role) => role.name == roleName);
-    if (role == null) return;
-    await server.members.addRole(user, role.id);
-  }
+extension PartialRolesUtils on List<PartialRole> {
+  bool containsRole(Role otherRole) =>
+    any((role) => role.id == otherRole.id);
+}
 
-  Future<void> removeRole(Snowflake userID, String roleName) async {
-    const serverID = Snowflake(botServerID);
-    final server = await guilds.get(serverID);
-    final role = server.roleList.firstWhereOrNull((role) => role.name == roleName);
-    if (role == null) return;
-    await server.members.removeRole(userID, role.id);
-  }
+extension RolesUtils on List<Role> {
+  Role? findRole(String name) => firstWhereOrNull((role) => role.name == name);
 }
 
 extension InteractionUtils on InteractionCreateEvent {
