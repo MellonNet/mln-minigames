@@ -20,6 +20,9 @@ class Cache extends Service {
   Map<AccessToken, SessionID> get tokenToSession =>
     services.server.oauth.tokenToSession;
 
+  Map<AccessToken, String> get tokensToUsernames =>
+    services.server.oauth.accessTokenToUsername;
+
   final sessionToDiscord = <SessionID, Snowflake>{};
   final webhooks = <Webhook>[];
 
@@ -99,5 +102,14 @@ class Cache extends Service {
     final count = data[commandName] as int?;
     data[commandName] = (count ?? 0) + 1;
     await statsFile.writeAsString(jsonEncode(data));
+  }
+
+  Snowflake? mlnUsernameToDiscord(String username) {
+    final accessToken = tokensToUsernames
+      .entries.firstWhereOrNull((entry) => entry.value == username)?.key;
+    if (accessToken == null) return null;
+    final sessionID = tokenToSession[accessToken];
+    if (sessionID == null) return null;
+    return sessionToDiscord[sessionID];
   }
 }

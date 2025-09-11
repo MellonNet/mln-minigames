@@ -2,6 +2,7 @@ import "dart:async";
 import "dart:convert";
 import "dart:io";
 
+import "package:collection/collection.dart";
 import "package:nyxx/nyxx.dart" as nyxx;
 import "package:shelf/shelf.dart";
 import "package:shelf/shelf_io.dart" as io;
@@ -105,6 +106,13 @@ class MlnServer extends Service {
     final button = nyxx.ButtonBuilder.primary(customId: "friend-add_$username", label: "Send friend request");
     final builder = buildButton(text, button);
     await services.discord.sendToBotChannel(builder);
+
+    // Update the user's role if they're signed into the MellonBot
+    final discordUser = services.cache.mlnUsernameToDiscord(username);
+    if (discordUser != null) {
+      await services.discord.grantRankRole(discordUser, rank);
+    }
+
     return Response.ok(null);
   }
 }
