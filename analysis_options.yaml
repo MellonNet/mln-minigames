@@ -48,6 +48,7 @@ linter:
     one_member_abstracts: false  # abstract classes are good for interfaces
     cascade_invocations: false  # cascades are often harder to read
     avoid_print: false
+    avoid_js_rounded_ints: false
 
     # Temporarily disabled until we are ready to document
     public_member_api_docs: false

@@ -74,27 +74,8 @@ extension ChatUtils on ChatContext {
   Future<void> respondUser(User user, String prefix) =>
     respond(user.describe(prefix));
 
-  Future<void> respondLogin({bool promptToRetry = false}) async {
-    final loginUrl = services.server.oauth.getLoginUri(sessionID);
-    final message = promptToRetry
-      ? "First sign in, then retry your command"
-      : "Sign in to get access to all the features!";
-    final button = ButtonBuilder.link(
-      url: loginUrl,
-      label: "Sign in with My Lego Network",
-    );
-    await respondButton(message, button);
-  }
-
-  Future<void> respondButton(String text, ButtonBuilder button) => respond(
-    MessageBuilder(
-      flags: MessageFlags.isComponentsV2,
-      components: [
-        TextDisplayComponentBuilder(content: text),
-        ActionRowBuilder(components: [button]),
-      ]
-    )
-  );
+  Future<void> respondLogin({bool promptToRetry = false}) =>
+    respond(buildLogin(sessionID, promptToRetry: promptToRetry));
 
   Future<void> respondItem(ItemInfo item, {required bool isPublic}) async =>
     respond(await item.describe(isPublic: isPublic));

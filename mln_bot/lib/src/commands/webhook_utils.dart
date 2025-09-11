@@ -17,10 +17,10 @@ Future<void> subscribeWebhook(ChatContext context, WebhookType type) => authedCo
   if (webhook == null) return context.respondText("An error occurred");
   services.cache.webhooks.add(webhook);
   await services.cache.saveWebhooks();
-  await context.respondButton(
+  await context.respond(buildButton(
     "Subscribed! I'll let you know when you get new $type",
     ButtonBuilder.secondary(customId: "unsubscribe_$type", label: "Unsubscribe"),
-  );
+  ));
 });
 
 Future<void> unsubscribeWebhook(ChatContext context, WebhookType type) => authedCommand(context, (client) async {

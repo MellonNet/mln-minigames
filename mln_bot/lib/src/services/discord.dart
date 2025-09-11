@@ -40,6 +40,12 @@ class DiscordClient extends Service {
     await channel.sendMessage(message);
   }
 
+  Future<void> sendToBotChannel(MessageBuilder builder) async {
+    const channelID = Snowflake(botChannelID);
+    final channel = await _client.channels.get(channelID) as GuildTextChannel;
+    await channel.sendMessage(builder);
+  }
+
   Future<void> _handleInteractions2(InteractionCreateEvent<MessageComponentInteraction> event) async {
    final data = event.interaction.data;
     final pattern = data.customId.splitFirst("_");
@@ -66,19 +72,25 @@ class DiscordClient extends Service {
   }
 
   Future<void> _handleInteraction(
-    InteractionCreateEvent event,
+    InteractionCreateEvent<MessageComponentInteraction> event,
     MlnClientCallback callback,
   ) async {
     final client = event.mlnClient;
     if (client == null) {
-      await _client.replyToString(event, "You're not signed in");
+      final sessionID = event.sessionID;
+      if (sessionID == null) {
+        await _client.replyToString(event, "You're not signed in");
+      } else {
+        final builder = buildLogin(sessionID);
+        await _client.replyTo(event, builder);
+      }
     } else {
       await callback(client);
     }
   }
 
   Future<void> _handleReply(
-    InteractionCreateEvent event,
+    InteractionCreateEvent<MessageComponentInteraction> event,
     MessageComponentInteractionData data,
     int messageID,
   ) => _handleInteraction(event, (client) async {
@@ -91,7 +103,7 @@ class DiscordClient extends Service {
   });
 
   Future<void> _handleFriend(
-    InteractionCreateEvent event,
+    InteractionCreateEvent<MessageComponentInteraction> event,
     String username,
     {required bool accept, bool replace = false}
   ) => _handleInteraction(event, (client) async {
@@ -111,7 +123,7 @@ class DiscordClient extends Service {
   });
 
   Future<void> _handleItems(
-    InteractionCreateEvent event,
+    InteractionCreateEvent<MessageComponentInteraction> event,
     MessageComponentInteractionData data,
     {required bool isPublic}
   ) async {
@@ -122,7 +134,7 @@ class DiscordClient extends Service {
   }
 
   Future<void> _handleUnsubscribe(
-    InteractionCreateEvent event,
+    InteractionCreateEvent<MessageComponentInteraction> event,
     WebhookType type,
   ) => _handleInteraction(event, (client) async {
     final webhook = services.cache.getWebhook(client.accessToken, type);
@@ -135,7 +147,7 @@ class DiscordClient extends Service {
   });
 
   Future<void> _handleMarkAsRead(
-    InteractionCreateEvent event,
+    InteractionCreateEvent<MessageComponentInteraction> event,
     int messageID,
     {bool isHidden = false}
   ) => _handleInteraction(event, (client) async {
@@ -147,7 +159,7 @@ class DiscordClient extends Service {
   });
 
   Future<void> _handleMessageDelete(
-    InteractionCreateEvent event,
+    InteractionCreateEvent<MessageComponentInteraction> event,
     int messageID,
     {bool isHidden = false}
   ) => _handleInteraction(event, (client) async {

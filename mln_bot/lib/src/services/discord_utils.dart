@@ -103,10 +103,13 @@ extension DiscordUtils on NyxxGateway {
 }
 
 extension InteractionUtils on InteractionCreateEvent {
-  MlnClient? get mlnClient {
-    final user = interaction.user;
+  SessionID? get sessionID {
+    final user = interaction.user ?? interaction.member?.user;
     if (user == null) return null;
-    final sessionID = services.cache.discordToMln(user.id);
+    return services.cache.discordToMln(user.id);
+  }
+
+  MlnClient? get mlnClient {
     final accessToken = services.cache.sessionToToken[sessionID];
     if (accessToken == null) return null;
     return MlnClient(accessToken, mlnApiToken);
