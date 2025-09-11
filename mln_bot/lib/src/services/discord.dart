@@ -7,6 +7,11 @@ import "package:mln_shared/mln_shared.dart" hide User;
 
 import "package:nyxx/nyxx.dart" hide Webhook, WebhookType;
 
+final rankRoles = <String>[
+  for (var rank = 0; rank < 11; rank++)
+    "Rank $rank",
+];
+
 typedef MlnClientCallback = Future<void> Function(MlnClient client);
 class DiscordClient extends Service {
   late final NyxxGateway _client;
@@ -22,6 +27,7 @@ class DiscordClient extends Service {
       ),
     );
     _client.setStatus();
+    await _client.createRoles(rankRoles);
     final botUser = await _client.users.fetchCurrentUser();
     _client.onMessageCreate.listen((event) async {
       if (event.mentions.contains(botUser)) {
@@ -180,6 +186,31 @@ class DiscordClient extends Service {
     final isOriginalUser = await event.isOriginalUser();
     if (isDm || isOriginalUser) {
       await event.message.delete();
+    }
+  }
+
+  Future<void> grantRoleLogin(SessionID sessionID, AccessToken accessToken) async {
+    // Get the associated Discord user
+    final discordUser = services.cache.sessionToDiscord[sessionID];
+    if (discordUser == null) return;
+
+    // Get the associated MLN profile
+    final client = MlnClient(accessToken, mlnApiToken);
+    final profile = await client.whoAmI().ignoreAllErrors();
+    if (profile == null) return;
+
+    // Grant the correct role(s)
+    await grantRankRole(discordUser, profile.rank);
+  }
+
+  Future<void> grantRankRole(Snowflake userID, int rank) async {
+    for (var otherRank = 0; otherRank < 11; otherRank++) {
+      final role = rankRoles[otherRank];
+      if (rank == otherRank) {
+        await _client.grantRole(userID, role);
+      } else {
+        await _client.removeRole(userID, role);
+      }
     }
   }
 }

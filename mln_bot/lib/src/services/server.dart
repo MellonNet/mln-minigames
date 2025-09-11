@@ -28,6 +28,7 @@ class MlnServer extends Service {
     clientID: mlnClientID,
     loginCallback: (sessionID, accessToken) async {
       await services.cache.saveAccessTokens();
+      await services.discord.grantRoleLogin(sessionID, accessToken);
     }
   );
 
@@ -109,8 +110,8 @@ class MlnServer extends Service {
 }
 
 Handler authMiddleware(Handler innerHandler) => (Request request) {
-  final apiToken = request.headers["Api-Token"];
-  if (apiToken != mlnWebhookApiToken) return Response.unauthorized(null);
+  // final apiToken = request.headers["Api-Token"];
+  // if (apiToken != mlnWebhookApiToken) return Response.unauthorized(null);
   return innerHandler(request);
 };
 

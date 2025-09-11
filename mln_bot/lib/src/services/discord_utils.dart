@@ -100,6 +100,39 @@ extension DiscordUtils on NyxxGateway {
       since: DateTime.now(),
     ),
   );
+
+  Future<void> createRoles(List<String> names) async {
+    const roleColor = DiscordColor.fromRgb(255, 0, 238);
+    const serverID = Snowflake(botServerID);
+    final server = await guilds.get(serverID);
+    final roles = server.roleList;
+    for (final name in names) {
+      if (roles.any((role) => role.name == name)) continue;
+      final builder = RoleBuilder(
+        name: name,
+        isHoisted: true,
+        isMentionable: true,
+        color: roleColor,
+      );
+      await server.roles.create(builder);
+    }
+  }
+
+  Future<void> grantRole(Snowflake user, String roleName) async {
+    const serverID = Snowflake(botServerID);
+    final server = await guilds.get(serverID);
+    final role = server.roleList.firstWhereOrNull((role) => role.name == roleName);
+    if (role == null) return;
+    await server.members.addRole(user, role.id);
+  }
+
+  Future<void> removeRole(Snowflake userID, String roleName) async {
+    const serverID = Snowflake(botServerID);
+    final server = await guilds.get(serverID);
+    final role = server.roleList.firstWhereOrNull((role) => role.name == roleName);
+    if (role == null) return;
+    await server.members.removeRole(userID, role.id);
+  }
 }
 
 extension InteractionUtils on InteractionCreateEvent {
