@@ -2,7 +2,6 @@ import "dart:async";
 import "dart:convert";
 import "dart:io";
 
-import "package:collection/collection.dart";
 import "package:nyxx/nyxx.dart" as nyxx;
 import "package:shelf/shelf.dart";
 import "package:shelf/shelf_io.dart" as io;
@@ -28,8 +27,8 @@ class MlnServer extends Service {
     apiToken: mlnApiToken,
     clientID: mlnClientID,
     loginCallback: (sessionID, accessToken) async {
-      await services.cache.saveAccessTokens();
-      await services.discord.grantRoleLogin(sessionID, accessToken);
+      await services.cache.saveSession(sessionID, accessToken);
+      await services.discord.grantRoleLogin(accessToken);
     }
   );
 
@@ -52,15 +51,14 @@ class MlnServer extends Service {
 
   Future<Response> _handleMessageWebhook(Request request) async {
     // Get the associated Discord user for this message
-    final user = request.user;
-    if (user == null) return Response.ok(null);
-    final (accessToken, discordUser) = user;
+    final session = request.session;
+    if (session == null) return Response.ok(null);
 
     // Send the message to the Discord user
     final json = await request.json();
     final message = Message.fromJson(json);
     final discordMessage = message.describe();
-    await services.discord.sendMessage(discordUser, discordMessage);
+    await services.discord.sendMessage(session.discordID, discordMessage);
 
     // The MLN server does not care about this response
     return Response.ok(null);
@@ -68,20 +66,14 @@ class MlnServer extends Service {
 
   Future<Response> _handleFriendWebhook(Request request) async {
     // Get the associated Discord user for this webhook
-    final webhookUser = request.user;
-    if (webhookUser == null) return Response.ok(null);
-    final (accessToken, discordUser) = webhookUser;
-
-    // Get the MLN user and their details
-    final client = MlnClient(accessToken, mlnApiToken);
-    final user = await client.whoAmI();
-    if (user == null) return Response.ok(null);
+    final session = request.session;
+    if (session == null) return Response.ok(null);
 
     // Send a message to the user about their new friendship
     final json = await request.json();
     final friendship = Friendship.fromJson(json);
-    final message = friendship.describe(user.username);
-    await services.discord.sendMessage(discordUser, message);
+    final message = friendship.describe(session.mlnUsername);
+    await services.discord.sendMessage(session.discordID, message);
 
     // The MLN server does not care about this response
     return Response.ok(null);
@@ -108,9 +100,9 @@ class MlnServer extends Service {
     await services.discord.sendToBotChannel(builder);
 
     // Update the user's role if they're signed into the MellonBot
-    final discordUser = services.cache.mlnUsernameToDiscord(username);
-    if (discordUser != null) {
-      await services.discord.grantRankRole(discordUser, rank);
+    final session = services.cache.sessionsByMlnUsername[username];
+    if (session != null) {
+      await services.discord.grantRankRole(session.discordID, rank);
     }
 
     return Response.ok(null);
@@ -118,22 +110,18 @@ class MlnServer extends Service {
 }
 
 Handler authMiddleware(Handler innerHandler) => (Request request) {
-  // final apiToken = request.headers["Api-Token"];
-  // if (apiToken != mlnWebhookApiToken) return Response.unauthorized(null);
+  final apiToken = request.headers["Api-Token"];
+  if (apiToken != mlnWebhookApiToken) return Response.unauthorized(null);
   return innerHandler(request);
 };
 
 extension on Request {
-  (AccessToken, nyxx.Snowflake)? get user {
+  MellonBotSession? get session {
     final authHeader = headers[HttpHeaders.authorizationHeader];
     if (authHeader == null) return null;
     final [_, token] = authHeader.split(" ");  // "Bearer TOKEN"
     final accessToken = AccessToken(token);
-    final sessionID = services.cache.tokenToSession[accessToken];
-    if (sessionID == null) return null;
-    final snowflake = services.cache.sessionToDiscord[sessionID];
-    if (snowflake == null) return null;
-    return (accessToken, snowflake);
+    return services.cache.sessionsByAccessToken[accessToken];
   }
 
   Future<Json> json() async => jsonDecode(await readAsString());

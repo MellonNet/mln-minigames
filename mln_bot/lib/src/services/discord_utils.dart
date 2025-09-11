@@ -48,9 +48,6 @@ extension DiscordUtils on NyxxGateway {
     InteractionCreateEvent<Interaction<dynamic>> event, {
     required Future<T?> Function() func,
     required MessageFollowUp Function(T) followUp,
-    // required String? message,
-    // bool react = false,
-    // bool delete = false,
   }) async {
     try {
       final result = await func();
@@ -136,16 +133,13 @@ extension DiscordUtils on NyxxGateway {
 }
 
 extension InteractionUtils on InteractionCreateEvent {
-  SessionID? get sessionID {
-    final user = interaction.user ?? interaction.member?.user;
-    if (user == null) return null;
-    return services.cache.discordToMln(user.id);
-  }
+  User? get discordUser => interaction.user ?? interaction.member?.user;
 
   MlnClient? get mlnClient {
-    final accessToken = services.cache.sessionToToken[sessionID];
-    if (accessToken == null) return null;
-    return MlnClient(accessToken, mlnApiToken);
+    final userID = discordUser?.id;
+    final session = services.cache.sessionsByDiscord[userID];
+    if (session == null) return null;
+    return MlnClient(session.accessToken, mlnApiToken);
   }
 }
 

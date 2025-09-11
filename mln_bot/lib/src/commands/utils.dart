@@ -26,14 +26,7 @@ Future<String?> checkDiscordUser(String username) async {
   if (!username.startsWith("<@")) return username;
   final discordID = username.substring(2, username.length - 1);
   final snowflake = Snowflake(int.parse(discordID));
-  // Lookup the MLN access token
-  final sessionID = services.cache.discordToMln(snowflake);
-  final accessToken = services.cache.sessionToToken[sessionID];
-  if (accessToken == null) return null;
-  // Find the user based on their access token
-  final client2 = MlnClient(accessToken, mlnApiToken);
-  final user2 = await client2.whoAmI();
-  return user2?.username;
+  return services.cache.sessionsByDiscord[snowflake]?.mlnUsername;
 }
 
 extension ChatUtils on ChatContext {
@@ -62,12 +55,8 @@ extension ChatUtils on ChatContext {
 
   Future<void> respondText(String text, {bool isPublic = false}) => respond(
     MessageBuilder(
-      flags: isPublic
-        ? MessageFlags.ephemeral
-        : MessageFlags.ephemeral | MessageFlags.isComponentsV2,
-      components: [
-        TextDisplayComponentBuilder(content: text),
-      ],
+      content: text,
+      flags: MessageFlags.ephemeral,
     ),
   );
 
@@ -75,7 +64,7 @@ extension ChatUtils on ChatContext {
     respond(user.describe(prefix));
 
   Future<void> respondLogin({bool promptToRetry = false}) =>
-    respond(buildLogin(sessionID, promptToRetry: promptToRetry));
+    respond(buildLogin(services.cache.discordToMln(user.id), promptToRetry: promptToRetry));
 
   Future<void> respondItem(ItemInfo item, {required bool isPublic}) async =>
     respond(await item.describe(isPublic: isPublic));
@@ -97,10 +86,7 @@ extension ChatUtils on ChatContext {
     ),
   );
 
-  /// We hash the snowflake so as not to leak real Discord IDs.
-  SessionID get sessionID => services.cache.discordToMln(user.id);
-
-  AccessToken? get accessToken => services.server.oauth.sessionToTokens[sessionID];
+  AccessToken? get accessToken => services.cache.sessionsByDiscord[user.id]?.accessToken;
 
   Future<MlnClient?> getClient({bool promptLogin = true}) async {
     final accessToken = this.accessToken;

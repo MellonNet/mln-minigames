@@ -83,10 +83,11 @@ class DiscordClient extends Service {
   ) async {
     final client = event.mlnClient;
     if (client == null) {
-      final sessionID = event.sessionID;
-      if (sessionID == null) {
+      final userID = event.discordUser?.id;
+      if (userID == null) {
         await _client.replyToString(event, "You're not signed in");
       } else {
+        final sessionID = services.cache.discordToMln(userID);
         final builder = buildLogin(sessionID);
         await _client.replyTo(event, builder);
       }
@@ -189,10 +190,9 @@ class DiscordClient extends Service {
     }
   }
 
-  Future<void> grantRoleLogin(SessionID sessionID, AccessToken accessToken) async {
-    // Get the associated Discord user
-    final discordUser = services.cache.sessionToDiscord[sessionID];
-    if (discordUser == null) return;
+  Future<void> grantRoleLogin(AccessToken accessToken) async {
+    final session = services.cache.sessionsByAccessToken[accessToken];
+    if (session == null) return;
 
     // Get the associated MLN profile
     final client = MlnClient(accessToken, mlnApiToken);
@@ -200,7 +200,7 @@ class DiscordClient extends Service {
     if (profile == null) return;
 
     // Grant the correct role(s)
-    await grantRankRole(discordUser, profile.rank);
+    await grantRankRole(session.discordID, profile.rank);
   }
 
   Future<void> grantRankRole(Snowflake userID, int rank) async {

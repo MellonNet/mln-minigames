@@ -3,52 +3,60 @@ import "dart:convert";
 import "dart:io";
 
 import "package:collection/collection.dart";
-import "package:mln_bot/services.dart";
-import "package:nyxx/nyxx.dart" hide Webhook, WebhookType;
 
+import "package:mln_bot/data.dart";
+import "package:mln_bot/services.dart";
 import "package:mln_shared/mln_shared.dart";
 
 class Cache extends Service {
-  static final sessionsFile = File("cache/sessions.txt");
-  static final snowflakesFile = File("cache/snowflakes.txt");
+  static final sessionsFile = File("cache/sessions.json");
   static final webhooksFile = File("cache/webhooks.json");
   static final statsFile = File("cache/stats.json");
 
-  Map<SessionID, AccessToken> get sessionToToken =>
-    services.server.oauth.sessionToTokens;
-
-  Map<AccessToken, SessionID> get tokenToSession =>
-    services.server.oauth.tokenToSession;
-
-  Map<AccessToken, String> get tokensToUsernames =>
-    services.server.oauth.accessTokenToUsername;
-
-  final sessionToDiscord = <SessionID, Snowflake>{};
+  final List<MellonBotSession> sessions = [];
   final webhooks = <Webhook>[];
+
+  // This is needed to preserve Discord identities via a one-way hash.
+  // This does not need to be persisted -- the MellonBotSession has it.
+  final _sessionIDToDiscord = <SessionID, Snowflake>{};
+
+  final Map<Snowflake, MellonBotSession> sessionsByDiscord = {};
+  final Map<String, MellonBotSession> sessionsByMlnUsername = {};
+  final Map<AccessToken, MellonBotSession> sessionsByAccessToken = {};
+
+  Future<void> saveSession(SessionID sessionID, AccessToken accessToken) async {
+    // When the user presses the login button, their Discord ID is hashed into a SessionID.
+    // Their corresponding Discord Snowflake is saved in _sessionIDToDiscord.
+    // If the bot is shut down between pressing the login button and signing in, this link
+    // will be missing, but in the worst case they just try /login again.
+    final discordID = _sessionIDToDiscord[sessionID];
+    if (discordID == null) return;
+
+    final mlnUsername = services.server.oauth.accessTokenToUsername[accessToken]!;
+    final session = MellonBotSession(discordID: discordID, accessToken: accessToken, sessionID: sessionID, mlnUsername: mlnUsername);
+    _cacheSession(session);
+    await _saveSessions();
+  }
+
+  void _cacheSession(MellonBotSession session) {
+    sessionsByDiscord[session.discordID] = session;
+    sessionsByMlnUsername[session.mlnUsername] = session;
+    sessionsByAccessToken[session.accessToken] = session;
+    sessions.add(session);
+  }
+
+  Future<void> _saveSessions() => _writeCacheList(sessionsFile, [
+    for (final session in sessions)
+      session.toJson(),
+  ]);
 
   Webhook? getWebhook(AccessToken accessToken, WebhookType type) => webhooks
     .firstWhereOrNull((webhook) => webhook.accessToken == accessToken && webhook.type == type);
-
-  Future<void> saveAccessTokens() => _writeCache(sessionsFile, {
-    for (final (sessionID, accessToken) in sessionToToken.records)
-      sessionID.value: accessToken.value,
-  });
-
-  Future<void> saveSnowflakes() => _writeCache(snowflakesFile, {
-    for (final (sessionID, snowflake) in sessionToDiscord.records)
-      sessionID.value: snowflake.value,
-  });
 
   Future<void> saveWebhooks() => _writeCacheList(webhooksFile, [
     for (final webhook in webhooks)
       webhook.toJson(),
   ]);
-
-  static Future<void> _writeCache(File file, Json data) async {
-    final contents = jsonEncode(data);
-    await file.create(recursive: true);
-    await file.writeAsString(contents);
-  }
 
   static Future<void> _writeCacheList(File file, List<Json> data) async {
     final contents = jsonEncode(data);
@@ -61,20 +69,10 @@ class Cache extends Service {
     if (!statsFile.existsSync()) await statsFile.create(recursive: true);
     if (sessionsFile.existsSync()) {
       final contents = await sessionsFile.readAsString();
-      final data = jsonDecode(contents) as Json;
-      for (final (rawSessionID, rawAccessToken) in data.cast<String, String>().records) {
-        final sessionID = SessionID(rawSessionID);
-        final accessToken = AccessToken(rawAccessToken);
-        sessionToToken[sessionID] = accessToken;
-        tokenToSession[accessToken] = sessionID;
-      }
-    }
-
-    if (snowflakesFile.existsSync()) {
-      final contents = await snowflakesFile.readAsString();
-      final data = jsonDecode(contents) as Json;
-      for (final (sessionID, snowflake) in data.cast<String, int>().records) {
-        sessionToDiscord[SessionID(sessionID)] = Snowflake(snowflake);
+      final sessionJsons = jsonDecode(contents) as List;
+      for (final sessionJson in sessionJsons.cast<Json>()) {
+        final session = MellonBotSession.fromJson(sessionJson);
+        _cacheSession(session);
       }
     }
 
@@ -89,9 +87,8 @@ class Cache extends Service {
 
   SessionID discordToMln(Snowflake snowflake) {
     final sessionID = SessionID(snowflake.hashCode.toString());
-    if (!sessionToDiscord.containsKey(sessionID)) {
-      sessionToDiscord[sessionID] = snowflake;
-      unawaited(saveSnowflakes());
+    if (!_sessionIDToDiscord.containsKey(sessionID)) {
+      _sessionIDToDiscord[sessionID] = snowflake;
     }
     return sessionID;
   }
@@ -104,12 +101,10 @@ class Cache extends Service {
     await statsFile.writeAsString(jsonEncode(data));
   }
 
-  Snowflake? mlnUsernameToDiscord(String username) {
-    final accessToken = tokensToUsernames
-      .entries.firstWhereOrNull((entry) => entry.value == username)?.key;
-    if (accessToken == null) return null;
-    final sessionID = tokenToSession[accessToken];
-    if (sessionID == null) return null;
-    return sessionToDiscord[sessionID];
+  Future<void> removeSession(Snowflake discordID) async {
+    final session = sessionsByDiscord[discordID];
+    if (session == null) return;
+    sessions.remove(session);
+    await _saveSessions();
   }
 }

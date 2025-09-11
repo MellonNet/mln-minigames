@@ -8,10 +8,6 @@ Future<void> _logout(ChatContext context) async {
     await context.respondText("You were already signed out!");
     return;
   }
-  final sessionID = context.sessionID;
-  services.cache.sessionToToken.remove(sessionID);
-  await services.cache.saveAccessTokens();
-  services.cache.sessionToDiscord.remove(sessionID);
-  await services.cache.saveSnowflakes();
+  await services.cache.removeSession(context.user.id);
   await context.respondText("Done");
 }
