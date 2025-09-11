@@ -10,7 +10,7 @@ Future<void> _block(
   (client) => userCommand(context, username,
     (user) => context.handle<bool>(
       func: () => client.block(user),
-      onSuccess: (_) => context.respondText("$user is no longer your friend"),
+      onSuccess: (_) => context.respondText("Blocked $user -- you won't hear from them anymore"),
     )
   )
 );
@@ -25,7 +25,7 @@ Future<void> _unblock(
   (client) => userCommand(context, username,
     (user) => context.handle<bool>(
       func: () => client.unblock(user),
-      onSuccess: (_) => context.respondText("$user is no longer your friend"),
+      onSuccess: (_) => context.respondText("$user is your friend again! Glad you figured things out"),
     ),
   ),
 );
