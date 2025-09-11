@@ -16,6 +16,8 @@ typedef MlnClientCallback = Future<void> Function(MlnClient client);
 class DiscordClient extends Service {
   late final NyxxGateway _client;
 
+  Snowflake get botID => _client.user.id;
+
   @override
   Future<void> init() async {
     commands.forEach(commandsPlugin.addCommand);
@@ -28,18 +30,21 @@ class DiscordClient extends Service {
     );
     _client.setStatus();
     await _client.createRoles(rankRoles);
-    final botUser = await _client.users.fetchCurrentUser();
-    _client.onMessageCreate.listen((event) async {
-      if (event.mentions.contains(botUser)) {
-        await event.message.channel.sendMessage(MessageBuilder(
-          content: "I don't get it.\n\nSorry, us Discord bots only respond to / commands",
-        ));
-      }
-    });
+    _client.onMessageCreate.listen(_handleNewMessages);
     _client.onMessageReactionAdd.listen(_handleReactions);
     _client.onMessageComponentInteraction.listen(_handleInteractions2);
     _client.onApplicationCommandInteraction.listen(_handleCommand);
   }
+
+  Future<void> _handleNewMessages(MessageCreateEvent event) async {
+    if (event.message.author.id == _client.user.id) return;
+    if (event.mentions.any((user) => user.id == _client.user.id)) {
+      await event.message.channel.sendMessage(MessageBuilder(
+        content: "I don't get it.\n\nSorry, us Discord bots only respond to / commands",
+      ));
+    }
+  }
+
 
   Future<void> sendMessage(Snowflake user, MessageBuilder message) async {
     final channel = await _client.users.createDm(user);
@@ -213,4 +218,6 @@ class DiscordClient extends Service {
       }
     }
   }
+
+  String discordMention(Snowflake id) => "<@$id>";
 }

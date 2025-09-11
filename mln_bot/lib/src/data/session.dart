@@ -22,9 +22,9 @@ class MellonBotSession {
     mlnUsername = json["mln_username"];
 
   Json toJson() => {
-    "discord_id": discordID,
-    "access_token": accessToken,
-    "session_id": sessionID,
+    "discord_id": discordID.value,
+    "access_token": accessToken.value,
+    "session_id": sessionID.value,
     "mln_username": mlnUsername,
   };
 }

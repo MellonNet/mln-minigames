@@ -17,7 +17,7 @@ Here's a bit of what I can do:
 - `/befriend USER` and `/unfriend USER`
 - `/block USER` and `/unblock USER`
 - `/who-is USER`
-- `/random RANK` to see a random user at any rank
+- `/random-user RANK` to see a random user at any rank
 
 Did you know? When a command asks for a user, you can either give me their MellonNet username or `@mention` their Discord username. If they're also using the MellonBot, I can find their MellonNet profiles automatically!
 

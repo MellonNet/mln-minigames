@@ -6,6 +6,10 @@ import "package:mln_shared/data.dart";
 extension UserUtils on User {
   static String userLink(String username) => "[$username](${User.pageUrl(username)})";
 
+  Snowflake? getDiscordID() => username.toLowerCase() == "echo"
+    ? services.discord.botID
+    : services.cache.sessionsByMlnUsername[username]?.discordID;
+
   String describeText(String prefix) {
     final buffer = StringBuffer();
     buffer.writeln("$prefix: ${userLink(username)}");
@@ -14,6 +18,11 @@ extension UserUtils on User {
     buffer.writeln("- has ${badges.length} badges");
     if (friendshipStatus != null) {
       buffer.writeln("- ${friendshipStatus!.describe}");
+    }
+    final discordID = getDiscordID();
+    if (discordID != null) {
+      final mention = services.discord.discordMention(discordID);
+      buffer.writeln("- is signed into Discord as $mention");
     }
     return buffer.toString();
   }

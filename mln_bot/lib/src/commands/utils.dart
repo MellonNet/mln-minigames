@@ -26,6 +26,7 @@ Future<String?> checkDiscordUser(String username) async {
   if (!username.startsWith("<@")) return username;
   final discordID = username.substring(2, username.length - 1);
   final snowflake = Snowflake(int.parse(discordID));
+  if (snowflake == services.discord.botID) return "Echo";
   return services.cache.sessionsByDiscord[snowflake]?.mlnUsername;
 }
 
@@ -60,7 +61,7 @@ extension ChatUtils on ChatContext {
     ),
   );
 
-  Future<void> respondUser(User user, String prefix) =>
+  Future<void> respondUser(User user, String prefix) async =>
     respond(user.describe(prefix));
 
   Future<void> respondLogin({bool promptToRetry = false}) =>
@@ -69,22 +70,8 @@ extension ChatUtils on ChatContext {
   Future<void> respondItem(ItemInfo item, {required bool isPublic}) async =>
     respond(await item.describe(isPublic: isPublic));
 
-  Future<void> respondItems(List<ItemInfo> items, {required bool isPublic}) => respond(
-    MessageBuilder(
-      flags: MessageFlags.isComponentsV2 | MessageFlags.ephemeral,
-      components: [
-        TextDisplayComponentBuilder(content: "Found multiple items that match, please choose one"),
-        ActionRowBuilder(components: [
-          SelectMenuBuilder.stringSelect(
-            customId: "item_$isPublic",
-            options: [
-              for (final item in items)
-                SelectMenuOptionBuilder(label: item.name, value: item.name),
-            ]),
-        ]),
-      ],
-    ),
-  );
+  Future<void> respondItems(Iterable<ItemInfo> items, {required bool isPublic}) =>
+    respond(items.describe(isPublic: isPublic));
 
   AccessToken? get accessToken => services.cache.sessionsByDiscord[user.id]?.accessToken;
 
