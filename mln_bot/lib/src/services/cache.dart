@@ -51,7 +51,7 @@ class Cache extends Service {
     sessions.add(session);
   }
 
-  Future<void> removeSession(MellonBotSession session) async {
+  Future<bool> removeSession(MellonBotSession session) async {
     await session.client.logout().ignoreAllErrors();
 
     // Remove any webhooks associated with that session
@@ -65,6 +65,7 @@ class Cache extends Service {
     sessions.remove(session);
 
     await _saveSessions();
+    return true;
   }
 
   Future<void> _saveSessions() => _writeCacheList(sessionsFile, [

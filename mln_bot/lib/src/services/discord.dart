@@ -57,12 +57,12 @@ class DiscordClient extends BaseDiscordClient with DiscordInteractions, DiscordE
     await grantRankRole(session.discordID, profile.rank);
   }
 
-  Future<String?> setNickname(MellonBotSession session) async {
+  Future<String> setNickname(MellonBotSession session) async {
     const serverID = Snowflake(botServerID);
     final server = await discordClient.guilds.get(serverID);
     final member = await server.members.get(session.discordID);
-    final currentName = member.nick;
-    if (currentName == null || currentName.contains(session.mlnUsername)) return currentName;
+    final currentName = member.nick ?? member.user?.globalName ?? "";
+    if (currentName.contains(session.mlnUsername)) return currentName;
     final newName = "$currentName (${session.mlnUsername})";
     final builder = MemberUpdateBuilder(nick: newName);
     await member.update(builder);

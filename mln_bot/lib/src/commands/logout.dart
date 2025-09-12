@@ -6,5 +6,5 @@ Future<void> _logout(ChatContext context) async {
   final session = context.session;
   if (session == null) return context.respondText("You were already signed out!");
   await services.cache.removeSession(session);
-  await context.respondText("Done");
+  await context.respondText("You've been signed out and unsubscribed");
 }
