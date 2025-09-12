@@ -1,5 +1,4 @@
-Coming later
-  /who-has MODULE
+Coming soon
   /inventory ITEM
   /click-request MODULE (fakeDescription for ambush modules)
   /harvest (no tear down)

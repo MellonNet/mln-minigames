@@ -19,7 +19,7 @@ class DiscordClient extends BaseDiscordClient with DiscordInteractions, DiscordE
     commands.forEach(commandsPlugin.addCommand);
     discordClient = await Nyxx.connectGateway(
       discordApiToken,
-      GatewayIntents.allUnprivileged,
+      GatewayIntents.allUnprivileged | GatewayIntents.guildMembers,
       options: GatewayClientOptions(
         plugins: [logging, cliIntegration, commandsPlugin, ignoreExceptions],
       ),
