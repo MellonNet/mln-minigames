@@ -14,6 +14,7 @@ Hi! Hi! I'm the MellonBot, your first friend in the MellonNet Discord. If you ne
 **Basic Commands (no login required)**
 - `/random-user`: I'll find you a random user at any rank -- a great way to make friends!
 - `/who-is`: I'll tell you information based on an MLN username or Discord user
+- `/who-has`: I'll find a random user with the module you're looking for
 - `/what-is`: I'll explain any item or module (if you use `/explain` I'll post publicly)
 - `/help`: Show this help message
 
@@ -43,6 +44,7 @@ Hi! Hi! I'm the MellonBot, your first friend in the MellonNet Discord. If you ne
 
 For more information on MellonNet and My Lego Network, visit our website [here](https://mellonnet.com). Before you can play, you'll need to get yourself a Flaash-compatible browser. Click [here](https://mellonnet.com/setup) to get started. When you're all settled in, come back here and start some commands:
 - `/who-is`: I'll tell you information based on an MLN username or Discord user
+- `/who-has`: I'll find a random user with the module you're looking for
 - `/what-is`: I'll explain how to get and use any item or module
 - `/random-user` I'll find you a random user at any rank -- a great way to make new friends!
 - `/help` to see what else I can do

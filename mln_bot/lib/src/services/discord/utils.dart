@@ -133,12 +133,7 @@ extension RolesUtils on List<Role> {
 extension InteractionUtils on InteractionCreateEvent {
   User? get discordUser => interaction.user ?? interaction.member?.user;
 
-  MlnClient? get mlnClient {
-    final userID = discordUser?.id;
-    if (userID == null) return null;
-    final session = services.cache.sessionsByDiscord[userID];
-    return session?.client;
-  }
+  MlnClient? get mlnClient => discordUser?.id.session?.client;
 }
 
 extension MessageReactionAddEventUtils on MessageReactionAddEvent {

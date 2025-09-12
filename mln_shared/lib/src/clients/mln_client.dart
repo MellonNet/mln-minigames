@@ -19,6 +19,15 @@ final class BaseMlnClient {
     if (json == null) return null;
     return User.fromJson(json);
   }
+
+  Future<(List<User>, List<User>)?> whoHas(ItemInfo module) async {
+    final json = await _client.getJson("/modules/${module.id}/who-has");
+    if (json == null) return null;
+    return (
+      [for (final user in json["ready"]) User.fromJson(user)],
+      [for (final user in json["needs_setup"]) User.fromJson(user)],
+    );
+  }
 }
 
 final class AnonymousMlnClient extends BaseMlnClient {
@@ -32,6 +41,7 @@ final class AnonymousMlnClient extends BaseMlnClient {
 
 final class MlnClient extends BaseMlnClient {
   static const host = "https://mln.mellonnet.com";
+  // static const host = "http://localhost:8000";
 
   static MlnHeaders authHeaders({
     required String apiToken,

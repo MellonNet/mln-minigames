@@ -9,6 +9,10 @@ import "package:mln_bot/secrets.dart";
 import "package:mln_bot/services.dart";
 import "package:mln_shared/mln_shared.dart";
 
+extension SnowflakeSession on Snowflake {
+  MellonBotSession? get session => services.cache._sessionsByDiscord[this];
+}
+
 class Cache extends Service {
   static final sessionsFile = File("cache/sessions.json");
   static final webhooksFile = File("cache/webhooks.json");
@@ -21,7 +25,7 @@ class Cache extends Service {
   // This does not need to be persisted -- the MellonBotSession has it.
   final _sessionIDToDiscord = <SessionID, Snowflake>{};
 
-  final Map<Snowflake, MellonBotSession> sessionsByDiscord = {};
+  final Map<Snowflake, MellonBotSession> _sessionsByDiscord = {};
   final Map<String, MellonBotSession> sessionsByMlnUsername = {};
   final Map<AccessToken, MellonBotSession> sessionsByAccessToken = {};
 
@@ -41,24 +45,25 @@ class Cache extends Service {
   }
 
   void _cacheSession(MellonBotSession session) {
-    sessionsByDiscord[session.discordID] = session;
+    _sessionsByDiscord[session.discordID] = session;
     sessionsByMlnUsername[session.mlnUsername] = session;
     sessionsByAccessToken[session.accessToken] = session;
     sessions.add(session);
   }
 
   Future<void> removeSession(MellonBotSession session) async {
-    await session.client.logout();
+    await session.client.logout().ignoreAllErrors();
 
     // Remove any webhooks associated with that session
     // Do not need to delete from the server since client.logout() will do that.
     _webhooks.removeWhere((webhook) => webhook.accessToken == session.accessToken);
 
     // The opposite of _cacheSession
-    sessionsByDiscord.remove(session.discordID);
+    _sessionsByDiscord.remove(session.discordID);
     sessionsByMlnUsername.remove(session.mlnUsername);
     sessionsByAccessToken.remove(session.accessToken);
     sessions.remove(session);
+
     await _saveSessions();
   }
 

@@ -1,3 +1,5 @@
+import "dart:math";
+
 import "package:http/http.dart";
 import "package:http_status_code/http_status_code.dart";
 import "package:xor_dart/xor_dart.dart";
@@ -75,4 +77,21 @@ extension FutureUtils<T> on Future<T> {
       return null;
     }
   }
+}
+
+extension ListUtils<E> on List<E> {
+  List<E> takeRandom(int count) {
+    final random = Random();
+    final result = <E>[];
+    for (var i = 0; i < count; i++) {
+      final index = random.nextInt(length);
+      final element = removeAt(index);
+      result.add(element);
+    }
+    return result;
+  }
+
+  E? getRandom() => isEmpty ? null : this[Random().nextInt(length)];
+
+  List<E>? get nullIfEmpty => isEmpty ? null : this;
 }

@@ -27,7 +27,7 @@ Future<String?> checkDiscordUser(String username) async {
   final discordID = username.substring(2, username.length - 1);
   final snowflake = Snowflake(int.parse(discordID));
   if (snowflake == services.discord.botID) return "Echo";
-  return services.cache.sessionsByDiscord[snowflake]?.mlnUsername;
+  return snowflake.session?.mlnUsername;
 }
 
 Future<void> unsubscribeWebhook(ChatContext context, WebhookType type) => authedCommand(context, (client) async {
@@ -80,14 +80,17 @@ extension ChatUtils on ChatContext {
     respond(await item.describe(isPublic: isPublic));
 
   Future<void> respondItems(Iterable<ItemInfo> items, {required bool isPublic}) =>
-    respond(items.describe(isPublic: isPublic));
+    respond(items.describe(command: "items", isPublic: isPublic));
 
-  MellonBotSession? get session => services.cache.sessionsByDiscord[user.id];
+  Future<void> respondModules(Iterable<ItemInfo> modules) =>
+    respond(modules.describe(command: "modules"));
 
-  Future<MlnClient?> getClient({bool promptLogin = true}) async {
+  MellonBotSession? get session => user.id.session;
+
+  Future<MlnClient?> getClient() async {
     final currentSession = session;
     if (currentSession == null) {
-      if (promptLogin) await respondLogin(promptToRetry: true);
+      await respondLogin(promptToRetry: true);
       return null;
     } else {
       return currentSession.client;
@@ -96,6 +99,8 @@ extension ChatUtils on ChatContext {
 
   AnonymousMlnClient getAnonymousClient() => AnonymousMlnClient(mlnApiToken);
 
-  Future<BaseMlnClient> getAnyClient() async =>
-    (await getClient(promptLogin: false)) ?? getAnonymousClient();
+  BaseMlnClient getAnyClient() =>
+    _maybeClient ?? getAnonymousClient();
+
+  MlnClient? get _maybeClient => session?.client;
 }

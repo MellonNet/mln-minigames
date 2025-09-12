@@ -14,6 +14,7 @@ export "src/commands/nickname.dart";
 export "src/commands/random_user.dart";
 export "src/commands/whatis.dart";
 export "src/commands/whois.dart";
+export "src/commands/who_has.dart";
 
 import "";
 
@@ -58,6 +59,7 @@ List<CommandRegisterable> commands = [
   // Items and Modules
   itemQuery,
   itemQueryPublic,
+  whoHasCommand,
 
   // Misc
   loginCommand,

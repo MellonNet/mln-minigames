@@ -1,4 +1,6 @@
+import "package:mln_bot/data.dart";
 import "package:mln_bot/services.dart";
+import "package:mln_shared/utils.dart";
 import "package:nyxx/nyxx.dart" hide Attachment, Message, User;
 
 import "package:mln_shared/data.dart";
@@ -28,7 +30,7 @@ extension UserUtils on User {
   }
 
   MessageBuilder describe(String prefix) => MessageBuilder(
-    flags: MessageFlags.isComponentsV2,
+    flags: MessageFlags.isComponentsV2 | MessageFlags.ephemeral,
     components: [
       TextDisplayComponentBuilder(
         content: describeText(prefix),
@@ -47,4 +49,40 @@ extension UserUtils on User {
         ),
       ],
   );
+}
+
+extension ListUserUtils on List<User> {
+  User? pickRandomUser({bool allowNetworker = false}) {
+    final discordUsers = <User>[];
+    final nonDiscordUsers = <User>[];
+    for (final user in this) {
+      final session = services.cache.sessionsByMlnUsername[user.username];
+      if (user.isNetworker && !allowNetworker) continue;
+      if (session == null) {
+        nonDiscordUsers.add(user);
+      } else {
+        discordUsers.add(user);
+      }
+    }
+
+    return discordUsers.getRandom() ?? nonDiscordUsers.getRandom();
+  }
+}
+
+MessageBuilder pickPreferredUser(ItemInfo item, List<User> ready, List<User> notReady) {
+  var user = ready.pickRandomUser() ?? notReady.pickRandomUser();
+  if (user == null) {
+    var message = "Nobody has a $item on their page -- you should be the first!";
+    user = ready.pickRandomUser(allowNetworker: true);
+    if (user != null) {
+      message += "\n\nOne of my Networker friends does, though";
+      return user.describe(message);
+    } else {
+      return buildText(message);
+    }
+  } else {
+    var message = "This user has a ${item.name} on their page";
+    if (notReady.contains(user)) message += " -- but it's not setup";
+    return user.describe(message);
+  }
 }

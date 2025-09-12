@@ -21,9 +21,10 @@ class Editorial extends Service {
     items = itemRoot.childElements.map(ItemInfo.fromXml).toList();
   }
 
-  Iterable<ItemInfo> searchItems(String query, {bool blueprints = false}) => items
+  Iterable<ItemInfo> searchItems(String query, {bool blueprints = false, String? type}) => items
     .where((item) => item.matches(query))
-    .where((item) => blueprints || !item.name.containsInsensitive("blueprint"));
+    .where((item) => blueprints || !item.name.containsInsensitive("blueprint"))
+    .where((item) => type == null || item.type == type);
 
   Uri? getThumbnail(String itemName) => searchItems(itemName, blueprints: true)
     .first

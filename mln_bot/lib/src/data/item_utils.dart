@@ -44,13 +44,13 @@ extension ItemUtils on ItemInfo {
 }
 
 extension ItemInfosUtils on Iterable<ItemInfo> {
-  MessageBuilder describe({bool isPublic = false}) => MessageBuilder(
+  MessageBuilder describe({required String command, bool isPublic = false}) => MessageBuilder(
     flags: MessageFlags.isComponentsV2 | MessageFlags.ephemeral,
     components: [
       TextDisplayComponentBuilder(content: "Found multiple items that match, please choose one"),
       ActionRowBuilder(components: [
         SelectMenuBuilder.stringSelect(
-          customId: "item_$isPublic",
+          customId: "${command}_$isPublic",
           options: [
             for (final item in this)
               SelectMenuOptionBuilder(label: item.name, value: item.name),

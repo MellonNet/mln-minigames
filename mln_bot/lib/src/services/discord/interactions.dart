@@ -1,3 +1,4 @@
+import "package:mln_bot/secrets.dart";
 import "package:nyxx/nyxx.dart" hide Webhook, WebhookType;
 
 import "package:mln_shared/mln_shared.dart";
@@ -26,11 +27,25 @@ mixin DiscordInteractions on BaseDiscordClient {
       case "friend-add": await _handleFriend(event, accept: true, arg);
       case "friend-add-edit": await _handleFriend(event, accept: true, replace: true, arg);
       case "friend-delete": await _handleFriend(event, accept: false, arg);
-      case "item": await _handleItems(event, data, isPublic: arg == "true");
+      case "items": await _handleItems(event, data, isPublic: arg == "true");
+      case "modules": await _handleModules(event, data.values!.first);
       case "subscribe": await _handleSubscribe(event, WebhookType.values.byName(arg));
       case "unsubscribe": await _handleUnsubscribe(event, WebhookType.values.byName(arg));
       case "logout": await _handleLogout(event);
     }
+  }
+
+  Future<void> _handleModules(
+    InteractionCreateEvent<MessageComponentInteraction> event,
+    String moduleName,
+  ) async {
+    final module = services.editorial.searchItems(moduleName).first;
+    final client = event.mlnClient ?? AnonymousMlnClient(mlnApiToken);
+    final users = await client.whoHas(module);
+    if (users == null) return discordClient.replyToString(event, "An error occurred");
+    final (ready, notReady) = users;
+    final builder = pickPreferredUser(module, ready, notReady);
+    await discordClient.replyTo(event, builder);
   }
 
   Future<void> _handleInteraction(
@@ -137,7 +152,7 @@ mixin DiscordInteractions on BaseDiscordClient {
   Future<void> _handleLogout(InteractionCreateEvent<MessageComponentInteraction> event) async {
     final discordUser = event.discordUser;
     if (discordUser == null) return ;
-    final session = services.cache.sessionsByDiscord[discordUser.id];
+    final session = discordUser.id.session;
     if (session == null) {
       return discordClient.replyToString(event, "You were not signed in");
     } else {

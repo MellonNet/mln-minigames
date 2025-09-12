@@ -3,17 +3,20 @@ import "package:mln_shared/utils.dart";
 import "package:xml/xml.dart";
 
 extension type ItemID(String value) { }
+
 class ItemInfo {
   final String name;
   final String description;
   final ItemID id;
   final String thumbnailPath;
+  final String type;
 
   ItemInfo.fromXml(XmlElement element) :
     name = element.getAttribute("name")!,
     description = element.getAttribute("description")!,
     id = ItemID(element.getAttribute("id")!),
-    thumbnailPath = element.getAttribute("thumbnail")!;
+    thumbnailPath = element.getAttribute("thumbnail")!,
+    type = element.getAttribute("type")!;
 
   String get thumbnailUrl => "${MlnClient.host}$thumbnailPath";
 

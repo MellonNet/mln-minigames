@@ -20,7 +20,7 @@ Future<void> _randomUser(
   @Description("Which rank to search")
   String? rank
 ]) async {
-  final client = await context.getAnyClient();
+  final client = context.getAnyClient();
   final int rankInt;
   if (rank == null || rank.isEmpty) {
     if (client is! MlnClient) {
