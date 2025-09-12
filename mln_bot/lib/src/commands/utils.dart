@@ -30,6 +30,15 @@ Future<String?> checkDiscordUser(String username) async {
   return services.cache.sessionsByDiscord[snowflake]?.mlnUsername;
 }
 
+Future<void> unsubscribeWebhook(ChatContext context, WebhookType type) => authedCommand(context, (client) async {
+  final webhook = services.cache.getWebhook(client.accessToken, type);
+  if (webhook == null) return context.respondText("You were not subscribed to $type");
+  await context.handle<void>(
+    func: () => services.cache.deleteWebhook(webhook),
+    onSuccess: (_) => context.respondText("Unsubscribed"),
+  );
+});
+
 extension ChatUtils on ChatContext {
   Future<void> handle<T>({
     required Future<T?> Function() func,
@@ -73,15 +82,15 @@ extension ChatUtils on ChatContext {
   Future<void> respondItems(Iterable<ItemInfo> items, {required bool isPublic}) =>
     respond(items.describe(isPublic: isPublic));
 
-  AccessToken? get accessToken => services.cache.sessionsByDiscord[user.id]?.accessToken;
+  MellonBotSession? get session => services.cache.sessionsByDiscord[user.id];
 
   Future<MlnClient?> getClient({bool promptLogin = true}) async {
-    final accessToken = this.accessToken;
-    if (accessToken == null) {
+    final currentSession = session;
+    if (currentSession == null) {
       if (promptLogin) await respondLogin(promptToRetry: true);
       return null;
     } else {
-      return MlnClient(accessToken, mlnApiToken);
+      return currentSession.client;
     }
   }
 

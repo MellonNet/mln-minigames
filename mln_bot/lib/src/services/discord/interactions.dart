@@ -2,16 +2,14 @@ import "package:nyxx/nyxx.dart" hide Webhook, WebhookType;
 
 import "package:mln_shared/mln_shared.dart";
 import "package:mln_bot/data.dart";
-import "package:mln_bot/commands.dart";
 import "package:mln_bot/services.dart";
 
-import "discord_utils.dart";
+import "base.dart";
+import "utils.dart";
 
 typedef MlnClientCallback = Future<void> Function(MlnClient client);
 
-mixin DiscordInteractions {
-  NyxxGateway get discordClient;
-
+mixin DiscordInteractions on BaseDiscordClient {
   Future<void> handleMessageInteractions(
     InteractionCreateEvent<MessageComponentInteraction> event,
   ) async {
@@ -29,7 +27,9 @@ mixin DiscordInteractions {
       case "friend-add-edit": await _handleFriend(event, accept: true, replace: true, arg);
       case "friend-delete": await _handleFriend(event, accept: false, arg);
       case "item": await _handleItems(event, data, isPublic: arg == "true");
+      case "subscribe": await _handleSubscribe(event, WebhookType.values.byName(arg));
       case "unsubscribe": await _handleUnsubscribe(event, WebhookType.values.byName(arg));
+      case "logout": await _handleLogout(event);
     }
   }
 
@@ -44,7 +44,7 @@ mixin DiscordInteractions {
         await discordClient.replyToString(event, "You're not signed in");
       } else {
         final sessionID = services.cache.discordToMln(userID);
-        final builder = buildLogin(sessionID);
+        final builder = buildLogin(sessionID, promptToRetry: true);
         await discordClient.replyTo(event, builder);
       }
     } else {
@@ -105,7 +105,7 @@ mixin DiscordInteractions {
     if (webhook == null) return discordClient.replyToString(event, "You were not subscribed");
     await discordClient.followUp(
       event,
-      func: () => deleteWebhook(client, webhook),
+      func: () => services.cache.deleteWebhook(webhook),
       followUp: (_) => MessageReply("Unsubscribed"),
     );
   });
@@ -132,5 +132,28 @@ mixin DiscordInteractions {
       func: () => client.deleteMessage(messageID),
       followUp: (_) => isHidden ? MessageReply("Deleted message") : MessageDelete(),
     );
+  });
+
+  Future<void> _handleLogout(InteractionCreateEvent<MessageComponentInteraction> event) async {
+    final discordUser = event.discordUser;
+    if (discordUser == null) return ;
+    final session = services.cache.sessionsByDiscord[discordUser.id];
+    if (session == null) {
+      return discordClient.replyToString(event, "You were not signed in");
+    } else {
+      await discordClient.followUp(
+        event,
+        func: () => services.cache.removeSession(session),
+        followUp: (_) => MessageReply("You've been signed out and unsubscribed"),
+      );
+    }
+  }
+
+  Future<void> _handleSubscribe(
+    InteractionCreateEvent<MessageComponentInteraction> event,
+    WebhookType type,
+  ) => _handleInteraction(event, (client) async {
+    final builder = await subscribeWebhook(client, type);
+    return discordClient.replyTo(event, builder);
   });
 }

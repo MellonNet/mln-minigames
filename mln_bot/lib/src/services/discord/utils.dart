@@ -51,7 +51,9 @@ extension DiscordUtils on NyxxGateway {
   }) async {
     try {
       final result = await func();
-      if (result == null) return replyToString(event, "An error occurred");
+      if (result == null || result == false) {
+        return replyToString(event, "An error occurred");
+      }
       switch (followUp(result)) {
         case MessageReply(:final message, :final replace):
           if (replace) await event.interaction.message?.delete();
@@ -98,8 +100,11 @@ extension DiscordUtils on NyxxGateway {
     ),
   );
 
-  Future<void> createRoles(List<String> names) async {
-    const roleColor = DiscordColor.fromRgb(255, 0, 238);
+  Future<void> createRoles({
+    required Iterable<String> names,
+    required DiscordColor color,
+    required bool isHoisted,
+  }) async {
     const serverID = Snowflake(botServerID);
     final server = await guilds.get(serverID);
     final roles = server.roleList;
@@ -107,9 +112,9 @@ extension DiscordUtils on NyxxGateway {
       if (roles.any((role) => role.name == name)) continue;
       final builder = RoleBuilder(
         name: name,
-        isHoisted: true,
+        isHoisted: isHoisted,
         isMentionable: true,
-        color: roleColor,
+        color: color,
       );
       await server.roles.create(builder);
     }
@@ -130,9 +135,9 @@ extension InteractionUtils on InteractionCreateEvent {
 
   MlnClient? get mlnClient {
     final userID = discordUser?.id;
+    if (userID == null) return null;
     final session = services.cache.sessionsByDiscord[userID];
-    if (session == null) return null;
-    return MlnClient(session.accessToken, mlnApiToken);
+    return session?.client;
   }
 }
 

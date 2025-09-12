@@ -23,13 +23,16 @@ class MlnServer extends Service {
   static const badgesWebhookPath = "/api/badges";
   static const rankUpWebhookPath = "/api/rank_up";
 
+  static Future<void> onLogin(SessionID sessionID, AccessToken accessToken) async {
+    final session = await services.cache.saveSession(sessionID, accessToken);
+    if (session == null) return;
+    await services.discord.handleLogin(session);
+  }
+
   final OAuth oauth = OAuth(
     apiToken: mlnApiToken,
     clientID: mlnClientID,
-    loginCallback: (sessionID, accessToken) async {
-      await services.cache.saveSession(sessionID, accessToken);
-      await services.discord.grantRoleLogin(accessToken);
-    }
+    loginCallback: onLogin,
   );
 
   HttpServer? _server;

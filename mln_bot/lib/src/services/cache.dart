@@ -5,6 +5,7 @@ import "dart:io";
 import "package:collection/collection.dart";
 
 import "package:mln_bot/data.dart";
+import "package:mln_bot/secrets.dart";
 import "package:mln_bot/services.dart";
 import "package:mln_shared/mln_shared.dart";
 
@@ -14,7 +15,7 @@ class Cache extends Service {
   static final statsFile = File("cache/stats.json");
 
   final List<MellonBotSession> sessions = [];
-  final webhooks = <Webhook>[];
+  final _webhooks = <Webhook>[];
 
   // This is needed to preserve Discord identities via a one-way hash.
   // This does not need to be persisted -- the MellonBotSession has it.
@@ -24,18 +25,19 @@ class Cache extends Service {
   final Map<String, MellonBotSession> sessionsByMlnUsername = {};
   final Map<AccessToken, MellonBotSession> sessionsByAccessToken = {};
 
-  Future<void> saveSession(SessionID sessionID, AccessToken accessToken) async {
+  Future<MellonBotSession?> saveSession(SessionID sessionID, AccessToken accessToken) async {
     // When the user presses the login button, their Discord ID is hashed into a SessionID.
     // Their corresponding Discord Snowflake is saved in _sessionIDToDiscord.
     // If the bot is shut down between pressing the login button and signing in, this link
     // will be missing, but in the worst case they just try /login again.
     final discordID = _sessionIDToDiscord[sessionID];
-    if (discordID == null) return;
+    if (discordID == null) return null;
 
     final mlnUsername = services.server.oauth.accessTokenToUsername[accessToken]!;
     final session = MellonBotSession(discordID: discordID, accessToken: accessToken, sessionID: sessionID, mlnUsername: mlnUsername);
     _cacheSession(session);
     await _saveSessions();
+    return session;
   }
 
   void _cacheSession(MellonBotSession session) {
@@ -45,9 +47,13 @@ class Cache extends Service {
     sessions.add(session);
   }
 
-  Future<void> removeSession(Snowflake discordID) async {
-    final session = sessionsByDiscord[discordID];
-    if (session == null) return;
+  Future<void> removeSession(MellonBotSession session) async {
+    await session.client.logout();
+
+    // Remove any webhooks associated with that session
+    // Do not need to delete from the server since client.logout() will do that.
+    _webhooks.removeWhere((webhook) => webhook.accessToken == session.accessToken);
+
     // The opposite of _cacheSession
     sessionsByDiscord.remove(session.discordID);
     sessionsByMlnUsername.remove(session.mlnUsername);
@@ -61,13 +67,8 @@ class Cache extends Service {
       session.toJson(),
   ]);
 
-  Webhook? getWebhook(AccessToken accessToken, WebhookType type) => webhooks
+  Webhook? getWebhook(AccessToken accessToken, WebhookType type) => _webhooks
     .firstWhereOrNull((webhook) => webhook.accessToken == accessToken && webhook.type == type);
-
-  Future<void> saveWebhooks() => _writeCacheList(webhooksFile, [
-    for (final webhook in webhooks)
-      webhook.toJson(),
-  ]);
 
   static Future<void> _writeCacheList(File file, List<Json> data) async {
     final contents = jsonEncode(data);
@@ -91,7 +92,7 @@ class Cache extends Service {
       final contents = await webhooksFile.readAsString();
       final data = jsonDecode(contents) as List;
       for (final webhookJson in data.cast<Json>()) {
-        webhooks.add(Webhook.fromJson(webhookJson));
+        _webhooks.add(Webhook.fromJson(webhookJson));
       }
     }
   }
@@ -111,4 +112,23 @@ class Cache extends Service {
     data[commandName] = (count ?? 0) + 1;
     await statsFile.writeAsString(jsonEncode(data));
   }
+
+  Future<bool> deleteWebhook(Webhook webhook) async {
+    final client = MlnClient(webhook.accessToken, mlnApiToken);
+    final success = await client.deleteWebhook(webhook);
+    if (!success) return false;
+    _webhooks.remove(webhook);
+    await _saveWebhooks();
+    return true;
+  }
+
+  Future<void> saveWebhook(Webhook webhook) async {
+    _webhooks.add(webhook);
+    await _saveWebhooks();
+  }
+
+  Future<void> _saveWebhooks() => _writeCacheList(webhooksFile, [
+    for (final webhook in _webhooks)
+      webhook.toJson(),
+  ]);
 }

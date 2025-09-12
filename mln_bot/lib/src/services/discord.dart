@@ -1,55 +1,43 @@
 import "package:nyxx/nyxx.dart" hide Webhook, WebhookType;
 
 import "package:mln_shared/mln_shared.dart" hide User;
-import "package:mln_bot/services.dart";
+import "package:mln_bot/data.dart";
 import "package:mln_bot/commands.dart";
 import "package:mln_bot/secrets.dart";
 
-import "discord_interactions.dart";
-import "discord_utils.dart";
+import "discord/base.dart";
+import "discord/events.dart";
+import "discord/interactions.dart";
+import "discord/utils.dart";
 
-final rankRoles = <String>[
-  for (var rank = 0; rank < 11; rank++)
-    "Rank $rank",
-];
-
-class DiscordClient extends Service with DiscordInteractions {
+class DiscordClient extends BaseDiscordClient with DiscordInteractions, DiscordEvents {
   @override
   late final NyxxGateway discordClient;
-
-  Snowflake get botID => discordClient.user.id;
 
   @override
   Future<void> init() async {
     commands.forEach(commandsPlugin.addCommand);
     discordClient = await Nyxx.connectGateway(
-      discordApiToken, // Replace this with your bot's token
+      discordApiToken,
       GatewayIntents.allUnprivileged,
       options: GatewayClientOptions(
         plugins: [logging, cliIntegration, commandsPlugin, ignoreExceptions],
       ),
     );
+    await discordClient.createRoles(names: rankRoles, color: rankColor, isHoisted: true);
+    await discordClient.createRoles(names: miniRankRoles, color: miniRankColor, isHoisted: false);
     discordClient.setStatus();
-    await discordClient.createRoles(rankRoles);
-    discordClient.onMessageCreate.listen(_handleNewMessages);
-    discordClient.onMessageReactionAdd.listen(_handleReactions);
+    discordClient.onMessageCreate.listen(handleNewMessages);
+    discordClient.onMessageReactionAdd.listen(handleReactions);
     discordClient.onMessageComponentInteraction.listen(handleMessageInteractions);
-    discordClient.onApplicationCommandInteraction.listen(_handleCommand);
+    discordClient.onApplicationCommandInteraction.listen(handleCommand);
+    discordClient.onGuildMemberAdd.listen(handleNewMember);
   }
 
-  Future<void> _handleNewMessages(MessageCreateEvent event) async {
-    if (event.message.author.id == discordClient.user.id) return;
-    if (event.mentions.any((user) => user.id == discordClient.user.id)) {
-      await event.message.channel.sendMessage(MessageBuilder(
-        content: "I don't get it.\n\nSorry, us Discord bots only respond to / commands",
-      ));
-    }
-  }
-
-
-  Future<void> sendMessage(Snowflake user, MessageBuilder message) async {
+  @override
+  Future<void> sendMessage(Snowflake user, MessageBuilder builder) async {
     final channel = await discordClient.users.createDm(user);
-    await channel.sendMessage(message);
+    await channel.sendMessage(builder);
   }
 
   Future<void> sendToBotChannel(MessageBuilder builder) async {
@@ -58,36 +46,27 @@ class DiscordClient extends Service with DiscordInteractions {
     await channel.sendMessage(builder);
   }
 
-  void _handleCommand(InteractionCreateEvent<ApplicationCommandInteraction> event) {
-    final data = event.interaction.data;
-    final commandName = data.name;
-    services.cache.updateStats(commandName).ignore();
-  }
+  Future<void> handleLogin(MellonBotSession session) async {
+    // Send a welcome message
+    final builder = buildLoginGreeting();
+    await sendMessage(session.discordID, builder);
 
-  Future<void> _handleReactions(MessageReactionAddEvent event) async {
-    final emoji = event.emoji;
-    final isX = emoji.name == "❌";
-    final isFromBot = event.messageAuthorId == discordClient.user.id;
-    if (!isX || !isFromBot) return;
-
-    final isDm = await event.isDm();
-    final isOriginalUser = await event.isOriginalUser();
-    if (isDm || isOriginalUser) {
-      await event.message.delete();
-    }
-  }
-
-  Future<void> grantRoleLogin(AccessToken accessToken) async {
-    final session = services.cache.sessionsByAccessToken[accessToken];
-    if (session == null) return;
-
-    // Get the associated MLN profile
-    final client = MlnClient(accessToken, mlnApiToken);
-    final profile = await client.whoAmI().ignoreAllErrors();
+    // Assign the right role for this user's rank
+    final profile = await session.client.whoAmI().ignoreAllErrors();
     if (profile == null) return;
-
-    // Grant the correct role(s)
     await grantRankRole(session.discordID, profile.rank);
+  }
+
+  Future<String?> setNickname(MellonBotSession session) async {
+    const serverID = Snowflake(botServerID);
+    final server = await discordClient.guilds.get(serverID);
+    final member = await server.members.get(session.discordID);
+    final currentName = member.nick;
+    if (currentName == null || currentName.contains(session.mlnUsername)) return currentName;
+    final newName = "$currentName (${session.mlnUsername})";
+    final builder = MemberUpdateBuilder(nick: newName);
+    await member.update(builder);
+    return newName;
   }
 
   Future<void> grantRankRole(Snowflake userID, int rank) async {
@@ -113,4 +92,20 @@ class DiscordClient extends Service with DiscordInteractions {
   }
 
   String discordMention(Snowflake id) => "<@$id>";
+
+  Future<bool?> toggleRole(Snowflake discordID, String roleName) async {
+    const serverID = Snowflake(botServerID);
+    final server = await discordClient.guilds.get(serverID);
+    final member = await server.members.fetch(discordID);
+    final role = server.roleList.findRole(roleName);
+    if (role == null) return null;
+    final memberRoles = member.roles;
+    if (memberRoles.containsRole(role)) {
+      await member.removeRole(role.id);
+      return false;
+    } else {
+      await member.addRole(role.id);
+      return true;
+    }
+  }
 }

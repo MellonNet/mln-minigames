@@ -9,8 +9,9 @@ export "src/commands/logout.dart";
 export "src/commands/friend_webhooks.dart";
 export "src/commands/mail_webhooks.dart";
 export "src/commands/mailbox.dart";
+export "src/commands/mini_rank.dart";
+export "src/commands/nickname.dart";
 export "src/commands/random_user.dart";
-export "src/commands/webhook_utils.dart";
 export "src/commands/whatis.dart";
 export "src/commands/whois.dart";
 
@@ -52,6 +53,7 @@ List<CommandRegisterable> commands = [
   userQuery,
   randomUserCommand,
   mailboxCommand,
+  nicknameCommand,
 
   // Items and Modules
   itemQuery,
@@ -63,4 +65,5 @@ List<CommandRegisterable> commands = [
   subscribeCommand,
   unsubscribeCommand,
   helpCommand,
+  miniRankCommand,
 ];

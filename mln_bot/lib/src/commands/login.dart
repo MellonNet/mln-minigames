@@ -7,10 +7,7 @@ final loginCommand = ChatCommand(
 );
 
 Future<void> login(ChatContext context) async {
-  final accessToken = context.accessToken;
-  if (accessToken != null) {
-    await context.respondText("You are already signed in!");
-    return;
-  }
+  final session = context.session;
+  if (session != null) return context.respondText("You are already signed in!");
   await context.respondLogin();
 }

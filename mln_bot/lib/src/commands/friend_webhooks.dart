@@ -1,5 +1,3 @@
-import "package:mln_bot/src/commands/webhook_utils.dart";
-
 import "utils.dart";
 
 final subscribeFriendCommand = ChatCommand(
@@ -8,8 +6,11 @@ final subscribeFriendCommand = ChatCommand(
   _subscribeFriends,
 );
 
-Future<void> _subscribeFriends(ChatContext context) =>
-  subscribeWebhook(context, WebhookType.friendships);
+Future<void> _subscribeFriends(ChatContext context) => authedCommand(context,
+  (client) async => context.respond(
+    await subscribeWebhook(client, WebhookType.friendships),
+  ),
+);
 
 final unsubscribeFriendCommand = ChatCommand(
   "friends",

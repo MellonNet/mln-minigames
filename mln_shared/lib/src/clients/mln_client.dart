@@ -119,4 +119,6 @@ final class MlnClient extends BaseMlnClient {
         Message.fromJson(messageJson),
     ];
   }
+
+  Future<void> logout() => _client.post("/logout");
 }

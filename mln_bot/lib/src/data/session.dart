@@ -1,3 +1,4 @@
+import "package:mln_bot/secrets.dart";
 import "package:mln_shared/clients.dart";
 import "package:mln_shared/utils.dart";
 import "package:nyxx/nyxx.dart";
@@ -27,4 +28,6 @@ class MellonBotSession {
     "session_id": sessionID.value,
     "mln_username": mlnUsername,
   };
+
+  MlnClient get client => MlnClient(accessToken, mlnApiToken);
 }
