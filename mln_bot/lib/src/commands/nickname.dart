@@ -3,7 +3,7 @@ import "utils.dart";
 final nicknameCommand = ChatCommand(
   "nickname",
   "Add your nickname to your MellonNet server profile",
-  _nickname,
+  id("nickname", _nickname),
 );
 
 Future<void> _nickname(

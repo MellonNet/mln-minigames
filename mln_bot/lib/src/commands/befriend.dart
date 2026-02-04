@@ -1,6 +1,6 @@
 import "utils.dart";
 
-final befriendCommand = ChatCommand("befriend", "Send or accept a friend request", _befriend);
+final befriendCommand = ChatCommand("befriend", "Send or accept a friend request", id("befriend", _befriend));
 
 Future<void> _befriend(
   ChatContext context,
@@ -13,7 +13,7 @@ Future<void> _befriend(
   )),
 );
 
-final unfriendCommand = ChatCommand("unfriend", "Delete a friend (or rescind friend request)", _unfriend);
+final unfriendCommand = ChatCommand("unfriend", "Delete a friend (or rescind friend request)", id("unfriend", _unfriend));
 
 Future<void> _unfriend(
   ChatContext context,

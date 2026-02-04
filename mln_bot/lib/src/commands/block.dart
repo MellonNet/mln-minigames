@@ -1,6 +1,6 @@
 import "utils.dart";
 
-final blockCommand = ChatCommand("block", "Block a friend", _block);
+final blockCommand = ChatCommand("block", "Block a friend", id("block", _block));
 
 Future<void> _block(
   ChatContext context,
@@ -15,7 +15,7 @@ Future<void> _block(
   )
 );
 
-final unblockCommand = ChatCommand("unblock", "Unblock a friend", _unblock);
+final unblockCommand = ChatCommand("unblock", "Unblock a friend", id("unblock", _unblock));
 
 Future<void> _unblock(
   ChatContext context,

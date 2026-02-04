@@ -5,13 +5,13 @@ import "utils.dart";
 final itemQuery = ChatCommand(
   "what-is",
   "Gets information about an item or module",
-  itemQueryAction,
+  id("what-is", itemQueryAction),
 );
 
 final itemQueryPublic = ChatCommand(
   "explain",
   "Gets information about an item or module and sends it to the chat",
-  itemQueryAction,
+  id("what-is-public", itemQueryAction),
   options: const CommandOptions(
     defaultResponseLevel: ResponseLevel.public,
   ),

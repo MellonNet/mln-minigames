@@ -3,7 +3,7 @@ import "utils.dart";
 final helpCommand = ChatCommand(
   "help",
   "Let me tell you what I can do!",
-  _help,
+  id("help", _help),
 );
 
 const helpText = """

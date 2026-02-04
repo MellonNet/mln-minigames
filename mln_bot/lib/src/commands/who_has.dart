@@ -5,7 +5,7 @@ import "utils.dart";
 final whoHasCommand = ChatCommand(
   "who-has",
   "Finds a random user who has a certain module",
-  _whoHas,
+  id("who-has", _whoHas),
 );
 
 Future<void> _whoHas(

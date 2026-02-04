@@ -1,0 +1,2 @@
+#! /bin/bash
+dart run nyxx_commands:compile bin/mln_bot.dart -o mln_bot.dart

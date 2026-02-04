@@ -1,6 +1,10 @@
 import "utils.dart";
 
-final randomUserCommand = ChatCommand("random-user", "Find a random user", _randomUser);
+final randomUserCommand = ChatCommand(
+  "random-user",
+  "Find a random user",
+  id("random-user", _randomUser),
+);
 
 Future<void> _randomUser(
   ChatContext context, [

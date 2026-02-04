@@ -3,7 +3,7 @@ import "utils.dart";
 final subscribeMailCommand = ChatCommand(
   "messages",
   "Get notified of new messages",
-  _subscribeMail,
+  id("subscribe_mail", _subscribeMail),
 );
 
 Future<void> _subscribeMail(ChatContext context) => authedCommand(context,
@@ -15,7 +15,7 @@ Future<void> _subscribeMail(ChatContext context) => authedCommand(context,
 final unsubscribeMailCommand = ChatCommand(
   "messages",
   "Stop getting notified about messages",
-  _unsubscribeMail,
+  id("unsubscribe_mail", _unsubscribeMail),
 );
 
 Future<void> _unsubscribeMail(ChatContext context) =>

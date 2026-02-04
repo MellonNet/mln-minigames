@@ -3,7 +3,7 @@ import "utils.dart";
 final miniRankCommand = ChatCommand(
   "mini-rank",
   "Let people know you're starting a new mini-rank",
-  _miniRank,
+  id("minirank", _miniRank),
 );
 
 Future<void> _miniRank(

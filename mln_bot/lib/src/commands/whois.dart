@@ -3,7 +3,7 @@ import "utils.dart";
 final userQuery = ChatCommand(
   "who-is",
   "Gets information about a user",
-  userQueryAction,
+  id("who-is", userQueryAction),
 );
 
 Future<void> userQueryAction(

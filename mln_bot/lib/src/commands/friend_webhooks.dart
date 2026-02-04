@@ -3,7 +3,7 @@ import "utils.dart";
 final subscribeFriendCommand = ChatCommand(
   "friends",
   "Get notified of new friend requests",
-  _subscribeFriends,
+  id("subscribe_friends", _subscribeFriends),
 );
 
 Future<void> _subscribeFriends(ChatContext context) => authedCommand(context,
@@ -15,7 +15,7 @@ Future<void> _subscribeFriends(ChatContext context) => authedCommand(context,
 final unsubscribeFriendCommand = ChatCommand(
   "friends",
   "Stop getting notified about friends",
-  _unsubscribeFriends,
+  id("unsubscribe_friends", _unsubscribeFriends),
 );
 
 Future<void> _unsubscribeFriends(ChatContext context) =>

@@ -3,7 +3,7 @@ import "utils.dart";
 final mailboxCommand = ChatCommand(
   "mailbox",
   "Read your latest message",
-  _mailbox,
+  id("mailbox", _mailbox),
 );
 
 Future<void> _mailbox(

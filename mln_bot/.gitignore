@@ -7,3 +7,7 @@ lib/secrets.dart
 
 # Keeps server data, sign-in sessions and such
 cache/
+
+# Compiled output
+/mln_bot.dart
+/mln_bot.exe
