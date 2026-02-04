@@ -17,12 +17,3 @@ dependencies:
   shelf: ^1.4.2
   shelf_router: ^1.1.4
   xml: ^6.6.1
-
-dependency_overrides:
-  # MessageBuilder flags are not copied properly in respond(),
-  # so the bot cannot respond with some types of components.
-  # See: https://github.com/nyxx-discord/nyxx_commands/pull/163
-  nyxx_commands:
-    git:
-      url: https://github.com/Levi-Lesches/nyxx_commands.git
-      ref: fix-flags

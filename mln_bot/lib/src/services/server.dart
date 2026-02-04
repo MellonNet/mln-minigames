@@ -48,7 +48,7 @@ class MlnServer extends Service {
     app.post(badgesWebhookPath, authMiddleware(_handleBadgesWebhook));
     app.post(rankUpWebhookPath, authMiddleware(_handleRankUpWebhook));
 
-    final server = await io.serve(app.call, "0.0.0.0", 9005);
+    final server = await io.serve(app.call, "0.0.0.0", 5050);
     print("Serving on 0.0.0.0:${server.port}");
   }
 
